@@ -1,0 +1,7 @@
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Debug\ConvertImage2ByteArray.exe.config
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Debug\ConvertImage2ByteArray.exe
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Debug\ConvertImage2ByteArray.pdb
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\obj\Debug\ConvertImage2ByteArray.exe
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\obj\Debug\ConvertImage2ByteArray.pdb
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Debug\Newtonsoft.Json.dll
+C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Debug\Newtonsoft.Json.xml
