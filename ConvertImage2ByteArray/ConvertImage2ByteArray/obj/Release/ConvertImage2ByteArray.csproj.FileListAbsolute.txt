@@ -1,8 +1,0 @@
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Release\ConvertImage2ByteArray.exe.config
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Release\ConvertImage2ByteArray.exe
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Release\ConvertImage2ByteArray.pdb
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\obj\Release\ConvertImage2ByteArray.exe
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\obj\Release\ConvertImage2ByteArray.pdb
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\obj\Release\ConvertImage2ByteArray.csprojResolveAssemblyReference.cache
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Release\Newtonsoft.Json.dll
-C:\Avalara\git\Quickies\ConvertImage2ByteArray\ConvertImage2ByteArray\bin\Release\Newtonsoft.Json.xml
