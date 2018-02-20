@@ -26,122 +26,143 @@ namespace AddFormCellDependenciesFromExcel
         static void Main(string[] args)
         {
             List<InputData> dependencies = new List<InputData>(); // = null;
-
-            //Populate object with source file
-            using (FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-
-                using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fs, false))
-                {
-                    WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
-                    WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-                    SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-
-                    foreach (Row row in sheetData.Elements<Row>())
-                    {
-                        InputData dependency = new InputData();
-                        int rowcolumn = 1;
-                        int tempMonths = -1;
-                        foreach (Cell c in row.Elements<Cell>())
-                        {
-
-                            switch (rowcolumn)
-                            {
-                                case 1: dependency.TaxFormCode = ReadExcelCell(c, workbookPart); break;
-                                case 2: dependency.CurrentPeriod = ReadExcelCell(c, workbookPart); break;
-                                case 3: dependency.Months = int.TryParse(ReadExcelCell(c, workbookPart), out tempMonths) ? tempMonths : 0; break;
-                                case 4: dependency.OriginCellName = ReadExcelCell(c, workbookPart); break;
-                                case 5: dependency.DestinationCellName = ReadExcelCell(c, workbookPart); break;
-                                case 6: dependency.CityCountyCode = ReadExcelCell(c, workbookPart); break;
-                                case 7: dependency.TaxType = ReadExcelCell(c, workbookPart); break;
-                                case 8: dependency.Status = ReadExcelCell(c, workbookPart); break;
-                                case 9: dependency.Notes = ReadExcelCell(c, workbookPart); break;
-                            }
-
-                            rowcolumn++;
-                        }
-
-                        if (dependency.TaxFormCode != "Form")
-                        {
-                            dependencies.Add(dependency);
-                        }
-                    }
-                }
-            }
-
-            List<FormCellDependency> recordsToAdd = new List<FormCellDependency>();
-            int totalRecords = dependencies.Count;
-            string prevTaxFormCode = string.Empty;
-            long formMasterId = 0;
             long updateFormMasterId = long.TryParse(args[4], out updateFormMasterId) ? updateFormMasterId : -1;
-            List<FormCellDependency> existingDependencies = GetFormCellDependencies(updateFormMasterId, args[1], args[2], args[3]);
-            List<Annotation> formAnnotations = new List<Annotation>();
 
-
-            // Create List of FormCellDependency records to add 
-            foreach (InputData item in dependencies)
+            if (args[0].Equals("d"))
             {
-                if (!item.TaxFormCode.Equals(prevTaxFormCode))
+                List<FormCellDependency> currentDependencies = GetFormCellDependencies(updateFormMasterId, args[1], args[2], args[3]);
+                Int64 deletedCount = 0;
+                foreach (FormCellDependency fd in currentDependencies)
                 {
-                    formMasterId = GetFormMasterId(item.TaxFormCode, args[1], args[2], args[3]);
-                    prevTaxFormCode = item.TaxFormCode;
-                    if (formMasterId > 0)
+                    DeleteFormCellDependency deleteResult = DeleteFormCellDependency(fd.FormCellDependencyId, args[1], args[2], args[3]);
+                    if (deleteResult.Deleted)
                     {
-                        formAnnotations = GetAnnotations(formMasterId, args[1], args[2], args[3]);
+                        deletedCount++;
                     }
                     else
                     {
-                        Console.WriteLine(string.Format("Unable to find a formmaster record for taxformcode [{0}].", item.TaxFormCode));
+                        Console.WriteLine(string.Format("Unable to delete formCellDependency [{0}] for FormMasterid [{1}].", fd.FormCellDependencyId.ToString(), updateFormMasterId.ToString()));
                     }
                 }
 
-                if (formMasterId > 0 )
+                Console.WriteLine(string.Format("The application deleted [{0}] FormCellDependency records for FormMasterId [{1}].", deletedCount.ToString(), updateFormMasterId.ToString()));
+            }
+            else
+            {
+                //Populate object with source file
+                using (FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    try
+
+                    using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fs, false))
                     {
-                        var annotation = formAnnotations.Any() ? formAnnotations.Where(a => a.AnnotationName == item.OriginCellName).FirstOrDefault() : null;
-                        if (annotation != null)
+                        WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
+                        WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                        SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+
+                        foreach (Row row in sheetData.Elements<Row>())
                         {
-                            FormCellDependency dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.AnnotationId == annotation.AnnotationId && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
-                            FormCellDependency dependencyToAdd = new FormCellDependency();
-                            dependencyToAdd.FormCellDependencyId = dependency == null ? -1 : dependency.FormCellDependencyId;
-                            dependencyToAdd.FormMasterId = updateFormMasterId;
-                            dependencyToAdd.FormMasterOptionId = formMasterId;
-                            dependencyToAdd.AnnotationId = annotation.AnnotationId;
-                            dependencyToAdd.SummaryLabelId = null;  // needs to be added if we plan to use this for other forms
-                            dependencyToAdd.IncludeCurrentPeriod = item.CurrentPeriod.ToUpper() == "YES" ? true : false;
-                            dependencyToAdd.MonthsAgo = item.Months;
-                            dependencyToAdd.PriorYearEndFiscal = false;  // needs to be added if we plan to use this for other forms
-                            dependencyToAdd.CreatedDate = System.DateTime.UtcNow;
-                            dependencyToAdd.CreatedUserId = 0;
-                            dependencyToAdd.ModifiedDate = System.DateTime.UtcNow;
-                            dependencyToAdd.ModifiedUserId = 0;
-                            recordsToAdd.Add(dependencyToAdd);
+                            InputData dependency = new InputData();
+                            int rowcolumn = 1;
+                            int tempMonths = -1;
+                            foreach (Cell c in row.Elements<Cell>())
+                            {
+
+                                switch (rowcolumn)
+                                {
+                                    case 1: dependency.TaxFormCode = ReadExcelCell(c, workbookPart); break;
+                                    case 2: dependency.CurrentPeriod = ReadExcelCell(c, workbookPart); break;
+                                    case 3: dependency.Months = int.TryParse(ReadExcelCell(c, workbookPart), out tempMonths) ? tempMonths : 0; break;
+                                    case 4: dependency.OriginCellName = ReadExcelCell(c, workbookPart); break;
+                                    case 5: dependency.DestinationCellName = ReadExcelCell(c, workbookPart); break;
+                                    case 6: dependency.CityCountyCode = ReadExcelCell(c, workbookPart); break;
+                                    case 7: dependency.TaxType = ReadExcelCell(c, workbookPart); break;
+                                    case 8: dependency.Status = ReadExcelCell(c, workbookPart); break;
+                                    case 9: dependency.Notes = ReadExcelCell(c, workbookPart); break;
+                                }
+
+                                rowcolumn++;
+                            }
+
+                            if (dependency.TaxFormCode != "Form")
+                            {
+                                dependencies.Add(dependency);
+                            }
+                        }
+                    }
+                }
+
+                List<FormCellDependency> recordsToAdd = new List<FormCellDependency>();
+                int totalRecords = dependencies.Count;
+                string prevTaxFormCode = string.Empty;
+                long formMasterId = 0;
+                List<FormCellDependency> existingDependencies = GetFormCellDependencies(updateFormMasterId, args[1], args[2], args[3]);
+                List<Annotation> formAnnotations = new List<Annotation>();
+
+
+                // Create List of FormCellDependency records to add 
+                foreach (InputData item in dependencies)
+                {
+                    if (!item.TaxFormCode.Equals(prevTaxFormCode))
+                    {
+                        formMasterId = GetFormMasterId(item.TaxFormCode, args[1], args[2], args[3]);
+                        prevTaxFormCode = item.TaxFormCode;
+                        if (formMasterId > 0)
+                        {
+                            formAnnotations = GetAnnotations(formMasterId, args[1], args[2], args[3]);
                         }
                         else
                         {
-                            Console.WriteLine(string.Format("AddFormCellDependencyFromExcel:  Unable to find field [{0}] on tax form [{1}].", item.OriginCellName, item.TaxFormCode));
+                            Console.WriteLine(string.Format("Unable to find a formmaster record for taxformcode [{0}].", item.TaxFormCode));
                         }
                     }
-                    catch(Exception ex)
+
+                    if (formMasterId > 0)
                     {
-                        Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: An error occurred [{0}] while processing TaxFormCode [{1}] and field [{2}].", ex.Message, item.TaxFormCode, item.OriginCellName));
+                        try
+                        {
+                            var annotation = formAnnotations.Any() ? formAnnotations.Where(a => a.AnnotationName == item.OriginCellName).FirstOrDefault() : null;
+                            if (annotation != null)
+                            {
+                                FormCellDependency dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.AnnotationId == annotation.AnnotationId && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
+                                FormCellDependency dependencyToAdd = new FormCellDependency();
+                                dependencyToAdd.FormCellDependencyId = dependency == null ? -1 : dependency.FormCellDependencyId;
+                                dependencyToAdd.FormMasterId = updateFormMasterId;
+                                dependencyToAdd.FormMasterOptionId = formMasterId;
+                                dependencyToAdd.AnnotationId = annotation.AnnotationId;
+                                dependencyToAdd.SummaryLabelId = null;  // needs to be added if we plan to use this for other forms
+                                dependencyToAdd.IncludeCurrentPeriod = item.CurrentPeriod.ToUpper() == "YES" ? true : false;
+                                dependencyToAdd.MonthsAgo = item.Months;
+                                dependencyToAdd.PriorYearEndFiscal = false;  // needs to be added if we plan to use this for other forms
+                                dependencyToAdd.CreatedDate = System.DateTime.UtcNow;
+                                dependencyToAdd.CreatedUserId = 0;
+                                dependencyToAdd.ModifiedDate = System.DateTime.UtcNow;
+                                dependencyToAdd.ModifiedUserId = 0;
+                                recordsToAdd.Add(dependencyToAdd);
+                            }
+                            else
+                            {
+                                Console.WriteLine(string.Format("AddFormCellDependencyFromExcel:  Unable to find field [{0}] on tax form [{1}].", item.OriginCellName, item.TaxFormCode));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: An error occurred [{0}] while processing TaxFormCode [{1}] and field [{2}].", ex.Message, item.TaxFormCode, item.OriginCellName));
+                        }
+
                     }
-
                 }
-            }
-            
 
-            // insert records to FormCellDependency 
-            int recordsInserted = 0;
-            int recordsUpdated = 0;
-            int recordsErrored = 0;
-            if (recordsToAdd.Count > 0)
-            {
-                recordsInserted = UpdateFormCellDepencencies(recordsToAdd, args[1], args[2], args[3], out recordsUpdated, out recordsErrored);
-            }
-            Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: {0} records inserted and {1} records updated out of {2} total records.  There were {3} records that resulted in an error. ", recordsInserted.ToString(), recordsUpdated.ToString(), totalRecords.ToString(), recordsErrored.ToString()));
 
+                // insert records to FormCellDependency 
+                int recordsInserted = 0;
+                int recordsUpdated = 0;
+                int recordsErrored = 0;
+                if (recordsToAdd.Count > 0)
+                {
+                    recordsInserted = UpdateFormCellDepencencies(recordsToAdd, args[1], args[2], args[3], out recordsUpdated, out recordsErrored);
+                }
+                Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: {0} records inserted and {1} records updated out of {2} total records.  There were {3} records that resulted in an error. ", recordsInserted.ToString(), recordsUpdated.ToString(), totalRecords.ToString(), recordsErrored.ToString()));
+            }
         }
 
 
@@ -193,6 +214,43 @@ namespace AddFormCellDependenciesFromExcel
             }
 
             return results;
+        }
+
+
+        private static DeleteFormCellDependency DeleteFormCellDependency(long FormCellDependencyId, string Url, string Username, string Drowssap)
+        {
+            DeleteFormCellDependency result = null;
+
+            try
+            {
+                string query = string.Format("/api/FormCellDependency/{0}", FormCellDependencyId.ToString());
+
+                // Create the http web request.
+                var request = (HttpWebRequest)WebRequest.Create(Url + query);
+                request.Headers.Add(HttpRequestHeader.Authorization, "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Username + ":" + Drowssap)));
+                request.Method = "DELETE";
+
+                // execute the request.
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response != null)
+                    {
+                        var responseStream = response.GetResponseStream();
+                        var streamReader = new System.IO.StreamReader(responseStream, System.Text.Encoding.UTF8);
+                        var responseString = streamReader.ReadToEnd();
+
+                        result = responseString.Length > 0 ? Newtonsoft.Json.JsonConvert.DeserializeObject<DeleteFormCellDependency>(responseString) : null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("DeleteFormCellDependency: An unhandled exception occurred:[{0}]", ex.Message);
+
+                return result;
+            }
+
+            return result;
         }
 
 
@@ -344,6 +402,13 @@ namespace AddFormCellDependenciesFromExcel
         public String TaxType { get; set; }
         public String Status { get; set; }
         public String Notes { get; set; }
+    }
+
+    public class DeleteFormCellDependency
+    {
+        public String Name { get; set; }
+        public Int64 FormCellDependencyId { get; set; }
+        public Boolean Deleted { get; set; }
     }
 
     public class FormCellDependency
