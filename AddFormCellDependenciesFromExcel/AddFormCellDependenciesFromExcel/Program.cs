@@ -282,10 +282,11 @@ namespace AddFormCellDependenciesFromExcel
         {
             Int64 formMasterId = -1;
             FormMaster formMaster;
+            string query = string.Empty;
 
             try
             {
-                string query = string.Format("/api/FormMaster/%7Bid%7D?taxFormCode={0}", TaxFormCode);
+                query = string.Format("/api/FormMaster/%7Bid%7D?taxFormCode={0}", TaxFormCode);
 
                 // Create the http web request.
                 var request1 = (HttpWebRequest)WebRequest.Create(Url + query);
@@ -307,7 +308,15 @@ namespace AddFormCellDependenciesFromExcel
                         }
                     }
                 }
-                    
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetFormMasterId 1: An unhandled exception occurred :[{0}]", ex.Message);
+            }
+
+
+            try
+            { 
                 if (formMasterId == -1)
                 {
                     query = string.Format("/api/FormMaster/%7Bid%7D?legacyReturnName={0}", TaxFormCode);
@@ -333,7 +342,7 @@ namespace AddFormCellDependenciesFromExcel
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetFormMasterId: An unhandled exception occurred:[{0}]", ex.Message);
+                Console.WriteLine("GetFormMasterId 2: An unhandled exception occurred:[{0}]", ex.Message);
 
                 return formMasterId;
             }
