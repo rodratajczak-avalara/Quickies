@@ -88,9 +88,10 @@ namespace AddFormCellDependenciesFromExcel
                                     //New Format
                                     case 1: newDependency.TaxFormCode = ReadExcelCell(c, workbookPart); break;
                                     case 2: newDependency.SummaryLabel = ReadExcelCell(c, workbookPart); break;
-                                    case 3: newDependency.CurrentPeriod = ReadExcelCell(c, workbookPart); break;
-                                    case 4: newDependency.Months = int.TryParse(ReadExcelCell(c, workbookPart), out tempMonths) ? tempMonths : 0; break;
-                                    case 5: newDependency.Status = ReadExcelCell(c, workbookPart); break;
+                                    case 3: newDependency.FieldName = ReadExcelCell(c, workbookPart) ?? null; break;
+                                    case 4: newDependency.CurrentPeriod = ReadExcelCell(c, workbookPart) ?? null; break;
+                                    case 5: newDependency.Months = int.TryParse(ReadExcelCell(c, workbookPart), out tempMonths) ? tempMonths : 0; break;
+                                    case 6: newDependency.Status = ReadExcelCell(c, workbookPart); break;
                                 }
 
                                 rowcolumn++;
@@ -129,7 +130,7 @@ namespace AddFormCellDependenciesFromExcel
                         prevTaxFormCode = item.TaxFormCode;
                         if (formMasterId > 0)
                         {
-                            //formAnnotations = GetAnnotations(formMasterId, args[1], args[2], args[3]);
+                            formAnnotations = GetAnnotations(formMasterId, args[1], args[2], args[3]);
                         }
                         else
                         {
@@ -141,18 +142,39 @@ namespace AddFormCellDependenciesFromExcel
                     {
                         try
                         {
-                            //var annotation = formAnnotations.Any() ? formAnnotations.Where(a => a.AnnotationName == item.OriginCellName).FirstOrDefault() : null;
-                            //if (annotation != null)
-                            //{
+                            FormCellDependency dependency = null;
+                            var annotation = formAnnotations.Any() ? formAnnotations.Where(a => a.AnnotationName == item.FieldName).FirstOrDefault() : null;
                             var summaryLabel = summaryLabels.Any() ? summaryLabels.Where(a => a.SummaryLabelCode == item.SummaryLabel).FirstOrDefault() : null;
-                            //FormCellDependency dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.AnnotationId == annotation.AnnotationId && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
-                            FormCellDependency dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.SummaryLabelId == summaryLabel.SummaryLabelId && !d.AnnotationId.HasValue && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
-                            FormCellDependency dependencyToAdd = new FormCellDependency();
+                            if (annotation == null)
+                            {
+                                if (summaryLabel == null)
+                                {
+                                    Console.WriteLine(string.Format("AddFormCellDependencyFromExcel:  Unable to find summary label [{0}] or field name [{1}] on tax form [{2}].", item.SummaryLabel, item.FieldName, item.TaxFormCode));
+                                }
+                                else
+                                {
+                                    dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.SummaryLabelId == summaryLabel.SummaryLabelId && !d.AnnotationId.HasValue && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
+                                }
+                            }
+                            else
+                            {
+                                if (summaryLabel == null)
+                                {
+                                    dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.AnnotationId == annotation.AnnotationId && !d.SummaryLabelId.HasValue && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
+                                }
+                                else
+                                {
+                                    dependency = existingDependencies.Any() ? existingDependencies.Where(d => d.SummaryLabelId == summaryLabel.SummaryLabelId && d.AnnotationId == annotation.AnnotationId && d.FormMasterOptionId == formMasterId).FirstOrDefault() : null;
+                                }
+                            }
+                            if (summaryLabel != null || annotation != null)
+                            {
+                                FormCellDependency dependencyToAdd = new FormCellDependency();
                                 dependencyToAdd.FormCellDependencyId = dependency == null ? -1 : dependency.FormCellDependencyId;
                                 dependencyToAdd.FormMasterId = updateFormMasterId;
                                 dependencyToAdd.FormMasterOptionId = formMasterId;
-                            dependencyToAdd.AnnotationId = null; //annotation.AnnotationId;
-                            dependencyToAdd.SummaryLabelId = summaryLabel.SummaryLabelId; //null;  // needs to be added if we plan to use this for other forms
+                                dependencyToAdd.AnnotationId = annotation == null ? null : annotation.AnnotationId;
+                                dependencyToAdd.SummaryLabelId = summaryLabel == null ? null : summaryLabel.SummaryLabelId; //null;  // needs to be added if we plan to use this for other forms
                                 dependencyToAdd.IncludeCurrentPeriod = item.CurrentPeriod.ToUpper() == "YES" ? true : false;
                                 dependencyToAdd.MonthsAgo = item.Months;
                                 dependencyToAdd.PriorYearEndFiscal = false;  // needs to be added if we plan to use this for other forms
@@ -161,16 +183,11 @@ namespace AddFormCellDependenciesFromExcel
                                 dependencyToAdd.ModifiedDate = System.DateTime.UtcNow;
                                 dependencyToAdd.ModifiedUserId = 0;
                                 recordsToAdd.Add(dependencyToAdd);
-                            //}
-                            //else
-                            //{
-                            //    Console.WriteLine(string.Format("AddFormCellDependencyFromExcel:  Unable to find field [{0}] on tax form [{1}].", item.OriginCellName, item.TaxFormCode));
-                            //}
+                            }
                         }
                         catch (Exception ex)
                         {
-                            //Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: An error occurred [{0}] while processing TaxFormCode [{1}] and field [{2}].", ex.Message, item.TaxFormCode, item.OriginCellName));
-                            Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: An error occurred [{0}] while processing TaxFormCode [{1}] and summary label [{2}].", ex.Message, item.TaxFormCode, item.SummaryLabel));
+                            Console.WriteLine(string.Format("AddFormCellDependencyFromExcel: An error occurred [{0}] while processing TaxFormCode [{1}] and summary label [{2}] and field [{3}].", ex.Message, item.TaxFormCode, item.SummaryLabel, item.FieldName));
                         }
 
                     }
@@ -311,7 +328,7 @@ namespace AddFormCellDependenciesFromExcel
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetFormMasterId 1: An unhandled exception occurred :[{0}]", ex.Message);
+                Console.WriteLine("GetFormMasterId 1: Unable to find TaxFormCode [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
             }
 
 
@@ -342,7 +359,7 @@ namespace AddFormCellDependenciesFromExcel
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetFormMasterId 2: An unhandled exception occurred:[{0}]", ex.Message);
+                Console.WriteLine("GetFormMasterId 2: Unable to find LegacyReturnName [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
 
                 return formMasterId;
             }
@@ -378,7 +395,7 @@ namespace AddFormCellDependenciesFromExcel
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetAnnotations: An unhandled exception occurred:[{0}]", ex.Message);
+                Console.WriteLine("GetAnnotations: Attempting to get annotations for FormMasterId [{0}] resulted in an unhandled exception:[{0}]", FormMasterId.ToString(), ex.Message);
 
                 return results;
             }
@@ -502,6 +519,7 @@ namespace AddFormCellDependenciesFromExcel
     {
         public String TaxFormCode { get; set; }
         public String SummaryLabel { get; set; }
+        public String FieldName { get; set; }
         public String CurrentPeriod { get; set; }
         public int Months { get; set; }
         public String Status { get; set; }
@@ -644,7 +662,7 @@ namespace AddFormCellDependenciesFromExcel
 
     public partial class Annotation
     {
-        public Int64 AnnotationId { get; set; }
+        public Int64? AnnotationId { get; set; }
         public Int64 FormVersionId { get; set; }
         public String AnnotationName { get; set; }
         public Boolean ReadOnly { get; set; }
@@ -697,7 +715,7 @@ namespace AddFormCellDependenciesFromExcel
 
     public partial class SummaryLabel
     {
-        public Int64 SummaryLabelId { get; set; }
+        public Int64? SummaryLabelId { get; set; }
         public String SummaryLabelCode { get; set; }
         public String Description {get;set;}
         public Int64 CreatedUserId { get; set; }
