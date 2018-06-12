@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AvaShardAggregation": {
+      "commandName": "Project",
+      "commandLineArgs": "--console"
+    }
+  }
+}
