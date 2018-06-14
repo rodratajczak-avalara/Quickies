@@ -60,14 +60,23 @@ namespace AvaShardReplication
             using (SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["ShardAggregation"].ConnectionString))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT LastSynch FROM LastSynch WHERE ApplicationName >= @ApplicationName", conn))
+                using (SqlCommand cmdRead = new SqlCommand("SELECT LastSynch FROM LastSynch WHERE ApplicationName >= @ApplicationName", conn))
                 {
-                    cmd.Parameters.AddWithValue("@ApplicationName", System.AppDomain.CurrentDomain.FriendlyName);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    cmdRead.Parameters.AddWithValue("@ApplicationName", System.AppDomain.CurrentDomain.FriendlyName);
+                    using (SqlDataReader reader = cmdRead.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
                             lastSynch = reader.GetFieldValue<DateTime>(0);
+                        }
+                        else
+                        {
+                            using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO LastSynch(ApplicationName, LastSynch) VALUES (@ApplicationName, @LastSynch)", conn))
+                            {
+                                cmdInsert.Parameters.AddWithValue("@ApplicationName", System.AppDomain.CurrentDomain.FriendlyName);
+                                cmdInsert.Parameters.AddWithValue("@LastSynch", lastSynch);
+                                cmdInsert.ExecuteNonQuery();
+                            }
                         }
                     }
                 }

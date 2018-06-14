@@ -81,6 +81,15 @@ namespace AvaShardAggregation
                         {
                             lastSynch = reader.GetFieldValue<DateTime>(0);
                         }
+                        else
+                        {
+                            using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO LastSynch(ApplicationName, LastSynch) VALUES (@ApplicationName, @LastSynch)", conn))
+                            {
+                                cmdInsert.Parameters.AddWithValue("@ApplicationName", System.AppDomain.CurrentDomain.FriendlyName);
+                                cmdInsert.Parameters.AddWithValue("@LastSynch", lastSynch);
+                                cmdInsert.ExecuteNonQuery();
+                            }
+                        }
                     }
                 }
             }

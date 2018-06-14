@@ -5,12 +5,20 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 
 namespace AvaShardReplication
 {
     static class Program
     {
+        #region [ Local Variables ]
+
+        private static Scheduler _scheduler;
+        private static ControlEventHandler _dontGarbageCollectMePlease;
+
+        #endregion
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -27,19 +35,20 @@ namespace AvaShardReplication
             host.RunAsService();
             if (Debugger.IsAttached || args.Contains("--debug"))
             {
-                host.Run();
+                //we need to keep a reference to the delegate or it will get GC'd and that's bad
+                _dontGarbageCollectMePlease = new ControlEventHandler(OnControlEvent);
+                SetConsoleCtrlHandler(_dontGarbageCollectMePlease, true);
+
+                _scheduler = new Scheduler();
+                _scheduler.ShutdownEvent += new EventHandler(HandleShutdown);
+                _scheduler.Go(); // busy loop
+
+                _scheduler.Dispose();
             }
             else
             {
-                host.RunAsService();
+                System.ServiceProcess.ServiceBase.Run(new ReplicateShardService());
             }
-
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new ReplicateShardService()
-            };
-            ServiceBase.Run(ServicesToRun);
         }
 
     }
