@@ -43,7 +43,6 @@ namespace AvaShardAggregator
                 }
             }
 
-
             DateTime endTime = DateTime.UtcNow;
             UpdateLastSynch(startTime);
 
@@ -57,7 +56,7 @@ namespace AvaShardAggregator
             using (SqlConnection conn = new SqlConnection(config.GetConnectionString("Source")))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand(string.Format("SELECT * FROM {0} WHERE ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName), conn))
+                using (SqlCommand cmd = new SqlCommand(string.Format("SELECT * FROM [{0}] WHERE ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName), conn))
                 {
                     cmd.Parameters.AddWithValue("@LastCheckTime", StartSynch);
                     cmd.Parameters.AddWithValue("@CurrentCheckTime", EndSynch);
@@ -87,6 +86,7 @@ namespace AvaShardAggregator
                 DateTime endBCP = DateTime.UtcNow;
                 Console.WriteLine(string.Format("{0} BCP Time: {1}", TableName, endBCP.Subtract(startBCP).TotalMilliseconds.ToString()));
 
+ /*
                 // Perform Merge of Data
                 Console.WriteLine(string.Format("{0} Merge Started", TableName));
                 DateTime startMerge = DateTime.UtcNow;
@@ -98,12 +98,13 @@ namespace AvaShardAggregator
                 }
                 DateTime endMerge = DateTime.UtcNow;
                 Console.WriteLine(string.Format("{0} Merge Time: {1}", TableName, endMerge.Subtract(startMerge).TotalMilliseconds.ToString()));
-
+                
                 // Truncate the Temp Table 
-                using (SqlCommand cmdTruncate = new SqlCommand(string.Format("TRUNCATE TABLE {0}{1}", TableName, objectSuffix), conn))
+                using (SqlCommand cmdTruncate = new SqlCommand(string.Format("TRUNCATE TABLE [{0}{1}]", TableName, objectSuffix), conn))
                 {
                     cmdTruncate.ExecuteNonQuery();
-                }
+                } 
+                */
             }
 
         }
