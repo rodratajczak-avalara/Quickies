@@ -20,17 +20,26 @@ namespace AvaShardAggregator
             DateTime lastSynch = GetLastSynch();
             DateTime startTime = DateTime.UtcNow;
 
-            using (SqlConnection conn = new SqlConnection(config.GetConnectionString("Source")))
+            // Process AvaTaxAccount Tables with ModifiedDate on Table
+            using (SqlConnection conn = new SqlConnection(config.GetConnectionString("ShardAggregation")))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Document WHERE ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", conn))
+                using (SqlCommand cmdTables = new SqlCommand(@"SELECT TableName, ParentTableId, FullTable, ModifiedDateExists
+                                                                FROM AggregationTable
+                                                                WHERE Enabled = 1
+                                                                AND [Database] = 'AvaTaxAccount'
+                                                                AND FullTable = 0
+                                                                AND ModifiedDateExists = 1
+                                                                ORDER BY ParentTableId", conn))
                 {
-                    cmd.Parameters.AddWithValue("@LastCheckTime", lastSynch);
-                    cmd.Parameters.AddWithValue("@CurrentCheckTime", startTime);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader readerTables = cmdTables.ExecuteReader())
                     {
-                        PerformBulkCopy(reader);
+                        while (readerTables.Read())
+                        {
+                            ProcessModifiedData(lastSynch, startTime, readerTables["TableName"].ToString()); 
+                        }
                     }
+                        
                 }
             }
 
@@ -43,46 +52,60 @@ namespace AvaShardAggregator
             Console.ReadKey();
         }
 
-        private static void PerformBulkCopy(SqlDataReader r)
+        private static void ProcessModifiedData(DateTime StartSynch, DateTime EndSynch, string TableName)
         {
-            DateTime startBCP;
-            DateTime endBCP;
-            DateTime startMerge;
-            DateTime endMerge;
+            using (SqlConnection conn = new SqlConnection(config.GetConnectionString("Source")))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(string.Format("SELECT * FROM {0} WHERE ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName), conn))
+                {
+                    cmd.Parameters.AddWithValue("@LastCheckTime", StartSynch);
+                    cmd.Parameters.AddWithValue("@CurrentCheckTime", EndSynch);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        PerformBulkCopy(reader, TableName);
+                    }
+                }
+            }
+        }
 
+        private static void PerformBulkCopy(SqlDataReader r, string TableName)
+        {
             using (SqlConnection conn = new SqlConnection(config.GetConnectionString("Destination")))
             {
                 conn.Open();
 
                 //Bulk copy the data from the source
-                startBCP = DateTime.UtcNow;
+                Console.WriteLine(string.Format("{0} Bulk Copy Started", TableName));
+                DateTime startBCP = DateTime.UtcNow;
                 using (SqlBulkCopy cpy = new SqlBulkCopy(conn))
                 {
                     cpy.BulkCopyTimeout = 3600;
-                    cpy.DestinationTableName = string.Format("Document{0}", objectSuffix);
+                    cpy.DestinationTableName = string.Format("{0}{1}", TableName, objectSuffix);
                     cpy.WriteToServer(r);
                 }
-                endBCP = DateTime.UtcNow;
+                DateTime endBCP = DateTime.UtcNow;
+                Console.WriteLine(string.Format("{0} BCP Time: {1}", TableName, endBCP.Subtract(startBCP).TotalMilliseconds.ToString()));
 
                 // Perform Merge of Data
-                startMerge = DateTime.UtcNow;
-                using (SqlCommand cmdMerge = new SqlCommand(string.Format("sp_Merge_Document_From{0}", objectSuffix), conn))
+                Console.WriteLine(string.Format("{0} Merge Started", TableName));
+                DateTime startMerge = DateTime.UtcNow;
+                using (SqlCommand cmdMerge = new SqlCommand(string.Format("sp_Merge_{0}_From{1}", TableName, objectSuffix), conn))
                 {
                     cmdMerge.CommandType = System.Data.CommandType.StoredProcedure;
                     cmdMerge.CommandTimeout = 3600;
                     cmdMerge.ExecuteNonQuery();
                 }
-                endMerge = DateTime.UtcNow;
+                DateTime endMerge = DateTime.UtcNow;
+                Console.WriteLine(string.Format("{0} Merge Time: {1}", TableName, endMerge.Subtract(startMerge).TotalMilliseconds.ToString()));
 
                 // Truncate the Temp Table 
-                using (SqlCommand cmdTruncate = new SqlCommand(string.Format("TRUNCATE TABLE Document{0}", objectSuffix), conn))
+                using (SqlCommand cmdTruncate = new SqlCommand(string.Format("TRUNCATE TABLE {0}{1}", TableName, objectSuffix), conn))
                 {
                     cmdTruncate.ExecuteNonQuery();
                 }
             }
 
-            Console.WriteLine(string.Format("BCP Time: {0}", endBCP.Subtract(startBCP).TotalMilliseconds.ToString()));
-            Console.WriteLine(string.Format("Merge Time: {0}", endMerge.Subtract(startMerge).TotalMilliseconds.ToString()));
         }
 
         private static DateTime GetLastSynch()
