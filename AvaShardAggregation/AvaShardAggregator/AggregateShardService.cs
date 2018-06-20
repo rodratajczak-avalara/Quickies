@@ -30,7 +30,7 @@ namespace AvaShardAggregator
                                                                 AND [Database] = 'AvaTaxAccount'
                                                                 AND FullTable = 0
                                                                 AND ModifiedDateExists = 1
-                                                                ORDER BY ParentTableId", conn))
+                                                                ORDER BY ExecutionGroup, ParentTableId", conn))
                 {
                     using (SqlDataReader readerTables = cmdTables.ExecuteReader())
                     {
@@ -86,7 +86,7 @@ namespace AvaShardAggregator
                 DateTime endBCP = DateTime.UtcNow;
                 Console.WriteLine(string.Format("{0} BCP Time: {1}", TableName, endBCP.Subtract(startBCP).TotalMilliseconds.ToString()));
 
- /*
+ 
                 // Perform Merge of Data
                 Console.WriteLine(string.Format("{0} Merge Started", TableName));
                 DateTime startMerge = DateTime.UtcNow;
@@ -104,9 +104,7 @@ namespace AvaShardAggregator
                 {
                     cmdTruncate.ExecuteNonQuery();
                 } 
-                */
             }
-
         }
 
         private static DateTime GetLastSynch()
