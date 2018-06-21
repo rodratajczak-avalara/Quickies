@@ -301,6 +301,7 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_2
 	Description              NVARCHAR (2096),
 	Sourcing                 VARCHAR (2),
 
+
 	GoodsServiceCode         BIGINT NOT NULL,
 	TaxEngine                VARCHAR (10) NOT NULL,
 	BoundaryOverrideId       INT,
@@ -897,6 +898,12 @@ CREATE TABLE dbo.Company_Temp_Shard_1
 	CONSTRAINT IX_Company_Temp_Shard_1 UNIQUE (AccountId,CompanyCode)
 	)
 GO
+
+CREATE UNIQUE NONCLUSTERED INDEX IX_Company_Temp_Shard_1_AccountId_EntityNo
+	ON dbo.Company_Temp_Shard_1 (AccountId,EntityNo)
+GO
+
+
 
 
 IF OBJECT_ID ('dbo.TaxRule_Temp_Shard_1') IS NOT NULL
@@ -1498,4 +1505,3 @@ CREATE TABLE dbo.ItemAttribute_Temp_Shard_1
 	CONSTRAINT PK_ItemAttribute_Temp_Shard_1 PRIMARY KEY (ItemAttributeId)
 	)
 GO
-

@@ -352,8 +352,6 @@ CREATE OR ALTER PROCEDURE dbo.sp_Merge_AddressServiceConfig_From_Temp_Shard_1
 AS
 BEGIN
 
-SET IDENTITY_INSERT dbo.AddressServiceConfig ON
-
 MERGE dbo.AddressServiceConfig AS target
 USING (SELECT AccountId, IsUpperCase, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsJaasDisabled FROM dbo.AddressServiceConfig_Temp_Shard_1) 
 	AS source (AccountId, IsUpperCase, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsJaasDisabled)
@@ -370,8 +368,6 @@ INSERT (AccountId, IsUpperCase, CreatedUserId, CreatedDate, ModifiedUserId, Modi
 VALUES (source.AccountId, source.IsUpperCase, source.CreatedUserId, source.CreatedDate, source.ModifiedUserId, source.ModifiedDate, source.IsJaasDisabled)
 ;
 
-SET IDENTITY_INSERT dbo.AddressServiceConfig OFF
-
 END
 GO
 
@@ -381,8 +377,6 @@ GO
 CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentCodeChangeList_From_Temp_Shard_1
 AS
 BEGIN
-
-SET IDENTITY_INSERT dbo.DocumentCodeChangeList ON
 
 MERGE dbo.DocumentCodeChangeList AS target
 USING (SELECT AccountId, DocumentCode, Committed, ModifiedDate FROM dbo.DocumentCodeChangeList_Temp_Shard_1) 
@@ -397,8 +391,6 @@ WHEN NOT MATCHED THEN
 INSERT (AccountId, DocumentCode, Committed, ModifiedDate)
 VALUES (source.AccountId, source.DocumentCode, source.Committed, source.ModifiedDate)
 ;
-
-SET IDENTITY_INSERT dbo.DocumentCodeChangeList OFF
 
 END
 GO
