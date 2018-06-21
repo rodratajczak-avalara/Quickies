@@ -182,11 +182,11 @@ VALUES (45, 'AvaTaxAccount', 'dbo', 'ReturnLine', 32, 0, 0, 4, 1, 0, getdate(), 
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-VALUES (46, 'AvaTaxAccount', 'dbo', 'BatchFile', 33, 0, 0, 3, 1, 0, getdate(), 0, getdate())
+VALUES (46, 'AvaTaxAccount', 'dbo', 'BatchFile', 33, 0, 0, 3, 0, 0, getdate(), 0, getdate())
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-VALUES (47, 'AvaTaxAccount', 'dbo', 'BatchError', 33, 0, 0, 4, 1, 0, getdate(), 0, getdate())
+VALUES (47, 'AvaTaxAccount', 'dbo', 'BatchError', 33, 0, 0, 4, 0, 0, getdate(), 0, getdate())
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
@@ -202,7 +202,7 @@ VALUES (50, 'AvaTaxAccount', 'dbo', 'DocumentParameterBag', 34, 0, 0, 4, 1, 0, g
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-VALUES (51, 'AvaTaxAccount', 'dbo', 'DocumentAddressLocationTypes', 34, 0, 0, 4, 1, 0, getdate(), 0, getdate())
+VALUES (51, 'AvaTaxAccount', 'dbo', 'DocumentAddressLocationTypes', 34, 0, 0, 4, 0, 0, getdate(), 0, getdate())
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
@@ -210,7 +210,7 @@ VALUES (52, 'AvaTaxAccount', 'dbo', 'DocumentLine', 34, 0, 0, 4, 1, 0, getdate()
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-VALUES (53, 'AvaTaxAccount', 'dbo', 'ItemAttibute', 43, 1, 0, 5, 1, 0, getdate(), 0, getdate())
+VALUES (53, 'AvaTaxAccount', 'dbo', 'ItemAttribute', 43, 1, 0, 5, 1, 0, getdate(), 0, getdate())
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
@@ -218,11 +218,11 @@ VALUES (54, 'AvaTaxAccount', 'dbo', 'DocumentLineProperty', 52, 0, 0, 5, 1, 0, g
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-VALUES (55, 'AvaTaxAccount', 'dbo', 'DocuemntLineParameterBag', 52, 0, 0, 5, 1, 0, getdate(), 0, getdate())
+VALUES (55, 'AvaTaxAccount', 'dbo', 'DocumentLineParameterBag', 52, 0, 0, 5, 1, 0, getdate(), 0, getdate())
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-VALUES (56, 'AvaTaxAccount', 'dbo', 'DocumentLineAddressLocationTypes', 52, 0, 0, 5, 1, 0, getdate(), 0, getdate())
+VALUES (56, 'AvataxAccount', 'dbo', 'DocumentLineAddressLocationTypes', 52, 0, 0, 5, 0, 0, getdate(), 0, getdate())
 GO
 
 INSERT INTO dbo.AggregationTable (AggregationTableId, [Database], [Schema], TableName, ParentTableId, ModifiedDateExists, FullTable, ExecutionGroup, Enabled, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
@@ -235,4 +235,3 @@ GO
 
 SET IDENTITY_INSERT dbo.AggregationTable OFF
 GO
-

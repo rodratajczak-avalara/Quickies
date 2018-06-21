@@ -27,7 +27,6 @@ namespace AvaShardAggregator
                 using (SqlCommand cmdTables = new SqlCommand(@"SELECT TableName, ParentTableId, FullTable, ModifiedDateExists
                                                                 FROM AggregationTable
                                                                 WHERE Enabled = 1
-                                                                AND [Database] = 'AvaTaxAccount'
                                                                 AND FullTable = 0
                                                                 AND ModifiedDateExists = 1
                                                                 ORDER BY ExecutionGroup, ParentTableId", conn))

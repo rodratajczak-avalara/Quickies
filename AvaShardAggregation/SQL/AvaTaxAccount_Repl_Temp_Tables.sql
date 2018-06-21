@@ -302,6 +302,7 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_2
 	Sourcing                 VARCHAR (2),
 
 
+
 	GoodsServiceCode         BIGINT NOT NULL,
 	TaxEngine                VARCHAR (10) NOT NULL,
 	BoundaryOverrideId       INT,
@@ -927,7 +928,7 @@ CREATE TABLE dbo.TaxRule_Temp_Shard_1
 	Value                    DECIMAL (18, 6) NOT NULL,
 	Cap                      DECIMAL (18, 6) NOT NULL,
 	Threshold                DECIMAL (18, 6) NOT NULL,
-	Options                  VARCHAR (510),
+	Options_Old              VARCHAR (510),
 	EffDate                  DATETIME NOT NULL,
 	EndDate                  DATETIME NOT NULL,
 	Description              NVARCHAR (255),
@@ -940,6 +941,7 @@ CREATE TABLE dbo.TaxRule_Temp_Shard_1
 	IsSTPro                  BIT  NOT NULL,
 	Country                  CHAR (2),
 	Sourcing                 CHAR (1),
+	Options 				 VARCHAR (510),
 	UnitOfBasisId            BIGINT,
 	AttributeOptions         VARCHAR (510),
 	ReturnsRateID            INT,
@@ -957,7 +959,7 @@ CREATE TABLE dbo.TaxRule_Temp_Shard_1
 	)
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX IX_TaxRule_UNIQUE_1712_Temp_Shard_1
+CREATE UNIQUE NONCLUSTERED INDEX IX_TaxRule_Temp_Shard_1_HashKey
 	ON dbo.TaxRule_Temp_Shard_1 (HashKey)
 GO
 

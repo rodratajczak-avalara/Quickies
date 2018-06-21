@@ -2,16 +2,6 @@ CREATE OR ALTER PROCEDURE dbo.sp_Merge_Document_From_Temp_Shard_1
 AS
 BEGIN
 
-CREATE TABLE #Document_Temp_Shard_1_Results
-    (ExistingDocumentId BIGINT,  
-     ExistingDocumentTypeId  BIGINT,  
-     ExistingCompanyId BIGINT,  
-     ActionTaken nvarchar(10),  
-     NewDocuumentId BIGINT,  
-     NewDocumentTypeId BIGINT,  
-     NewCompanyId BIGINT  
-    )
-
 SET IDENTITY_INSERT dbo.Document ON
 
 MERGE dbo.Document AS target
@@ -23,13 +13,9 @@ UPDATE SET DocumentTypeId = source.DocumentTypeId, DocumentCode = source.Documen
 WHEN NOT MATCHED THEN
 INSERT (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
 VALUES (source.DocumentId, source.DocumentTypeId, source.CompanyId, source.DocumentDate, source.DocumentCode, source.DocumentStatusId, source.PurchaseOrderNo, source.CustomerVendorCode, source.SalespersonCode, source.CustomerUsageType, source.ReferenceCode, source.IsReconciled, source.TotalAmount, source.TotalTax, source.ExemptNo, source.ModifiedDate, source.ModifiedUserId, source.TaxDate, source.DocumentLineCount, source.HashCode, source.TotalTaxable, source.TotalExempt, source.BatchCode, source.SoftwareVersion, source.LocationCode, source.AdjustmentReasonId, source.AdjustmentDescription, source.IsLocked, source.Version, source.TotalTaxCalculated, source.TaxOverrideAmount, source.TaxOverrideTypeId, source.TaxOverrideReason, source.CurrencyCode, source.PaymentDate, source.OriginAddressId, source.DestinationAddressId, source.ExchangeRate, source.ExchangeRateEffDate, source.AdjustedStatusId, source.Region, source.Country, source.PosLaneCode, source.BusinessIdentificationNo, source.IsSellerImporterOfRecord, source.BRBuyerType, source.BRBuyer_IsExemptOrCannotWH_IRRF, source.BRBuyer_IsExemptOrCannotWH_PISRF, source.BRBuyer_IsExemptOrCannotWH_COFINSRF, source.BRBuyer_IsExemptOrCannotWH_CSLLRF, source.BRBuyer_IsExempt_PIS, source.BRBuyer_IsExempt_COFINS, source.BRBuyer_IsExempt_CSLL, source.Description, source.Email)
-OUTPUT deleted.DocumentId, deleted.DocumentTypeId, deleted.CompanyId, $action, inserted.DocumentId, inserted.DocumentTypeId, inserted.CompanyId INTO #Document_Temp_Shard_1_Results;
+;
 
 SET IDENTITY_INSERT dbo.Document OFF
-
-SELECT * FROM #Document_Temp_Shard_1_Results
-
-DROP TABLE #Document_Temp_Shard_1_Results
 
 END
 GO
@@ -40,16 +26,6 @@ GO
 CREATE OR ALTER PROCEDURE dbo.sp_Merge_Document_From_Temp_Shard_2
 AS
 BEGIN
-
-CREATE TABLE #Document_Temp_Shard_2_Results
-    (ExistingDocumentId BIGINT,  
-     ExistingDocumentTypeId  BIGINT,  
-     ExistingCompanyId BIGINT,  
-     ActionTaken nvarchar(10),  
-     NewDocuumentId BIGINT,  
-     NewDocumentTypeId BIGINT,  
-     NewCompanyId BIGINT  
-    )
 
 SET IDENTITY_INSERT dbo.Document ON
 
@@ -62,13 +38,9 @@ UPDATE SET DocumentTypeId = source.DocumentTypeId, DocumentCode = source.Documen
 WHEN NOT MATCHED THEN
 INSERT (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
 VALUES (source.DocumentId, source.DocumentTypeId, source.CompanyId, source.DocumentDate, source.DocumentCode, source.DocumentStatusId, source.PurchaseOrderNo, source.CustomerVendorCode, source.SalespersonCode, source.CustomerUsageType, source.ReferenceCode, source.IsReconciled, source.TotalAmount, source.TotalTax, source.ExemptNo, source.ModifiedDate, source.ModifiedUserId, source.TaxDate, source.DocumentLineCount, source.HashCode, source.TotalTaxable, source.TotalExempt, source.BatchCode, source.SoftwareVersion, source.LocationCode, source.AdjustmentReasonId, source.AdjustmentDescription, source.IsLocked, source.Version, source.TotalTaxCalculated, source.TaxOverrideAmount, source.TaxOverrideTypeId, source.TaxOverrideReason, source.CurrencyCode, source.PaymentDate, source.OriginAddressId, source.DestinationAddressId, source.ExchangeRate, source.ExchangeRateEffDate, source.AdjustedStatusId, source.Region, source.Country, source.PosLaneCode, source.BusinessIdentificationNo, source.IsSellerImporterOfRecord, source.BRBuyerType, source.BRBuyer_IsExemptOrCannotWH_IRRF, source.BRBuyer_IsExemptOrCannotWH_PISRF, source.BRBuyer_IsExemptOrCannotWH_COFINSRF, source.BRBuyer_IsExemptOrCannotWH_CSLLRF, source.BRBuyer_IsExempt_PIS, source.BRBuyer_IsExempt_COFINS, source.BRBuyer_IsExempt_CSLL, source.Description, source.Email)
-OUTPUT deleted.DocumentId, deleted.DocumentTypeId, deleted.CompanyId, $action, inserted.DocumentId, inserted.DocumentTypeId, inserted.CompanyId INTO #Document_Temp_Shard_2_Results;
+;
 
 SET IDENTITY_INSERT dbo.Document OFF
-
-SELECT * FROM #Document_Temp_Shard_2_Results
-
-DROP TABLE #Document_Temp_Shard_2_Results
 
 END
 GO
@@ -81,18 +53,6 @@ CREATE OR ALTER PROCEDURE dbo.sp_Merge_Document_From_Temp_Shard_3
 AS
 BEGIN
 
-/*
-CREATE TABLE #Document_Temp_Shard_3_Results
-    (ExistingDocumentId BIGINT,  
-     ExistingDocumentTypeId  BIGINT,  
-     ExistingCompanyId BIGINT,  
-     ActionTaken nvarchar(10),  
-     NewDocuumentId BIGINT,  
-     NewDocumentTypeId BIGINT,  
-     NewCompanyId BIGINT  
-    )
-*/
-
 SET IDENTITY_INSERT dbo.Document ON
 
 MERGE dbo.Document AS target
@@ -104,14 +64,9 @@ UPDATE SET DocumentTypeId = source.DocumentTypeId, DocumentCode = source.Documen
 WHEN NOT MATCHED THEN
 INSERT (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
 VALUES (source.DocumentId, source.DocumentTypeId, source.CompanyId, source.DocumentDate, source.DocumentCode, source.DocumentStatusId, source.PurchaseOrderNo, source.CustomerVendorCode, source.SalespersonCode, source.CustomerUsageType, source.ReferenceCode, source.IsReconciled, source.TotalAmount, source.TotalTax, source.ExemptNo, source.ModifiedDate, source.ModifiedUserId, source.TaxDate, source.DocumentLineCount, source.HashCode, source.TotalTaxable, source.TotalExempt, source.BatchCode, source.SoftwareVersion, source.LocationCode, source.AdjustmentReasonId, source.AdjustmentDescription, source.IsLocked, source.Version, source.TotalTaxCalculated, source.TaxOverrideAmount, source.TaxOverrideTypeId, source.TaxOverrideReason, source.CurrencyCode, source.PaymentDate, source.OriginAddressId, source.DestinationAddressId, source.ExchangeRate, source.ExchangeRateEffDate, source.AdjustedStatusId, source.Region, source.Country, source.PosLaneCode, source.BusinessIdentificationNo, source.IsSellerImporterOfRecord, source.BRBuyerType, source.BRBuyer_IsExemptOrCannotWH_IRRF, source.BRBuyer_IsExemptOrCannotWH_PISRF, source.BRBuyer_IsExemptOrCannotWH_COFINSRF, source.BRBuyer_IsExemptOrCannotWH_CSLLRF, source.BRBuyer_IsExempt_PIS, source.BRBuyer_IsExempt_COFINS, source.BRBuyer_IsExempt_CSLL, source.Description, source.Email)
---OUTPUT deleted.DocumentId, deleted.DocumentTypeId, deleted.CompanyId, $action, inserted.DocumentId, inserted.DocumentTypeId, inserted.CompanyId INTO #Document_Temp_Shard_1_Results
 ;
 
 SET IDENTITY_INSERT dbo.Document OFF
-
---SELECT * FROM #Document_Temp_Shard_3_Results
-
---DROP TABLE #Document_Temp_Shard_3_Results
 
 END
 GO
@@ -381,12 +336,9 @@ BEGIN
 MERGE dbo.DocumentCodeChangeList AS target
 USING (SELECT AccountId, DocumentCode, Committed, ModifiedDate FROM dbo.DocumentCodeChangeList_Temp_Shard_1) 
 	AS source (AccountId, DocumentCode, Committed, ModifiedDate)
-ON (target.AccountId = source.AccountId)
+ON (target.AccountId = source.AccountId AND target.DocumentCode = source.DocumentCode AND target.Committed = source.Committed)
 WHEN MATCHED THEN
-UPDATE SET AccountId = source.AccountId,
-	DocumentCode = source.DocumentCode,
-	Committed = source.Committed,
-	ModifiedDate = source.ModifiedDate
+UPDATE SET ModifiedDate = source.ModifiedDate
 WHEN NOT MATCHED THEN
 INSERT (AccountId, DocumentCode, Committed, ModifiedDate)
 VALUES (source.AccountId, source.DocumentCode, source.Committed, source.ModifiedDate)
@@ -744,7 +696,7 @@ SET IDENTITY_INSERT dbo.CompanyContact ON
 MERGE dbo.CompanyContact AS target
 USING (SELECT CompanyContactId, CompanyId, CompanyContactCode, ContactRoleTypeId, FirstName, MiddleName, LastName, Title, Line1, Line2, Line3, City, Region, PostalCode, Country, Email, Phone, Phone2, Fax, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.CompanyContact_Temp_Shard_1) 
 	AS source (CompanyContactId, CompanyId, CompanyContactCode, ContactRoleTypeId, FirstName, MiddleName, LastName, Title, Line1, Line2, Line3, City, Region, PostalCode, Country, Email, Phone, Phone2, Fax, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
-ON (target.CompanyId = source.CompanyId)
+ON (target.CompanyContactId = source.CompanyContactId)
 WHEN MATCHED THEN
 UPDATE SET CompanyId = source.CompanyId,
 	CompanyContactCode = source.CompanyContactCode,
@@ -889,6 +841,7 @@ SET IDENTITY_INSERT dbo.Nexus ON
 MERGE dbo.Nexus AS target
 USING (SELECT NexusId, CompanyId, State, JurisTypeId, JurisCode, JurisName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ShortName, SignatureCode, StateAssignedNo, NexusTypeId, Country, Sourcing, AccountingMethodId, HasLocalNexus, LocalNexusTypeId, HasPermanentEstablishment, TaxId, NexusTaxTypeGroupIdSK, VATNumberTypeId, VATOptionsId, MOSSId, IsSellerImporterOfRecord FROM dbo.Nexus_Temp_Shard_1) 
 	AS source (NexusId, CompanyId, State, JurisTypeId, JurisCode, JurisName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ShortName, SignatureCode, StateAssignedNo, NexusTypeId, Country, Sourcing, AccountingMethodId, HasLocalNexus, LocalNexusTypeId, HasPermanentEstablishment, TaxId, NexusTaxTypeGroupIdSK, VATNumberTypeId, VATOptionsId, MOSSId, IsSellerImporterOfRecord)
+
 ON (target.NexusId = source.NexusId)
 WHEN MATCHED THEN
 UPDATE SET CompanyId = source.CompanyId,
