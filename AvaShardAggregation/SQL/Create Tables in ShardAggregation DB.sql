@@ -12,18 +12,17 @@ CREATE TABLE dbo.AggregationTable
 	FullTable          BIT,
 	ModifiedDateExists BIT,
 	ExecutionGroup     TINYINT,
+	RemoveDuplicate    BIT,
 	Enabled            BIT DEFAULT ((1)),
 	CreatedUserId      BIGINT DEFAULT ((0)) NOT NULL,
 	CreatedDate        DATETIME DEFAULT (getutcdate()) NOT NULL,
 	ModifiedUserId     BIGINT DEFAULT ((0)) NOT NULL,
 	ModifiedDate       DATETIME DEFAULT (getutcdate()) NOT NULL,
-	CONSTRAINT PK_AggregationTable PRIMARY KEY (AggregationTableId)
+	CONSTRAINT PK_AggregationTable PRIMARY KEY (AggregationTableId),
+	CONSTRAINT IX_AggregationTable UNIQUE ([Database],[Schema],TableName)
 	)
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX IX_AggregationTable
-	ON dbo.AggregationTable ([Database],[Schema],TableName)
-GO
 
 
 IF OBJECT_ID ('dbo.LastSynch') IS NOT NULL
@@ -37,4 +36,3 @@ CREATE TABLE dbo.LastSynch
 	CONSTRAINT PK_LastSynch PRIMARY KEY (ApplicationName)
 	)
 GO
-

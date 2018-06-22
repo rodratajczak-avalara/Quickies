@@ -6,7 +6,13 @@ namespace AvaShardAggregator
     {
         static void Main(string[] args)
         {
-            new AggregateShardService();
+            bool saveLogFile = true;
+            if (args.Length > 0)
+            {
+                bool.TryParse(args[0], out saveLogFile);
+            }
+            AggregateShardService processData =  new AggregateShardService(saveLogFile);
+            processData.ProcessAvaTaxAccountTables();
         }
     }
 }
