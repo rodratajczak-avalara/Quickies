@@ -61,14 +61,9 @@ CREATE TABLE dbo.Document_Temp_Shard_1
 	Description                         NVARCHAR (2048),
 	Email                               VARCHAR (50),
 	CONSTRAINT PK_Document_Temp_Shard_1 PRIMARY KEY (DocumentId),
+	CONSTRAINT IX_Document_Temp_Shard_1_Unique UNIQUE (CompanyId,DocumentCode,DocumentTypeId,Version)
 	)
 GO
-
-
-CREATE UNIQUE NONCLUSTERED INDEX IX_Document_Temp_Shard_1_Unique
-	ON dbo.Document_Temp_Shard_1 (CompanyId,DocumentCode,DocumentTypeId,Version)
-GO
-
 
 
 
@@ -134,13 +129,10 @@ CREATE TABLE dbo.Document_Temp_Shard_2
 	Description                         NVARCHAR (2048),
 	Email                               VARCHAR (50),
 	CONSTRAINT PK_Document_Temp_Shard_2 PRIMARY KEY (DocumentId),
+	CONSTRAINT IX_Document_Temp_Shard_2_Unique UNIQUE (CompanyId,DocumentCode,DocumentTypeId,Version)
 	)
 GO
 
-
-CREATE UNIQUE NONCLUSTERED INDEX IX_Document_Temp_Shard_2_Unique
-	ON dbo.Document_Temp_Shard_2 (CompanyId,DocumentCode,DocumentTypeId,Version)
-GO
 
 
 
@@ -206,14 +198,9 @@ CREATE TABLE dbo.Document_Temp_Shard_3
 	Description                         NVARCHAR (2048),
 	Email                               VARCHAR (50),
 	CONSTRAINT PK_Document_Temp_Shard_3 PRIMARY KEY (DocumentId),
+	CONSTRAINT IX_Document_Temp_Shard_3_Unique UNIQUE (CompanyId,DocumentCode,DocumentTypeId,Version)
 	)
 GO
-
-
-CREATE UNIQUE NONCLUSTERED INDEX IX_Document_Temp_Shard_3_Unique
-	ON dbo.Document_Temp_Shard_3 (CompanyId,DocumentCode,DocumentTypeId,Version)
-GO
-
 
 
 
@@ -265,7 +252,7 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_1
 	UnitOfMeasurement        VARCHAR (25),
 	StateSstNexusTypeId      INT,
 	CONSTRAINT PK_DocumentLine_Temp_Shard_1 PRIMARY KEY (DocumentLineId),
-	CONSTRAINT IX_DocumentLine_Temp_Shard_1 UNIQUE (DocumentId,[LineNo]),
+	CONSTRAINT IX_DocumentLine_Temp_Shard_1 UNIQUE (DocumentId,[LineNo])
 	)
 GO
 
@@ -303,6 +290,7 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_2
 
 
 
+
 	GoodsServiceCode         BIGINT NOT NULL,
 	TaxEngine                VARCHAR (10) NOT NULL,
 	BoundaryOverrideId       INT,
@@ -323,7 +311,7 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_2
 	UnitOfMeasurement        VARCHAR (25),
 	StateSstNexusTypeId      INT,
 	CONSTRAINT PK_DocumentLine_Temp_Shard_2 PRIMARY KEY (DocumentLineId),
-	CONSTRAINT IX_DocumentLine_Temp_Shard_2 UNIQUE (DocumentId,[LineNo]),
+	CONSTRAINT IX_DocumentLine_Temp_Shard_2 UNIQUE (DocumentId,[LineNo])
 	)
 GO
 
@@ -378,7 +366,7 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_3
 	UnitOfMeasurement        VARCHAR (25),
 	StateSstNexusTypeId      INT,
 	CONSTRAINT PK_DocumentLine_Temp_Shard_3 PRIMARY KEY (DocumentLineId),
-	CONSTRAINT IX_DocumentLine_Temp_Shard_3 UNIQUE (DocumentId,[LineNo]),
+	CONSTRAINT IX_DocumentLine_Temp_Shard_3 UNIQUE (DocumentId,[LineNo])
 	)
 GO
 
@@ -656,13 +644,12 @@ CREATE TABLE dbo.TaxServiceConfig_Temp_Shard_1
 	SSTPolicyOverrideDate                DATETIME,
 	ItemDescPolicyOverrideDate           DATETIME,
 	UseIsSellerImporterOfRecordFromNexus BIT,
-	CONSTRAINT PK_TaxServiceConfig_Temp_Shard_1 PRIMARY KEY (AccountId)
+	CONSTRAINT PK_TaxServiceConfig_Temp_Shard_1 PRIMARY KEY (AccountId),
+	CONSTRAINT IX_TaxServiceConfig_Temp_Shard_1 UNIQUE (AccountId,CreatedUserId)
 	)
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX IX_TaxServiceConfig_Temp_Shard_1
-	ON dbo.TaxServiceConfig_Temp_Shard_1 (AccountId,CreatedUserId)
-GO
+
 
 
 IF OBJECT_ID ('dbo.AddressServiceConfig_Temp_Shard_1') IS NOT NULL
@@ -739,13 +726,11 @@ CREATE TABLE dbo.BoundaryOverride_Temp_Shard_1
 	CityJurisName      VARCHAR (50),
 	TaxRegionId        INT NOT NULL,
 	State              CHAR (2),
-	CONSTRAINT PK_BoundaryOverride_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (BoundaryOverrideId)
+	CONSTRAINT PK_BoundaryOverride_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (BoundaryOverrideId),
+	CONSTRAINT CX_BoundaryOverride_Temp_Shard_1 UNIQUE CLUSTERED (AccountId,State,City,StreetName,StreetPre,StreetPost,AddrLo,OddEven,ZIP5Lo,ZIP4Lo,EffDate,StreetSuffix,TaxRegionId)
 	)
 GO
 
-CREATE UNIQUE CLUSTERED INDEX CX_BoundaryOverride_Temp_Shard_1
-	ON dbo.BoundaryOverride_Temp_Shard_1 (AccountId,State,City,StreetName,StreetPre,StreetPost,AddrLo,OddEven,ZIP5Lo,ZIP4Lo,EffDate,StreetSuffix,TaxRegionId)
-GO
 
 
 IF OBJECT_ID ('dbo.JurisdictionOverride_Temp_Shard_1') IS NOT NULL
@@ -768,13 +753,13 @@ CREATE TABLE dbo.JurisdictionOverride_Temp_Shard_1
 	ModifiedDate           DATETIME NOT NULL,
 	EffDate                DATETIME,
 	EndDate                DATETIME,
-	CONSTRAINT PK_JurisdictionOverride_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (JurisdictionOverrideId)
+	CONSTRAINT PK_JurisdictionOverride_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (JurisdictionOverrideId),
+	CONSTRAINT IX_JurisdictionOverride_Temp_Shard_1 UNIQUE (AccountId,Region,City,PostalCode,Address,EffDate)
 	)
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX IX_JurisdictionOverride_Temp_Shard_1
-	ON dbo.JurisdictionOverride_Temp_Shard_1 (AccountId,Region,City,PostalCode,Address,EffDate)
-GO
+
+
 
 
 IF OBJECT_ID ('dbo.Service_Temp_Shard_1') IS NOT NULL
@@ -798,6 +783,7 @@ CREATE TABLE dbo.Service_Temp_Shard_1
 	CONSTRAINT IX_Service_Temp_Shard_1 UNIQUE (AccountId,ServiceTypeId,EffDate)
 	)
 GO
+
 
 
 
@@ -826,6 +812,9 @@ CREATE TABLE dbo.Subscription_Temp_Shard_1
 	CONSTRAINT IX_UNIQUE_Subscription_AccountId_ReferenceCode_SubscriptionTypeId_RegionCode_EffDate_Temp_Shard_1 UNIQUE (AccountId,ReferenceCode,SubscriptionTypeId,RegionCode,EffDate)
 	)
 GO
+
+
+
 
 
 IF OBJECT_ID ('dbo.User_Temp_Shard_1') IS NOT NULL
@@ -896,14 +885,10 @@ CREATE TABLE dbo.Company_Temp_Shard_1
 	MOSSId                     VARCHAR (25),
 	MOSSCountry                VARCHAR (2),
 	CONSTRAINT PK_Company_Temp_Shard_1 PRIMARY KEY (CompanyId),
-	CONSTRAINT IX_Company_Temp_Shard_1 UNIQUE (AccountId,CompanyCode)
+	CONSTRAINT IX_Company_Temp_Shard_1 UNIQUE (AccountId,CompanyCode),
+	CONSTRAINT IX_Company_Temp_Shard_1_AccountId_EntityNo UNIQUE (AccountId,EntityNo)
 	)
 GO
-
-CREATE UNIQUE NONCLUSTERED INDEX IX_Company_Temp_Shard_1_AccountId_EntityNo
-	ON dbo.Company_Temp_Shard_1 (AccountId,EntityNo)
-GO
-
 
 
 
@@ -955,12 +940,9 @@ CREATE TABLE dbo.TaxRule_Temp_Shard_1
 	PreferredProgramId       INT,
 	UOMId                    INT,
 	HashKey                  VARBINARY (900),
-	CONSTRAINT PK_TaxRule_Temp_Shard_1 PRIMARY KEY (TaxRuleId)
+	CONSTRAINT PK_TaxRule_Temp_Shard_1 PRIMARY KEY (TaxRuleId),
+	CONSTRAINT IX_TaxRule_Temp_Shard_1_HashKey UNIQUE (HashKey)
 	)
-GO
-
-CREATE UNIQUE NONCLUSTERED INDEX IX_TaxRule_Temp_Shard_1_HashKey
-	ON dbo.TaxRule_Temp_Shard_1 (HashKey)
 GO
 
 
@@ -1117,10 +1099,9 @@ CREATE TABLE dbo.Nexus_Temp_Shard_1
 	MOSSId                    VARCHAR (25),
 	IsSellerImporterOfRecord  BIT,
 	CONSTRAINT PK_Nexus_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (NexusId),
-	CONSTRAINT UK_Nexus_1703_Temp_Shard_1 UNIQUE (CompanyId,State,JurisCode,JurisTypeId,JurisName,EffDate,NexusTypeId,NexusTaxTypeGroupIdSK)
+	CONSTRAINT IX_Nexus_Temp_Shard_1 UNIQUE (CompanyId,State,JurisCode,JurisTypeId,JurisName,EffDate,NexusTypeId,NexusTaxTypeGroupIdSK)
 	)
 GO
-
 
 
 
@@ -1145,15 +1126,10 @@ CREATE TABLE dbo.TaxCode_Temp_Shard_1
 	EntityUseCode    VARCHAR (40),
 	IsActive         BIT NOT NULL,
 	IsSSTCertified   BIT,
-	CONSTRAINT PK_TaxCode_Temp_Shard_1 PRIMARY KEY (TaxCodeId)
+	CONSTRAINT PK_TaxCode_Temp_Shard_1 PRIMARY KEY (TaxCodeId),
+	CONSTRAINT IX_TaxCode_Temp_Shard_1 UNIQUE (TaxCode,CompanyId)
 	)
 GO
-
-CREATE UNIQUE NONCLUSTERED INDEX IX_TaxCode_Temp_Shard_1
-	ON dbo.TaxCode_Temp_Shard_1 (TaxCode,CompanyId)
-GO
-
-
 
 
 
@@ -1176,7 +1152,7 @@ CREATE TABLE dbo.UPCCodeLookup_Temp_Shard_1
 	EndDate         DATETIME NOT NULL,
 	Usage           INT NOT NULL,
 	IsSystem        INT NOT NULL,
-	CONSTRAINT PK_UPCCodeLookupNew3145962_Temp_Shard_1 PRIMARY KEY (UPCCodeLookupId)
+	CONSTRAINT PK_UPCCodeLookup_Temp_Shard_1 PRIMARY KEY (UPCCodeLookupId)
 	)
 GO
 
@@ -1203,9 +1179,12 @@ CREATE TABLE dbo.AvaCertServiceConfig_Temp_Shard_1
 	ModifiedUserId         INT NOT NULL,
 	ModifiedDate           DATETIME NOT NULL,
 	CONSTRAINT PK_AvaCertServiceConfig_Temp_Shard_1 PRIMARY KEY (AvaCertServiceConfigId),
-	CONSTRAINT UNIQUE_CompanyId_Temp_Shard_1 UNIQUE (CompanyId)
+	CONSTRAINT IX_AvaCertServiceConfig_Temp_Shard_1 UNIQUE (CompanyId)
 	)
 GO
+
+
+
 
 
 IF OBJECT_ID ('dbo.AvaCommsServiceConfig_Temp_Shard_1') IS NOT NULL
@@ -1224,12 +1203,13 @@ CREATE TABLE dbo.AvaCommsServiceConfig_Temp_Shard_1
 	CreatedDate      DATETIME NOT NULL,
 	ModifiedUserId   INT NOT NULL,
 	ModifiedDate     DATETIME NOT NULL,
+	CONSTRAINT PK_AvaCommsServiceConfig_Temp_Shard_1 PRIMARY KEY (AvaCommsConfigId),
+	CONSTRAINT IX_AvaCommsServiceConfig_Temp_Shard_1 UNIQUE (CompanyId)
 	)
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX IX_AvaCommsConfig_CompanyId_Temp_Shard_1
-	ON dbo.AvaCommsServiceConfig_Temp_Shard_1 (CompanyId)
-GO
+
+
 
 
 IF OBJECT_ID ('dbo.BRCompanySecurityCertificate_Temp_Shard_1') IS NOT NULL
@@ -1247,7 +1227,7 @@ CREATE TABLE dbo.BRCompanySecurityCertificate_Temp_Shard_1
 	CreatedDate                  DATETIME NOT NULL,
 	ModifiedUserId               INT NOT NULL,
 	ModifiedDate                 DATETIME NOT NULL,
-	CONSTRAINT PK_BRCompanySecurityCertificate_BRCompanySecurityCertificateId_Temp_Shard_1 PRIMARY KEY (CompanySecurityCertificateId)
+	CONSTRAINT PK_BRCompanySecurityCertificate_Temp_Shard_1 PRIMARY KEY (CompanySecurityCertificateId)
 	)
 GO
 
@@ -1337,10 +1317,9 @@ CREATE TABLE dbo.CompanyReturn_Temp_Shard_1
 	PaymentCurrency       VARCHAR (3),
 	FixedPrepaymentAmount DECIMAL (18, 4),
 	CONSTRAINT PK_CompanyReturn_Temp_Shard_1 PRIMARY KEY (CompanyReturnId),
-	CONSTRAINT IX_CompanyReturn_Temp_Shard_1 UNIQUE (CompanyId,ReturnName,EffDate,RegistrationId),
+	CONSTRAINT IX_CompanyReturn_Temp_Shard_1 UNIQUE (CompanyId,ReturnName,EffDate,RegistrationId)
 	)
 GO
-
 
 
 IF OBJECT_ID ('dbo.CompanyTaxForm_Temp_Shard_1') IS NOT NULL
@@ -1363,7 +1342,7 @@ CREATE TABLE dbo.CompanyTaxForm_Temp_Shard_1
 	CreatedUserId     INT NOT NULL,
 	CreatedDate       DATETIME NOT NULL,
 	ModifiedDate      DATETIME NOT NULL,
-	CONSTRAINT PK_CompanyTaxForm_Temp_Shard_1 PRIMARY KEY (CompanyTaxFormId),
+	CONSTRAINT PK_CompanyTaxForm_Temp_Shard_1 PRIMARY KEY (CompanyTaxFormId)
 	)
 GO
 
@@ -1391,7 +1370,7 @@ CREATE TABLE dbo.[Return_Temp_Shard_1]
 	JurisTypeId    VARCHAR (3),
 	Region         CHAR (2),
 	ReturnName     VARCHAR (50),
-	CONSTRAINT PK_Return_Temp_Shard_1 PRIMARY KEY (ReturnId),
+	CONSTRAINT PK_Return_Temp_Shard_1 PRIMARY KEY (ReturnId)
 	)
 GO
 
@@ -1411,7 +1390,7 @@ CREATE TABLE dbo.TaxRuleProductDetail_Temp_Shard_1
 	EffDate                DATETIME,
 	EndDate                DATETIME,
 	ModifiedDate           DATETIME,
-	CONSTRAINT PK_TaxRuleProductDetailId_Temp_Shard_1 PRIMARY KEY (TaxRuleProductDetailId),
+	CONSTRAINT PK_TaxRuleProductDetailId_Temp_Shard_1 PRIMARY KEY (TaxRuleProductDetailId)
  	)
 GO
 
@@ -1435,7 +1414,7 @@ CREATE TABLE dbo.TaxCodeAttribute_Temp_Shard_1
 	ModifiedUserId     INT NOT NULL,
 	ModifiedDate       DATETIME NOT NULL,
 	UOMId              INT,
-	CONSTRAINT PK_TaxCodeAttribute_Temp_Shard_1 PRIMARY KEY (TaxCodeAttributeId),
+	CONSTRAINT PK_TaxCodeAttribute_Temp_Shard_1 PRIMARY KEY (TaxCodeAttributeId)
 	)
 GO
 
@@ -1458,7 +1437,7 @@ CREATE TABLE dbo.TaxCodeCategorization_Temp_Shard_1
 	CreatedDate             DATETIME NOT NULL,
 	ModifiedUserId          INT NOT NULL,
 	ModifiedDate            DATETIME NOT NULL,
-	CONSTRAINT PK_TaxCodeCategorization_Temp_Shard_1 PRIMARY KEY (TaxCodeCategorizationId),
+	CONSTRAINT PK_TaxCodeCategorization_Temp_Shard_1 PRIMARY KEY (TaxCodeCategorizationId)
 	)
 GO
 

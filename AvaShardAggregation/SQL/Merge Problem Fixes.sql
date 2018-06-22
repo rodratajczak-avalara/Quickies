@@ -138,3 +138,35 @@ AND DocumentCode = 'cart1536745661'
 AND Committed = 0
 
 TRUNCATE TABLE TaxRule_Temp_Shard_1
+
+
+-- Document table Merge errors
+-- 'Cannot insert duplicate key row in object 'dbo.Document' with unique index 'IX_Document_Unique'. The duplicate key value is (28073, 0588874IN, 1, 1).
+-- The statement has been terminated.'
+28073, 0588874IN, 1, 1
+CompanyId,DocumentCode,DocumentTypeId,Version
+SELECT * FROM Document
+WHERE CompanyId = 28073
+AND DocumentCode = '0588874IN'
+AND DocumentTypeId = 1
+AND Version = 1
+
+SELECT * FROM Document_Temp_Shard_1
+WHERE CompanyId = 28073
+AND DocumentCode = '0588874IN'
+AND DocumentTypeId = 1
+AND Version = 1
+
+DELETE FROM Document
+WHERE DocumentId IN
+(
+	SELECT d.DocumentId FROM Document d
+	INNER JOIN Document_Temp_Shard_1 dts1
+	ON d.CompanyId = dts1.CompanyId
+	AND d.DocumentCode = dts1.DocumentCode COLLATE DATABASE_DEFAULT
+	AND d.DocumentTypeId = dts1.DocumentTypeId
+	AND d.Version = 1  --COLLATE DATABASE_DEFAULT
+	WHERE d.DocumentId <> dts1.DocumentId
+)
+
+TRUNCATE TABLE Document_Temp_Shard_1
