@@ -1486,3 +1486,108 @@ CREATE TABLE dbo.ItemAttribute_Temp_Shard_1
 	CONSTRAINT PK_ItemAttribute_Temp_Shard_1 PRIMARY KEY (ItemAttributeId)
 	)
 GO
+
+
+
+IF OBJECT_ID ('dbo.DocumentAddress_Temp_Shard_1') IS NOT NULL
+	DROP TABLE dbo.DocumentAddress_Temp_Shard_1
+GO
+
+CREATE TABLE dbo.DocumentAddress_Temp_Shard_1
+	(
+	DocumentAddressId      BIGINT NOT NULL,
+	DocumentId             BIGINT,
+	Line1                  VARCHAR (50),
+	City                   VARCHAR (50),
+	Country                VARCHAR (50),
+	Region                 VARCHAR (3),
+	PostalCode             VARCHAR (11),
+	BoundaryLevelId        TINYINT NOT NULL,
+	JurisCode              VARCHAR (10),
+	County                 VARCHAR (50),
+	CitySignature          VARCHAR (4),
+	TaxRegionId            INT NOT NULL,
+	GeoCode                VARCHAR (10) NOT NULL,
+	GeocodeTypeId          VARCHAR (20),
+	ValidateStatusId       VARCHAR (20),
+	Latitude               FLOAT,
+	Longitude              FLOAT,
+	DocumentQueueAddressId BIGINT,
+	AddressLine1           VARCHAR (100),
+	AddressLine2           VARCHAR (100),
+	AddressLine3           VARCHAR (100),
+	CONSTRAINT PK_DocumentAddress_Temp_Shard_1 PRIMARY KEY (DocumentAddressId)
+	)
+GO
+
+
+
+IF OBJECT_ID ('dbo.DocumentProperty_Temp_Shard_1') IS NOT NULL
+	DROP TABLE dbo.DocumentProperty_Temp_Shard_1
+GO
+
+CREATE TABLE dbo.DocumentProperty_Temp_Shard_1
+	(
+	DocumentPropertyId BIGINT NOT NULL,
+	DocumentId         BIGINT NOT NULL,
+	ReferenceCode      VARCHAR (1024) NOT NULL,
+	VATNumberTypeId    INT,
+	CONSTRAINT PK_DocumentProperty_Temp_Shard_1 PRIMARY KEY (DocumentPropertyId)
+	)
+GO
+
+
+IF OBJECT_ID ('dbo.DocumentLineParameterBag_Temp_Shard_1') IS NOT NULL
+	DROP TABLE dbo.DocumentLineParameterBag_Temp_Shard_1
+GO
+
+CREATE TABLE dbo.DocumentLineParameterBag_Temp_Shard_1
+	(
+	DocumentLineParameterBagId BIGINT NOT NULL,
+	DocumentLineId             BIGINT NOT NULL,
+	Name                       VARCHAR (50) NOT NULL,
+	Value                      VARCHAR (50) NOT NULL,
+	UOMId                      INT,
+	UOMIdSystem                INT,
+	ValueSystem                VARCHAR (50),
+	CONSTRAINT PK_DocumentLineParameterBag_Temp_Shard_1 PRIMARY KEY (DocumentLineParameterBagId)
+	)
+GO
+
+
+
+IF OBJECT_ID ('dbo.DocumentLineProperty_Temp_Shard_1') IS NOT NULL
+	DROP TABLE dbo.DocumentLineProperty_Temp_Shard_1
+GO
+
+CREATE TABLE dbo.DocumentLineProperty_Temp_Shard_1
+	(
+	DocumentLinePropertyId BIGINT NOT NULL,
+	DocumentLineId         BIGINT NOT NULL,
+	VATCode                VARCHAR (50) NOT NULL,
+	VATNumberTypeId        INT NOT NULL,
+	HSCodeId               BIGINT,
+	HSCode                 VARCHAR (25),
+	HSCodeUsed             VARCHAR (25),
+	CIF                    MONEY,
+	CONSTRAINT PK_DocumentLineProperty_Temp_Shard_1 PRIMARY KEY (DocumentLinePropertyId)
+	)
+GO
+
+
+
+IF OBJECT_ID ('dbo.DocumentLineDetailProperty_Temp_Shard_1') IS NOT NULL
+	DROP TABLE dbo.DocumentLineDetailProperty_Temp_Shard_1
+GO
+
+CREATE TABLE dbo.DocumentLineDetailProperty_Temp_Shard_1
+	(
+	DocumentLineDetailId     BIGINT NOT NULL,
+	TaxTypeMappingId         INT NOT NULL,
+	RateTypeTaxTypeMappingId INT NOT NULL,
+	IsFee                    BIT,
+	TaxAuthorityId           INT,
+	ReportLevel              INT,
+	CONSTRAINT PK_DocumentLineDetailProperty_Temp_Shard_1 PRIMARY KEY (DocumentLineDetailId)
+	)
+GO

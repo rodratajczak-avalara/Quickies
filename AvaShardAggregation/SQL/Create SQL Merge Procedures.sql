@@ -1331,3 +1331,160 @@ SET IDENTITY_INSERT dbo.ItemAttribute OFF
 
 END
 GO
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentAddress_From_Temp_Shard_1
+AS
+BEGIN
+
+SET IDENTITY_INSERT dbo.DocumentAddress ON
+
+MERGE dbo.DocumentAddress AS target
+USING (SELECT DocumentAddressId, DocumentId, Line1, City, Country, Region, PostalCode, BoundaryLevelId, JurisCode, County, CitySignature, TaxRegionId, GeoCode, GeocodeTypeId, ValidateStatusId, Latitude, Longitude, DocumentQueueAddressId, AddressLine1, AddressLine2, AddressLine3 FROM dbo.DocumentAddress_Temp_Shard_1) 
+	AS source (DocumentAddressId, DocumentId, Line1, City, Country, Region, PostalCode, BoundaryLevelId, JurisCode, County, CitySignature, TaxRegionId, GeoCode, GeocodeTypeId, ValidateStatusId, Latitude, Longitude, DocumentQueueAddressId, AddressLine1, AddressLine2, AddressLine3)
+ON (target.DocumentAddressId = source.DocumentAddressId)
+WHEN MATCHED THEN
+UPDATE SET DocumentId = source.DocumentId,
+	Line1 = source.Line1,
+	City = source.City,
+	Country = source.Country,
+	Region = source.Region,
+	PostalCode = source.PostalCode,
+	BoundaryLevelId = source.BoundaryLevelId,
+	JurisCode = source.JurisCode,
+	County = source.County,
+	CitySignature = source.CitySignature,
+	TaxRegionId = source.TaxRegionId,
+	GeoCode = source.GeoCode,
+	GeocodeTypeId = source.GeocodeTypeId,
+	ValidateStatusId = source.ValidateStatusId,
+	Latitude = source.Latitude,
+	Longitude = source.Longitude,
+	DocumentQueueAddressId = source.DocumentQueueAddressId,
+	AddressLine1 = source.AddressLine1,
+	AddressLine2 = source.AddressLine2,
+	AddressLine3 = source.AddressLine3
+WHEN NOT MATCHED THEN
+INSERT (DocumentAddressId, DocumentId, Line1, City, Country, Region, PostalCode, BoundaryLevelId, JurisCode, County, CitySignature, TaxRegionId, GeoCode, GeocodeTypeId, ValidateStatusId, Latitude, Longitude, DocumentQueueAddressId, AddressLine1, AddressLine2, AddressLine3)
+VALUES (source.DocumentAddressId, source.DocumentId, source.Line1, source.City, source.Country, source.Region, source.PostalCode, source.BoundaryLevelId, source.JurisCode, source.County, source.CitySignature, source.TaxRegionId, source.GeoCode, source.GeocodeTypeId, source.ValidateStatusId, source.Latitude, source.Longitude, source.DocumentQueueAddressId, source.AddressLine1, source.AddressLine2, source.AddressLine3)
+;
+
+SET IDENTITY_INSERT dbo.DocumentAddress OFF
+
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentProperty_From_Temp_Shard_1
+AS
+BEGIN
+
+SET IDENTITY_INSERT dbo.DocumentProperty ON
+
+MERGE dbo.DocumentProperty AS target
+USING (SELECT DocumentPropertyId, DocumentId, ReferenceCode, VATNumberTypeId FROM dbo.DocumentProperty_Temp_Shard_1) 
+	AS source (DocumentPropertyId, DocumentId, ReferenceCode, VATNumberTypeId)
+ON (target.DocumentPropertyId = source.DocumentPropertyId)
+WHEN MATCHED THEN
+UPDATE SET DocumentId = source.DocumentId,
+	ReferenceCode = source.ReferenceCode,
+	VATNumberTypeId = source.VATNumberTypeId
+WHEN NOT MATCHED THEN
+INSERT (DocumentPropertyId, DocumentId, ReferenceCode, VATNumberTypeId)
+VALUES (source.DocumentPropertyId, source.DocumentId, source.ReferenceCode, source.VATNumberTypeId)
+;
+
+SET IDENTITY_INSERT dbo.DocumentProperty OFF
+
+END
+GO
+
+
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineParameterBag_From_Temp_Shard_1
+AS
+BEGIN
+
+SET IDENTITY_INSERT dbo.DocumentLineParameterBag ON
+
+MERGE dbo.DocumentLineParameterBag AS target
+USING (SELECT DocumentLineParameterBagId, DocumentLineId, Name, Value, UOMId, UOMIdSystem, ValueSystem FROM dbo.DocumentLineParameterBag_Temp_Shard_1) 
+	AS source (DocumentLineParameterBagId, DocumentLineId, Name, Value, UOMId, UOMIdSystem, ValueSystem)
+ON (target.DocumentLineParameterBagId = source.DocumentLineParameterBagId)
+WHEN MATCHED THEN
+UPDATE SET DocumentLineId = source.DocumentLineId,
+	Name = source.Name,
+	Value = source.Value,
+	UOMId = source.UOMId,
+	UOMIdSystem = source.UOMIdSystem,
+	ValueSystem = source.ValueSystem
+WHEN NOT MATCHED THEN
+INSERT (DocumentLineParameterBagId, DocumentLineId, Name, Value, UOMId, UOMIdSystem, ValueSystem)
+VALUES (source.DocumentLineParameterBagId, source.DocumentLineId, source.Name, source.Value, source.UOMId, source.UOMIdSystem, source.ValueSystem)
+;
+
+SET IDENTITY_INSERT dbo.DocumentLineParameterBag OFF
+
+END
+GO
+
+
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineProperty_From_Temp_Shard_1
+AS
+BEGIN
+
+SET IDENTITY_INSERT dbo.DocumentLineProperty ON
+
+MERGE dbo.DocumentLineProperty AS target
+USING (SELECT DocumentLinePropertyId, DocumentLineId, VATCode, VATNumberTypeId, HSCodeId, HSCode, HSCodeUsed, CIF FROM dbo.DocumentLineProperty_Temp_Shard_1) 
+	AS source (DocumentLinePropertyId, DocumentLineId, VATCode, VATNumberTypeId, HSCodeId, HSCode, HSCodeUsed, CIF)
+ON (target.DocumentLinePropertyId = source.DocumentLinePropertyId)
+WHEN MATCHED THEN
+UPDATE SET DocumentLineId = source.DocumentLineId,
+	VATCode = source.VATCode,
+	VATNumberTypeId = source.VATNumberTypeId,
+	HSCodeId = source.HSCodeId,
+	HSCode = source.HSCode,
+	HSCodeUsed = source.HSCodeUsed,
+	CIF = source.CIF
+WHEN NOT MATCHED THEN
+INSERT (DocumentLinePropertyId, DocumentLineId, VATCode, VATNumberTypeId, HSCodeId, HSCode, HSCodeUsed, CIF)
+VALUES (source.DocumentLinePropertyId, source.DocumentLineId, source.VATCode, source.VATNumberTypeId, source.HSCodeId, source.HSCode, source.HSCodeUsed, source.CIF)
+;
+
+SET IDENTITY_INSERT dbo.DocumentLineProperty OFF
+
+END
+GO
+
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineDetailProperty_From_Temp_Shard_1
+AS
+BEGIN
+
+SET IDENTITY_INSERT dbo.DocumentLineDetailProperty ON
+
+MERGE dbo.DocumentLineDetailProperty AS target
+USING (SELECT DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel FROM dbo.DocumentLineDetailProperty_Temp_Shard_1) 
+	AS source (DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel)
+ON (target.DocumentLineDetailId = source.DocumentLineDetailId)
+WHEN MATCHED THEN
+UPDATE SET TaxTypeMappingId = source.TaxTypeMappingId,
+	RateTypeTaxTypeMappingId = source.RateTypeTaxTypeMappingId,
+	IsFee = source.IsFee,
+	TaxAuthorityId = source.TaxAuthorityId,
+	ReportLevel = source.ReportLevel
+WHEN NOT MATCHED THEN
+INSERT (DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel)
+VALUES (source.DocumentLineDetailId, source.TaxTypeMappingId, source.RateTypeTaxTypeMappingId, source.IsFee, source.TaxAuthorityId, source.ReportLevel)
+;
+
+SET IDENTITY_INSERT dbo.DocumentLineDetailProperty OFF
+
+END
+GO
+

@@ -6,7 +6,7 @@ namespace AvaShardAggregator
     {
         static void Main(string[] args)
         {
-            bool saveLogFile = true;
+            bool saveLogFile = false;
             if (args.Length > 0)
             {
                 bool.TryParse(args[0], out saveLogFile);

@@ -16,6 +16,8 @@ namespace AvaShardAggregator
                 .Build();
         private static string _objectSuffix = _config.GetSection("ObjectSuffix").Value;
         private static bool _saveLogToFile = false;
+        private static long _bcpBatchId;
+        private static int _aggregationTableId;
 
 
         public AggregateShardService(bool saveLogFile) 
@@ -27,11 +29,18 @@ namespace AvaShardAggregator
         {
             DateTime startTime = DateTime.UtcNow;
             DateTime lastSynch = GetLastSynch();
+            if (startTime.Subtract(lastSynch).Hours > 1)
+            {
+                startTime = lastSynch.AddHours(1);
+            }
+            _bcpBatchId = LogBcpBatch(startTime);
+            bool batchSuccessful = true;
 
             using (FileStream ostrm = new FileStream(string.Format("./logs/BCPMerge_{0}.log", startTime.ToFileTime().ToString()), FileMode.OpenOrCreate, FileAccess.Write))
             {
                 using (StreamWriter writer = new StreamWriter(ostrm))
                 {
+                    
                     TextWriter oldOut = Console.Out;
 
                     // Determine Logging destination
@@ -46,7 +55,7 @@ namespace AvaShardAggregator
                     using (SqlConnection conn = new SqlConnection(_config.GetConnectionString("ShardAggregation")))
                     {
                         conn.Open();
-                        using (SqlCommand cmdTables = new SqlCommand(@"SELECT TableName, ParentTableId, FullTable, ModifiedDateExists, RemoveDuplicate
+                        using (SqlCommand cmdTables = new SqlCommand(@"SELECT AggregationTableId, TableName, ParentTableId, FullTable, ModifiedDateExists, RemoveDuplicate
                                                                     FROM AggregationTable
                                                                     WHERE Enabled = 1
                                                                     AND FullTable = 0
@@ -54,18 +63,30 @@ namespace AvaShardAggregator
                         {
                             using (SqlDataReader readerTables = cmdTables.ExecuteReader())
                             {
+                                bool tableSuccessful = true;
                                 while (readerTables.Read())
                                 {
-                                    ProcessModifiedData(lastSynch, startTime, readerTables["TableName"].ToString(), Boolean.Parse(readerTables["RemoveDuplicate"].ToString()), Boolean.Parse(readerTables["ModifiedDateExists"].ToString()));
+                                    _aggregationTableId = (int)readerTables["AggregationTableId"];
+                                    tableSuccessful = ProcessModifiedData(lastSynch, startTime, readerTables["TableName"].ToString(), Boolean.Parse(readerTables["RemoveDuplicate"].ToString()), Boolean.Parse(readerTables["ModifiedDateExists"].ToString()));
+                                    if (!tableSuccessful)
+                                    {
+
+                                        batchSuccessful = false;
+                                    }
                                 }
                             }
                         }
                     }
                     totalProcessing.Stop();
-                    UpdateLastSynch(startTime);
+
+                    if (batchSuccessful)
+                    {
+                        UpdateLastSynch(startTime);
+                    }
 
                     // Log Total Processing Time
                     Console.WriteLine(string.Format("Total Processing Time: {0}", totalProcessing.ElapsedMilliseconds.ToString()));
+                    LogBatchProcess(_bcpBatchId, 0, 1, totalProcessing.ElapsedMilliseconds);
 
                     if (_saveLogToFile)
                     {
@@ -73,116 +94,52 @@ namespace AvaShardAggregator
                     }
                     else
                     {
-                        Console.ReadKey();
+                       // Console.ReadKey();
                     }
                 }
             }
            
         }
 
-        private static void ProcessModifiedData(DateTime StartSynch, DateTime EndSynch, string TableName, Boolean RemoveDuplicate, Boolean ModifiedDateExists)
+        private static bool ProcessModifiedData(DateTime StartSynch, DateTime EndSynch, string TableName, Boolean RemoveDuplicate, Boolean ModifiedDateExists)
         {
+            bool successful = true;
             using (SqlConnection conn = new SqlConnection(_config.GetConnectionString("Source")))
             {
                 Stopwatch modifiedTime = new Stopwatch();
 
                 conn.Open();
 
-                string cmdSQL = string.Empty;
-                if (ModifiedDateExists)
-                {
-                    cmdSQL = string.Format("SELECT * FROM [{0}] WHERE ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                }
-                else
-                {
-                    switch (TableName)
-                    {
-                        case "DocumentAddress":
-                            cmdSQL = string.Format(@"	SELECT da.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentAddress da
-	                                                    ON d.DocumentId = da.DocumentId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentParameterBag":
-                            cmdSQL = string.Format(@"	SELECT dpb.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentParameterBag dpb
-	                                                    ON d.DocumentId = dpb.DocumentId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentProperty":
-                            cmdSQL = string.Format(@"	SELECT dp.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentProperty dp
-	                                                    ON d.DocumentId = dp.DocumentId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentLine":
-                            cmdSQL = string.Format(@"	SELECT dl.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentLine dl
-	                                                    ON d.DocumentId = dl.DocumentId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentLineParameterBag":
-                            cmdSQL = string.Format(@"	SELECT dlpb.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentLine dl
-	                                                    ON d.DocumentId = dl.DocumentId
-                                                        LEFT JOIN DocumentLineParameterBag dlpb
-                                                        ON dl.DocumentLineId = dlpb.DocumentLineId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentLineProperty":
-                            cmdSQL = string.Format(@"	SELECT dlp.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentLine dl
-	                                                    ON d.DocumentId = dl.DocumentId
-                                                        LEFT JOIN DocumentLineProperty dlp
-                                                        ON dl.DocumentLineId = dlp.DocumentLineId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentLineDetail":
-                            cmdSQL = string.Format(@"	SELECT dld.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentLine dl
-	                                                    ON d.DocumentId = dl.DocumentId
-                                                        LEFT JOIN DocumentLineDetail dld
-                                                        ON dl.DocumentLineId = dld.DocumentLineId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                            break;
-                        case "DocumentLineDetailProperty":
-                            cmdSQL = string.Format(@"	SELECT dldp.*
-	                                                    FROM Document d
-	                                                    LEFT JOIN DocumentLine dl
-	                                                    ON d.DocumentId = dl.DocumentId
-                                                        LEFT JOIN DocumentLineDetail dld
-                                                        ON dl.DocumentLineId = dld.DocumentLineId
-                                                        LEFT JOIN DocumentLineDetailProperty dldp
-                                                        ON dld.DocumentLineDetailId = dldp.DocumentLineDetailId
-	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
-                                    break;
-                    }
-                }
-
+                string cmdSQL = GetSelectSQL(TableName, ModifiedDateExists);
                 using (SqlCommand cmd = new SqlCommand(cmdSQL, conn))
                 {
-                    cmd.Parameters.AddWithValue("@LastCheckTime", StartSynch);
-                    cmd.Parameters.AddWithValue("@CurrentCheckTime", EndSynch);
-                    Console.WriteLine(string.Format("{0} Query Changed Records Started", TableName));
-                    modifiedTime.Start();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    try
                     {
-                        modifiedTime.Stop();
-                        Console.WriteLine(string.Format("{0} Query Changed Records Time: {1}", TableName, modifiedTime.ElapsedMilliseconds.ToString()));
+                        cmd.Parameters.AddWithValue("@LastCheckTime", StartSynch);
+                        cmd.Parameters.AddWithValue("@CurrentCheckTime", EndSynch);
+                        cmd.CommandTimeout = 600;
+                        Console.WriteLine(string.Format("{0} Query Changed Records Started", TableName));
+                        modifiedTime.Start();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            modifiedTime.Stop();
+                            Console.WriteLine(string.Format("{0} Query Changed Records Time: {1}", TableName, modifiedTime.ElapsedMilliseconds.ToString()));
+                            LogBatchProcess(_bcpBatchId, _aggregationTableId, 2, modifiedTime.ElapsedMilliseconds);
 
-                        PerformBulkCopy(reader, TableName, RemoveDuplicate);
+                            PerformBulkCopy(reader, TableName, RemoveDuplicate);
+                        }
+                        modifiedTime.Reset();
                     }
-                    modifiedTime.Reset();
+                    catch (Exception ex)
+
+                    {
+                        successful = false;
+                    }
                 }
                 modifiedTime = null;
             }
+
+            return successful;
         }
 
         private static void PerformBulkCopy(SqlDataReader r, string TableName, Boolean RemoveDuplicate)
@@ -203,6 +160,7 @@ namespace AvaShardAggregator
                 }
                 processTime.Stop();
                 Console.WriteLine(string.Format("{0} BCP Time: {1}", TableName, processTime.ElapsedMilliseconds.ToString()));
+                LogBatchProcess(_bcpBatchId, _aggregationTableId, 3, processTime.ElapsedMilliseconds);
                 processTime.Reset();
                 #endregion
 
@@ -219,6 +177,7 @@ namespace AvaShardAggregator
                     }
                     processTime.Stop();
                     Console.WriteLine(string.Format("{0} Duplicate Delete Time: {1}", TableName, processTime.ElapsedMilliseconds.ToString()));
+                    LogBatchProcess(_bcpBatchId, _aggregationTableId, 4, processTime.ElapsedMilliseconds);
                     processTime.Reset();
                 }
                 #endregion
@@ -235,6 +194,7 @@ namespace AvaShardAggregator
 
                 processTime.Stop();
                 Console.WriteLine(string.Format("{0} Merge Time: {1}", TableName, processTime.ElapsedMilliseconds.ToString()));
+                LogBatchProcess(_bcpBatchId, _aggregationTableId, 5, processTime.ElapsedMilliseconds);
                 processTime.Reset();
                 #endregion
 
@@ -296,6 +256,122 @@ namespace AvaShardAggregator
                     updateCmd.ExecuteNonQuery();
                 }
             }
+        }
+
+        private static long LogBcpBatch(DateTime startTime)
+        {
+            long bcpBatchId = 0;
+            using (SqlConnection conn = new SqlConnection(_config.GetConnectionString("ShardAggregation")))
+            {
+                conn.Open();
+                using (SqlCommand insertCmd = new SqlCommand("INSERT BCPBatch (ApplicationName, BatchStartTime) output INSERTED.BCPBatchId VALUES(@ApplicationName, @BatchStartTime)", conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@ApplicationName", System.AppDomain.CurrentDomain.FriendlyName);
+                    insertCmd.Parameters.AddWithValue("@BatchStartTime", startTime);
+                    bcpBatchId = (long)insertCmd.ExecuteScalar();
+                }
+            }
+
+            return bcpBatchId;
+        }
+
+        private static void LogBatchProcess(long BCPBatchId, int AggregationTableId, int BatchProcessId,  long ElapsedTime)
+        {
+            using (SqlConnection conn = new SqlConnection(_config.GetConnectionString("ShardAggregation")))
+            {
+                conn.Open();
+                using (SqlCommand insertCmd = new SqlCommand("INSERT BCPBatchLog (BCPBatchId, AggregationTableId, BatchProcessId, BatchProcessTime) VALUES(@BCPBatchId, @AggregationTableId, @BatchProcessId, @BatchProcessTime)", conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@AggregationTableId", AggregationTableId);
+                    insertCmd.Parameters.AddWithValue("@BCPBatchId", BCPBatchId);
+                    insertCmd.Parameters.AddWithValue("@BatchProcessId", BatchProcessId);
+                    insertCmd.Parameters.AddWithValue("@BatchProcessTime", ElapsedTime);
+                    insertCmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static string GetSelectSQL(string TableName, bool ModifiedDateExists)
+        {
+            string cmdSQL = string.Empty;
+            if (ModifiedDateExists)
+            {
+                cmdSQL = string.Format("SELECT * FROM [{0}] WITH (NOLOCK) WHERE ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+            }
+            else
+            {
+                switch (TableName)
+                {
+                    case "DocumentAddress":
+                        cmdSQL = string.Format(@"	SELECT da.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentAddress da WITH (NOLOCK)
+	                                                    ON d.DocumentId = da.DocumentId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentParameterBag":
+                        cmdSQL = string.Format(@"	SELECT dpb.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentParameterBag dpb WITH (NOLOCK)
+	                                                    ON d.DocumentId = dpb.DocumentId 
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentProperty":
+                        cmdSQL = string.Format(@"	SELECT dp.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentProperty dp WITH (NOLOCK)
+	                                                    ON d.DocumentId = dp.DocumentId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentLine":
+                        cmdSQL = string.Format(@"	SELECT dl.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentLine dl WITH (NOLOCK)
+	                                                    ON d.DocumentId = dl.DocumentId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentLineParameterBag":
+                        cmdSQL = string.Format(@"	SELECT dlpb.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentLine dl WITH (NOLOCK)
+	                                                    ON d.DocumentId = dl.DocumentId
+                                                        LEFT JOIN DocumentLineParameterBag dlpb
+                                                        ON dl.DocumentLineId = dlpb.DocumentLineId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentLineProperty":
+                        cmdSQL = string.Format(@"	SELECT dlp.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentLine dl WITH (NOLOCK)
+	                                                    ON d.DocumentId = dl.DocumentId
+                                                        LEFT JOIN DocumentLineProperty dlp
+                                                        ON dl.DocumentLineId = dlp.DocumentLineId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentLineDetail":
+                        cmdSQL = string.Format(@"	SELECT dld.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentLine dl WITH (NOLOCK)
+	                                                    ON d.DocumentId = dl.DocumentId
+                                                        LEFT JOIN DocumentLineDetail dld WITH (NOLOCK)
+                                                        ON dl.DocumentLineId = dld.DocumentLineId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                    case "DocumentLineDetailProperty":
+                        cmdSQL = string.Format(@"	SELECT dldp.*
+	                                                    FROM Document d WITH (NOLOCK)
+	                                                    LEFT JOIN DocumentLine dl WITH (NOLOCK)
+	                                                    ON d.DocumentId = dl.DocumentId
+                                                        LEFT JOIN DocumentLineDetail dld WITH (NOLOCK)
+                                                        ON dl.DocumentLineId = dld.DocumentLineId
+                                                        LEFT JOIN DocumentLineDetailProperty dldp
+                                                        ON dld.DocumentLineDetailId = dldp.DocumentLineDetailId
+	                                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime", TableName);
+                        break;
+                }
+            }
+
+            return cmdSQL;
         }
         #endregion
     }
