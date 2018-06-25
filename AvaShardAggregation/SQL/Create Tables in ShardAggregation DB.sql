@@ -110,3 +110,18 @@ CREATE TABLE dbo.BCPBatchLog
 	CONSTRAINT PK_BCPBatchLog PRIMARY KEY (BCPBatchLogId)
 	)
 GO
+
+
+IF OBJECT_ID ('dbo.BCPBatchError') IS NOT NULL
+	DROP TABLE dbo.BCPBatchError
+GO
+
+CREATE TABLE dbo.BCPBatchError
+	(
+	BCPBatchErrorId      BIGINT IDENTITY NOT NULL,
+	BCPBatchId         BIGINT NOT NULL,
+	AggregationTableId INT NOT NULL,
+	ErrorMessage       NVARCHAR(MAX) NOT NULL,
+	CONSTRAINT PK_BCPBatchError PRIMARY KEY (BCPBatchErrorId)
+	)
+GO

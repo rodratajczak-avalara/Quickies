@@ -129,7 +129,7 @@ namespace AvaShardAggregator
                     {
                         cmd.Parameters.AddWithValue("@LastCheckTime", StartSynch);
                         cmd.Parameters.AddWithValue("@CurrentCheckTime", EndSynch);
-                        cmd.CommandTimeout = 600;
+                        cmd.CommandTimeout = 1200;
                         Console.WriteLine(string.Format("{0} Query Changed Records Started", TableName));
                         modifiedTime.Start();
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -146,6 +146,7 @@ namespace AvaShardAggregator
                     {
                         successful = false;
                         Console.WriteLine(string.Format("Error occurred processing table {0}:  [{1}]", TableName, ex.Message));
+                        LogBatchError(_bcpBatchId, _aggregationTableId, ex.Message);
                     }
                 }
                 modifiedTime = null;
@@ -309,6 +310,35 @@ namespace AvaShardAggregator
             }
         }
 
+
+        /// <summary>
+        /// save an error associated with a batch for future reference
+        /// </summary>
+        /// <param name="BCPBatchId"></param>
+        /// <param name="AggregationTableId"></param>
+        /// <param name="ErrorMessage"></param>
+        private static void LogBatchError(long BCPBatchId, int AggregationTableId, string ErrorMessage)
+        {
+            using (SqlConnection conn = new SqlConnection(_config.GetConnectionString("ShardAggregation")))
+            {
+                conn.Open();
+                using (SqlCommand insertCmd = new SqlCommand("INSERT INTO dbo.BCPBatchError(BCPBatchId, AggregationTableId, ErrorMessage) VALUES(@bcpbatchid, @aggregationtableid, @errormessage)", conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@bcpbatchid", BCPBatchId );
+                    insertCmd.Parameters.AddWithValue("@aggregationtableid", AggregationTableId);
+                    insertCmd.Parameters.AddWithValue("@errormessage", ErrorMessage);
+                    insertCmd.ExecuteNonQuery();
+                }
+            }
+        }
+        
+
+        /// <summary>
+        /// obtain the SQL needed 
+        /// </summary>
+        /// <param name="TableName"></param>
+        /// <param name="ModifiedDateExists"></param>
+        /// <returns></returns>
         private static string GetSelectSQL(string TableName, bool ModifiedDateExists)
         {
             string cmdSQL = string.Empty;
