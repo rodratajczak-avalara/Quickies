@@ -25,13 +25,16 @@ namespace AvaShardAggregator
             _saveLogToFile = saveLogFile;
         }
 
+        /// <summary>
+        /// Main processing module to obtain tables to aggregate and loop through the aggregation process
+        /// </summary>
         public void ProcessAvaTaxAccountTables()
         {
             DateTime startTime = DateTime.UtcNow;
             DateTime lastSynch = GetLastSynch();
-            if (startTime.Subtract(lastSynch).TotalHours > 1)
+            if (startTime.Subtract(lastSynch).TotalHours > double.Parse(_config.GetSection("MaxCopyHours").Value))
             {
-                startTime = lastSynch.AddHours(1);
+                startTime = lastSynch.AddHours(double.Parse(_config.GetSection("MaxCopyHours").Value));
             }
             _bcpBatchId = LogBcpBatch(startTime);
             bool batchSuccessful = true;
@@ -94,13 +97,22 @@ namespace AvaShardAggregator
                     }
                     else
                     {
-                       // Console.ReadKey();
+                        //Console.ReadKey();
                     }
                 }
             }
            
         }
 
+        /// <summary>
+        /// Method to get modified records for a table and kick off aggregations for that table
+        /// </summary>
+        /// <param name="StartSynch"></param>
+        /// <param name="EndSynch"></param>
+        /// <param name="TableName"></param>
+        /// <param name="RemoveDuplicate"></param>
+        /// <param name="ModifiedDateExists"></param>
+        /// <returns></returns>
         private static bool ProcessModifiedData(DateTime StartSynch, DateTime EndSynch, string TableName, Boolean RemoveDuplicate, Boolean ModifiedDateExists)
         {
             bool successful = true;
@@ -142,6 +154,12 @@ namespace AvaShardAggregator
             return successful;
         }
 
+        /// <summary>
+        /// Processes steps of aggregation per table (BCP, Delete Dups, Merge, truncate temp)
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="TableName"></param>
+        /// <param name="RemoveDuplicate"></param>
         private static void PerformBulkCopy(SqlDataReader r, string TableName, Boolean RemoveDuplicate)
         {
             using (SqlConnection conn = new SqlConnection(_config.GetConnectionString("Destination")))

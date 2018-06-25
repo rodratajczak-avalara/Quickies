@@ -1418,7 +1418,6 @@ CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineDetailProperty_From_Temp_Shar
 AS
 BEGIN
 
-SET IDENTITY_INSERT dbo.DocumentLineDetailProperty ON
 
 MERGE dbo.DocumentLineDetailProperty AS target
 USING (SELECT DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel FROM dbo.DocumentLineDetailProperty_Temp_Shard_1) 
@@ -1435,7 +1434,75 @@ INSERT (DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee,
 VALUES (source.DocumentLineDetailId, source.TaxTypeMappingId, source.RateTypeTaxTypeMappingId, source.IsFee, source.TaxAuthorityId, source.ReportLevel)
 ;
 
-SET IDENTITY_INSERT dbo.DocumentLineDetailProperty OFF
+
+END
+GO
+
+
+
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyReturn_From_Temp_Shard_1
+AS
+BEGIN
+
+SET IDENTITY_INSERT dbo.CompanyReturn ON
+
+MERGE dbo.CompanyReturn AS target
+USING (SELECT CompanyReturnId, CompanyId, ReturnName, FilingFrequencyId, Months, RegistrationId, EIN, Line1, Line2, City, Region, PostalCode, Country, Phone, Description, LegalEntityName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, FilingCalendarID, FilingTypeId, EFilePassword, PrepayPercentage, TaxTypeId, Note, AlSignOn, AlAccessCode, MeBusinessCode, IaBen, CtReg, Other1Name, Other1Value, Other2Name, Other2Value, Other3Name, Other3Value, LocationCode, OutletTypeId, LocalRegistrationId, EfileUsername, PaymentCurrency, FixedPrepaymentAmount FROM dbo.CompanyReturn_Temp_Shard_1) 
+	AS source (CompanyReturnId, CompanyId, ReturnName, FilingFrequencyId, Months, RegistrationId, EIN, Line1, Line2, City, Region, PostalCode, Country, Phone, Description, LegalEntityName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, FilingCalendarID, FilingTypeId, EFilePassword, PrepayPercentage, TaxTypeId, Note, AlSignOn, AlAccessCode, MeBusinessCode, IaBen, CtReg, Other1Name, Other1Value, Other2Name, Other2Value, Other3Name, Other3Value, LocationCode, OutletTypeId, LocalRegistrationId, EfileUsername, PaymentCurrency, FixedPrepaymentAmount)
+ON (target.CompanyReturnId = source.CompanyReturnId)
+WHEN MATCHED THEN
+UPDATE SET CompanyId = source.CompanyId,
+	ReturnName = source.ReturnName,
+	FilingFrequencyId = source.FilingFrequencyId,
+	Months = source.Months,
+	RegistrationId = source.RegistrationId,
+	EIN = source.EIN,
+	Line1 = source.Line1,
+	Line2 = source.Line2,
+	City = source.City,
+	Region = source.Region,
+	PostalCode = source.PostalCode,
+	Country = source.Country,
+	Phone = source.Phone,
+	Description = source.Description,
+	LegalEntityName = source.LegalEntityName,
+	EffDate = source.EffDate,
+	EndDate = source.EndDate,
+	CreatedUserId = source.CreatedUserId,
+	CreatedDate = source.CreatedDate,
+	ModifiedUserId = source.ModifiedUserId,
+	ModifiedDate = source.ModifiedDate,
+	FilingCalendarID = source.FilingCalendarID,
+	FilingTypeId = source.FilingTypeId,
+	EFilePassword = source.EFilePassword,
+	PrepayPercentage = source.PrepayPercentage,
+	TaxTypeId = source.TaxTypeId,
+	Note = source.Note,
+	AlSignOn = source.AlSignOn,
+	AlAccessCode = source.AlAccessCode,
+	MeBusinessCode = source.MeBusinessCode,
+	IaBen = source.IaBen,
+	CtReg = source.CtReg,
+	Other1Name = source.Other1Name,
+	Other1Value = source.Other1Value,
+	Other2Name = source.Other2Name,
+	Other2Value = source.Other2Value,
+	Other3Name = source.Other3Name,
+	Other3Value = source.Other3Value,
+	LocationCode = source.LocationCode,
+	OutletTypeId = source.OutletTypeId,
+	LocalRegistrationId = source.LocalRegistrationId,
+	EfileUsername = source.EfileUsername,
+	PaymentCurrency = source.PaymentCurrency,
+	FixedPrepaymentAmount = source.FixedPrepaymentAmount
+WHEN NOT MATCHED THEN
+INSERT (CompanyReturnId, CompanyId, ReturnName, FilingFrequencyId, Months, RegistrationId, EIN, Line1, Line2, City, Region, PostalCode, Country, Phone, Description, LegalEntityName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, FilingCalendarID, FilingTypeId, EFilePassword, PrepayPercentage, TaxTypeId, Note, AlSignOn, AlAccessCode, MeBusinessCode, IaBen, CtReg, Other1Name, Other1Value, Other2Name, Other2Value, Other3Name, Other3Value, LocationCode, OutletTypeId, LocalRegistrationId, EfileUsername, PaymentCurrency, FixedPrepaymentAmount)
+VALUES (source.CompanyReturnId, source.CompanyId, source.ReturnName, source.FilingFrequencyId, source.Months, source.RegistrationId, source.EIN, source.Line1, source.Line2, source.City, source.Region, source.PostalCode, source.Country, source.Phone, source.Description, source.LegalEntityName, source.EffDate, source.EndDate, source.CreatedUserId, source.CreatedDate, source.ModifiedUserId, source.ModifiedDate, source.FilingCalendarID, source.FilingTypeId, source.EFilePassword, source.PrepayPercentage, source.TaxTypeId, source.Note, source.AlSignOn, source.AlAccessCode, source.MeBusinessCode, source.IaBen, source.CtReg, source.Other1Name, source.Other1Value, source.Other2Name, source.Other2Value, source.Other3Name, source.Other3Value, source.LocationCode, source.OutletTypeId, source.LocalRegistrationId, source.EfileUsername, source.PaymentCurrency, source.FixedPrepaymentAmount)
+;
+
+SET IDENTITY_INSERT dbo.CompanyReturn OFF
 
 END
 GO
