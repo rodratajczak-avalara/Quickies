@@ -1,54 +1,3 @@
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Document_From_Temp_Shard_1
-AS
-BEGIN
-
-SET IDENTITY_INSERT dbo.Document ON
-
-MERGE dbo.Document AS target
-USING (SELECT DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email FROM dbo.Document_Temp_Shard_1) 
-	AS source (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
-ON (target.DocumentId = source.DocumentId)
-WHEN MATCHED THEN
-UPDATE SET DocumentTypeId = source.DocumentTypeId, DocumentCode = source.DocumentCode, DocumentStatusId = source.DocumentStatusId, PurchaseOrderNo = source.PurchaseOrderNo, CustomerVendorCode = source.CustomerVendorCode, SalespersonCode = source.SalespersonCode, CustomerUsageType = source.CustomerUsageType, ReferenceCode = source.ReferenceCode, IsReconciled = source.IsReconciled, TotalAmount = source.TotalAmount, TotalTax = source.TotalTax, ExemptNo = source.ExemptNo, ModifiedDate = source.ModifiedDate, ModifiedUserId = source.ModifiedUserId, TaxDate = source.TaxDate, DocumentLineCount = source.DocumentLineCount, HashCode = source.HashCode, TotalTaxable = source.TotalTaxable, TotalExempt = source.TotalExempt, BatchCode = source.BatchCode, SoftwareVersion = source.SoftwareVersion, LocationCode = source.LocationCode, AdjustmentReasonId = source.AdjustmentReasonId, AdjustmentDescription = source.AdjustmentDescription, IsLocked = source.IsLocked, Version = source.Version, TotalTaxCalculated = source.TotalTaxCalculated, TaxOverrideAmount = source.TaxOverrideAmount, TaxOverrideTypeId = source.TaxOverrideTypeId, TaxOverrideReason = source.TaxOverrideReason, CurrencyCode = source.CurrencyCode, PaymentDate = source.PaymentDate, OriginAddressId = source.OriginAddressId, DestinationAddressId = source.DestinationAddressId, ExchangeRate = source.ExchangeRate, ExchangeRateEffDate = source.ExchangeRateEffDate, AdjustedStatusId = source.AdjustedStatusId, Region = source.Region, Country = source.Country, PosLaneCode = source.PosLaneCode, BusinessIdentificationNo = source.BusinessIdentificationNo, IsSellerImporterOfRecord = source.IsSellerImporterOfRecord, BRBuyerType = source.BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF = source.BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF = source.BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF = source.BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF = source.BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS = source.BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS = source.BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL = source.BRBuyer_IsExempt_CSLL, Description = source.Description, Email = source.Email
-WHEN NOT MATCHED THEN
-INSERT (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
-VALUES (source.DocumentId, source.DocumentTypeId, source.CompanyId, source.DocumentDate, source.DocumentCode, source.DocumentStatusId, source.PurchaseOrderNo, source.CustomerVendorCode, source.SalespersonCode, source.CustomerUsageType, source.ReferenceCode, source.IsReconciled, source.TotalAmount, source.TotalTax, source.ExemptNo, source.ModifiedDate, source.ModifiedUserId, source.TaxDate, source.DocumentLineCount, source.HashCode, source.TotalTaxable, source.TotalExempt, source.BatchCode, source.SoftwareVersion, source.LocationCode, source.AdjustmentReasonId, source.AdjustmentDescription, source.IsLocked, source.Version, source.TotalTaxCalculated, source.TaxOverrideAmount, source.TaxOverrideTypeId, source.TaxOverrideReason, source.CurrencyCode, source.PaymentDate, source.OriginAddressId, source.DestinationAddressId, source.ExchangeRate, source.ExchangeRateEffDate, source.AdjustedStatusId, source.Region, source.Country, source.PosLaneCode, source.BusinessIdentificationNo, source.IsSellerImporterOfRecord, source.BRBuyerType, source.BRBuyer_IsExemptOrCannotWH_IRRF, source.BRBuyer_IsExemptOrCannotWH_PISRF, source.BRBuyer_IsExemptOrCannotWH_COFINSRF, source.BRBuyer_IsExemptOrCannotWH_CSLLRF, source.BRBuyer_IsExempt_PIS, source.BRBuyer_IsExempt_COFINS, source.BRBuyer_IsExempt_CSLL, source.Description, source.Email)
-;
-
-SET IDENTITY_INSERT dbo.Document OFF
-
-END
-GO
-
-
-
-
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Document_From_Temp_Shard_2
-AS
-BEGIN
-
-SET IDENTITY_INSERT dbo.Document ON
-
-MERGE dbo.Document AS target
-USING (SELECT DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email FROM dbo.Document_Temp_Shard_2) 
-	AS source (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
-ON (target.DocumentId = source.DocumentId)
-WHEN MATCHED THEN
-UPDATE SET DocumentTypeId = source.DocumentTypeId, DocumentCode = source.DocumentCode, DocumentStatusId = source.DocumentStatusId, PurchaseOrderNo = source.PurchaseOrderNo, CustomerVendorCode = source.CustomerVendorCode, SalespersonCode = source.SalespersonCode, CustomerUsageType = source.CustomerUsageType, ReferenceCode = source.ReferenceCode, IsReconciled = source.IsReconciled, TotalAmount = source.TotalAmount, TotalTax = source.TotalTax, ExemptNo = source.ExemptNo, ModifiedDate = source.ModifiedDate, ModifiedUserId = source.ModifiedUserId, TaxDate = source.TaxDate, DocumentLineCount = source.DocumentLineCount, HashCode = source.HashCode, TotalTaxable = source.TotalTaxable, TotalExempt = source.TotalExempt, BatchCode = source.BatchCode, SoftwareVersion = source.SoftwareVersion, LocationCode = source.LocationCode, AdjustmentReasonId = source.AdjustmentReasonId, AdjustmentDescription = source.AdjustmentDescription, IsLocked = source.IsLocked, Version = source.Version, TotalTaxCalculated = source.TotalTaxCalculated, TaxOverrideAmount = source.TaxOverrideAmount, TaxOverrideTypeId = source.TaxOverrideTypeId, TaxOverrideReason = source.TaxOverrideReason, CurrencyCode = source.CurrencyCode, PaymentDate = source.PaymentDate, OriginAddressId = source.OriginAddressId, DestinationAddressId = source.DestinationAddressId, ExchangeRate = source.ExchangeRate, ExchangeRateEffDate = source.ExchangeRateEffDate, AdjustedStatusId = source.AdjustedStatusId, Region = source.Region, Country = source.Country, PosLaneCode = source.PosLaneCode, BusinessIdentificationNo = source.BusinessIdentificationNo, IsSellerImporterOfRecord = source.IsSellerImporterOfRecord, BRBuyerType = source.BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF = source.BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF = source.BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF = source.BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF = source.BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS = source.BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS = source.BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL = source.BRBuyer_IsExempt_CSLL, Description = source.Description, Email = source.Email
-WHEN NOT MATCHED THEN
-INSERT (DocumentId, DocumentTypeId, CompanyId, DocumentDate, DocumentCode, DocumentStatusId, PurchaseOrderNo, CustomerVendorCode, SalespersonCode, CustomerUsageType, ReferenceCode, IsReconciled, TotalAmount, TotalTax, ExemptNo, ModifiedDate, ModifiedUserId, TaxDate, DocumentLineCount, HashCode, TotalTaxable, TotalExempt, BatchCode, SoftwareVersion, LocationCode, AdjustmentReasonId, AdjustmentDescription, IsLocked, Version, TotalTaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, CurrencyCode, PaymentDate, OriginAddressId, DestinationAddressId, ExchangeRate, ExchangeRateEffDate, AdjustedStatusId, Region, Country, PosLaneCode, BusinessIdentificationNo, IsSellerImporterOfRecord, BRBuyerType, BRBuyer_IsExemptOrCannotWH_IRRF, BRBuyer_IsExemptOrCannotWH_PISRF, BRBuyer_IsExemptOrCannotWH_COFINSRF, BRBuyer_IsExemptOrCannotWH_CSLLRF, BRBuyer_IsExempt_PIS, BRBuyer_IsExempt_COFINS, BRBuyer_IsExempt_CSLL, Description, Email)
-VALUES (source.DocumentId, source.DocumentTypeId, source.CompanyId, source.DocumentDate, source.DocumentCode, source.DocumentStatusId, source.PurchaseOrderNo, source.CustomerVendorCode, source.SalespersonCode, source.CustomerUsageType, source.ReferenceCode, source.IsReconciled, source.TotalAmount, source.TotalTax, source.ExemptNo, source.ModifiedDate, source.ModifiedUserId, source.TaxDate, source.DocumentLineCount, source.HashCode, source.TotalTaxable, source.TotalExempt, source.BatchCode, source.SoftwareVersion, source.LocationCode, source.AdjustmentReasonId, source.AdjustmentDescription, source.IsLocked, source.Version, source.TotalTaxCalculated, source.TaxOverrideAmount, source.TaxOverrideTypeId, source.TaxOverrideReason, source.CurrencyCode, source.PaymentDate, source.OriginAddressId, source.DestinationAddressId, source.ExchangeRate, source.ExchangeRateEffDate, source.AdjustedStatusId, source.Region, source.Country, source.PosLaneCode, source.BusinessIdentificationNo, source.IsSellerImporterOfRecord, source.BRBuyerType, source.BRBuyer_IsExemptOrCannotWH_IRRF, source.BRBuyer_IsExemptOrCannotWH_PISRF, source.BRBuyer_IsExemptOrCannotWH_COFINSRF, source.BRBuyer_IsExemptOrCannotWH_CSLLRF, source.BRBuyer_IsExempt_PIS, source.BRBuyer_IsExempt_COFINS, source.BRBuyer_IsExempt_CSLL, source.Description, source.Email)
-;
-
-SET IDENTITY_INSERT dbo.Document OFF
-
-END
-GO
-
-
-
-
-
 CREATE OR ALTER PROCEDURE dbo.sp_Merge_Document_From_Temp_Shard_3
 AS
 BEGIN
@@ -72,14 +21,19 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLine_From_Temp_Shard_1
+
+
+
+
+
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLine_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentLine ON
 
 MERGE dbo.DocumentLine AS target
-USING (SELECT DocumentLineId, DocumentId, [LineNo], ItemCode, TaxCode, OriginAddressId, DestinationAddressId, Quantity, LineAmount, ExemptAmount, DiscountAmount, DiscountTypeId, TaxableAmount, ExemptNo, RevAccount, Ref1, Ref2, IsSSTP, IsItemTaxable, CustomerUsageType, Description, Sourcing, GoodsServiceCode, TaxEngine, BoundaryOverrideId, TweEntityUseCode, Tax, ExemptCertId, TaxCodeId, TaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, TaxDate, ReportingDate, AccountingMethodId, TaxIncluded, IsExempt, BusinessIdentificationNo, UnitOfMeasurement, StateSstNexusTypeId FROM dbo.DocumentLine_Temp_Shard_1) 
+USING (SELECT DocumentLineId, DocumentId, [LineNo], ItemCode, TaxCode, OriginAddressId, DestinationAddressId, Quantity, LineAmount, ExemptAmount, DiscountAmount, DiscountTypeId, TaxableAmount, ExemptNo, RevAccount, Ref1, Ref2, IsSSTP, IsItemTaxable, CustomerUsageType, Description, Sourcing, GoodsServiceCode, TaxEngine, BoundaryOverrideId, TweEntityUseCode, Tax, ExemptCertId, TaxCodeId, TaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, TaxDate, ReportingDate, AccountingMethodId, TaxIncluded, IsExempt, BusinessIdentificationNo, UnitOfMeasurement, StateSstNexusTypeId FROM dbo.DocumentLine_Temp_Shard_3) 
 	AS source (DocumentLineId, DocumentId, [LineNo], ItemCode, TaxCode, OriginAddressId, DestinationAddressId, Quantity, LineAmount, ExemptAmount, DiscountAmount, DiscountTypeId, TaxableAmount, ExemptNo, RevAccount, Ref1, Ref2, IsSSTP, IsItemTaxable, CustomerUsageType, Description, Sourcing, GoodsServiceCode, TaxEngine, BoundaryOverrideId, TweEntityUseCode, Tax, ExemptCertId, TaxCodeId, TaxCalculated, TaxOverrideAmount, TaxOverrideTypeId, TaxOverrideReason, TaxDate, ReportingDate, AccountingMethodId, TaxIncluded, IsExempt, BusinessIdentificationNo, UnitOfMeasurement, StateSstNexusTypeId)
 ON (target.DocumentLineId = source.DocumentLineId)
 WHEN MATCHED THEN
@@ -137,14 +91,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineDetail_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineDetail_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentLineDetail ON
 
 MERGE dbo.DocumentLineDetail AS target
-USING (SELECT DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru FROM dbo.DocumentLineDetail_Temp_Shard_1) 
+USING (SELECT DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru FROM dbo.DocumentLineDetail_Temp_Shard_3) 
 	AS source (DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru)
 ON (target.DocumentLineDetailId = source.DocumentLineDetailId)
 WHEN MATCHED THEN
@@ -202,14 +156,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentParameterBag_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentParameterBag_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentParameterBag ON
 
 MERGE dbo.DocumentParameterBag AS target
-USING (SELECT DocumentParameterBagId, DocumentId, Name, Value, UOMId, UOMIdSystem, ValueSystem FROM dbo.DocumentParameterBag_Temp_Shard_1) 
+USING (SELECT DocumentParameterBagId, DocumentId, Name, Value, UOMId, UOMIdSystem, ValueSystem FROM dbo.DocumentParameterBag_Temp_Shard_3) 
 	AS source (DocumentParameterBagId, DocumentId, Name, Value, UOMId, UOMIdSystem, ValueSystem)
 ON (target.DocumentParameterBagId = source.DocumentParameterBagId)
 WHEN MATCHED THEN
@@ -232,14 +186,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Account_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Account_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.Account ON
 
 MERGE dbo.Account AS target
-USING (SELECT AccountId, LicenseKey, Salt, AccountName, SiteId, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, AccountStatusId, CRMId, CRMIdSTR FROM dbo.Account_Temp_Shard_1) 
+USING (SELECT AccountId, LicenseKey, Salt, AccountName, SiteId, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, AccountStatusId, CRMId, CRMIdSTR FROM dbo.Account_Temp_Shard_3) 
 	AS source (AccountId, LicenseKey, Salt, AccountName, SiteId, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, AccountStatusId, CRMId, CRMIdSTR)
 ON (target.AccountId = source.AccountId)
 WHEN MATCHED THEN
@@ -267,12 +221,12 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxServiceConfig_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxServiceConfig_From_Temp_Shard_3
 AS
 BEGIN
 
 MERGE dbo.TaxServiceConfig AS target
-USING (SELECT AccountId, RequireOriginAddress, RequireMappedItemCode, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EcmsEnabled, EcmsCertUse, EcmsCompleteCertsRequired, EcmsOverrideCode, EcmsSstCertsRequired, MaxLines, EcmsCertUseCa, IsJaasDisabled, SSTPolicyOverrideDate, ItemDescPolicyOverrideDate, UseIsSellerImporterOfRecordFromNexus FROM dbo.TaxServiceConfig_Temp_Shard_1) 
+USING (SELECT AccountId, RequireOriginAddress, RequireMappedItemCode, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EcmsEnabled, EcmsCertUse, EcmsCompleteCertsRequired, EcmsOverrideCode, EcmsSstCertsRequired, MaxLines, EcmsCertUseCa, IsJaasDisabled, SSTPolicyOverrideDate, ItemDescPolicyOverrideDate, UseIsSellerImporterOfRecordFromNexus FROM dbo.TaxServiceConfig_Temp_Shard_3) 
 	AS source (AccountId, RequireOriginAddress, RequireMappedItemCode, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EcmsEnabled, EcmsCertUse, EcmsCompleteCertsRequired, EcmsOverrideCode, EcmsSstCertsRequired, MaxLines, EcmsCertUseCa, IsJaasDisabled, SSTPolicyOverrideDate, ItemDescPolicyOverrideDate, UseIsSellerImporterOfRecordFromNexus)
 ON (target.AccountId = source.AccountId)
 WHEN MATCHED THEN
@@ -303,12 +257,12 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_AddressServiceConfig_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_AddressServiceConfig_From_Temp_Shard_3
 AS
 BEGIN
 
 MERGE dbo.AddressServiceConfig AS target
-USING (SELECT AccountId, IsUpperCase, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsJaasDisabled FROM dbo.AddressServiceConfig_Temp_Shard_1) 
+USING (SELECT AccountId, IsUpperCase, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsJaasDisabled FROM dbo.AddressServiceConfig_Temp_Shard_3) 
 	AS source (AccountId, IsUpperCase, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsJaasDisabled)
 ON (target.AccountId = source.AccountId)
 WHEN MATCHED THEN
@@ -329,12 +283,12 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentCodeChangeList_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentCodeChangeList_From_Temp_Shard_3
 AS
 BEGIN
 
 MERGE dbo.DocumentCodeChangeList AS target
-USING (SELECT AccountId, DocumentCode, Committed, ModifiedDate FROM dbo.DocumentCodeChangeList_Temp_Shard_1) 
+USING (SELECT AccountId, DocumentCode, Committed, ModifiedDate FROM dbo.DocumentCodeChangeList_Temp_Shard_3) 
 	AS source (AccountId, DocumentCode, Committed, ModifiedDate)
 ON (target.AccountId = source.AccountId AND target.DocumentCode = source.DocumentCode AND target.Committed = source.Committed)
 WHEN MATCHED THEN
@@ -352,14 +306,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_BoundaryOverride_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_BoundaryOverride_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.BoundaryOverride ON
 
 MERGE dbo.BoundaryOverride AS target
-USING (SELECT BoundaryOverrideId, AccountId, AddrLo, AddrHi, OddEven, StreetPre, StreetName, StreetSuffix, StreetPost, City, County, ZIP5Lo, ZIP5Hi, ZIP4Lo, ZIP4Hi, StateFIPS, CountyFIPS, PlaceFIPS, PlaceClassCode, StateAssignedCode, Longitude, Latitude, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, RateId, HasSTJ, BoundaryLevel, CountyJurisName, CityJurisName, TaxRegionId, State FROM dbo.BoundaryOverride_Temp_Shard_1) 
+USING (SELECT BoundaryOverrideId, AccountId, AddrLo, AddrHi, OddEven, StreetPre, StreetName, StreetSuffix, StreetPost, City, County, ZIP5Lo, ZIP5Hi, ZIP4Lo, ZIP4Hi, StateFIPS, CountyFIPS, PlaceFIPS, PlaceClassCode, StateAssignedCode, Longitude, Latitude, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, RateId, HasSTJ, BoundaryLevel, CountyJurisName, CityJurisName, TaxRegionId, State FROM dbo.BoundaryOverride_Temp_Shard_3) 
 	AS source (BoundaryOverrideId, AccountId, AddrLo, AddrHi, OddEven, StreetPre, StreetName, StreetSuffix, StreetPost, City, County, ZIP5Lo, ZIP5Hi, ZIP4Lo, ZIP4Hi, StateFIPS, CountyFIPS, PlaceFIPS, PlaceClassCode, StateAssignedCode, Longitude, Latitude, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, RateId, HasSTJ, BoundaryLevel, CountyJurisName, CityJurisName, TaxRegionId, State)
 ON (target.BoundaryOverrideId = source.BoundaryOverrideId)
 WHEN MATCHED THEN
@@ -412,14 +366,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_JurisdictionOverride_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_JurisdictionOverride_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.JurisdictionOverride ON
 
 MERGE dbo.JurisdictionOverride AS target
-USING (SELECT JurisdictionOverrideId, BoundaryOverrideId, AccountId, Address, City, Region, PostalCode, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate FROM dbo.JurisdictionOverride_Temp_Shard_1) 
+USING (SELECT JurisdictionOverrideId, BoundaryOverrideId, AccountId, Address, City, Region, PostalCode, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate FROM dbo.JurisdictionOverride_Temp_Shard_3) 
 	AS source (JurisdictionOverrideId, BoundaryOverrideId, AccountId, Address, City, Region, PostalCode, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate)
 ON (target.JurisdictionOverrideId = source.JurisdictionOverrideId)
 WHEN MATCHED THEN
@@ -452,14 +406,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Service_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Service_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.Service ON
 
 MERGE dbo.Service AS target
-USING (SELECT ServiceId, AccountId, ServiceTypeId, Quantity, CompanyId, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate FROM dbo.Service_Temp_Shard_1) 
+USING (SELECT ServiceId, AccountId, ServiceTypeId, Quantity, CompanyId, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate FROM dbo.Service_Temp_Shard_3) 
 	AS source (ServiceId, AccountId, ServiceTypeId, Quantity, CompanyId, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate)
 ON (target.ServiceId = source.ServiceId)
 WHEN MATCHED THEN
@@ -487,14 +441,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Subscription_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Subscription_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.Subscription ON
 
 MERGE dbo.Subscription AS target
-USING (SELECT SubscriptionId, AccountId, PartnerId, ReferenceCode, SubscriptionTypeId, CountryCode, RegionCode, EffDate, EndDate, CancelDate, IsActive, CreatedDate, ModifiedDate, CreatedUserId, ModifiedUserId FROM dbo.Subscription_Temp_Shard_1) 
+USING (SELECT SubscriptionId, AccountId, PartnerId, ReferenceCode, SubscriptionTypeId, CountryCode, RegionCode, EffDate, EndDate, CancelDate, IsActive, CreatedDate, ModifiedDate, CreatedUserId, ModifiedUserId FROM dbo.Subscription_Temp_Shard_3) 
 	AS source (SubscriptionId, AccountId, PartnerId, ReferenceCode, SubscriptionTypeId, CountryCode, RegionCode, EffDate, EndDate, CancelDate, IsActive, CreatedDate, ModifiedDate, CreatedUserId, ModifiedUserId)
 ON (target.SubscriptionId = source.SubscriptionId)
 WHEN MATCHED THEN
@@ -527,14 +481,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_User_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_User_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.[User] ON
 
 MERGE dbo.[User] AS target
-USING (SELECT UserId, AccountId, UserName, FirstName, LastName, Password, PasswordStatusId, Email, PostalCode, SecurityRoleId, IsActive, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, FailedLoginAttempts, CompanyId, SubjectId FROM dbo.User_Temp_Shard_1) 
+USING (SELECT UserId, AccountId, UserName, FirstName, LastName, Password, PasswordStatusId, Email, PostalCode, SecurityRoleId, IsActive, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, FailedLoginAttempts, CompanyId, SubjectId FROM dbo.User_Temp_Shard_3) 
 	AS source (UserId, AccountId, UserName, FirstName, LastName, Password, PasswordStatusId, Email, PostalCode, SecurityRoleId, IsActive, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, FailedLoginAttempts, CompanyId, SubjectId)
 ON (target.[UserId] = source.[UserId])
 WHEN MATCHED THEN
@@ -567,14 +521,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Company_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Company_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.Company ON
 
 MERGE dbo.Company AS target
-USING (SELECT CompanyId, AccountId, ParentId, SSTPID, CompanyCode, CompanyName, IsDefault, DefaultLocationId, IsActive, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, TIN, HasProfile, IsReportingEntity, SSTEffDate, RegalBankId, EntityNo, DefaultCountry, BaseCurrencyCode, RoundingLevelId, CashBasisAccountingEnabled, WarningsEnabled, IsTest, TaxDependancyLevelId, InProgress, BusinessIdentificationNo, VATDeductionRightId, MOSSId, MOSSCountry FROM dbo.Company_Temp_Shard_1) 
+USING (SELECT CompanyId, AccountId, ParentId, SSTPID, CompanyCode, CompanyName, IsDefault, DefaultLocationId, IsActive, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, TIN, HasProfile, IsReportingEntity, SSTEffDate, RegalBankId, EntityNo, DefaultCountry, BaseCurrencyCode, RoundingLevelId, CashBasisAccountingEnabled, WarningsEnabled, IsTest, TaxDependancyLevelId, InProgress, BusinessIdentificationNo, VATDeductionRightId, MOSSId, MOSSCountry FROM dbo.Company_Temp_Shard_3) 
 	AS source (CompanyId, AccountId, ParentId, SSTPID, CompanyCode, CompanyName, IsDefault, DefaultLocationId, IsActive, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, TIN, HasProfile, IsReportingEntity, SSTEffDate, RegalBankId, EntityNo, DefaultCountry, BaseCurrencyCode, RoundingLevelId, CashBasisAccountingEnabled, WarningsEnabled, IsTest, TaxDependancyLevelId, InProgress, BusinessIdentificationNo, VATDeductionRightId, MOSSId, MOSSCountry)
 ON (target.CompanyId = source.CompanyId)
 WHEN MATCHED THEN
@@ -622,14 +576,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxRule_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxRule_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.TaxRule ON
 
 MERGE dbo.TaxRule AS target
-USING (SELECT TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey FROM dbo.TaxRule_Temp_Shard_1) 
+USING (SELECT TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey FROM dbo.TaxRule_Temp_Shard_3) 
 	AS source (TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey)
 ON (target.TaxRuleId = source.TaxRuleId)
 WHEN MATCHED THEN
@@ -687,14 +641,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyContact_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyContact_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.CompanyContact ON
 
 MERGE dbo.CompanyContact AS target
-USING (SELECT CompanyContactId, CompanyId, CompanyContactCode, ContactRoleTypeId, FirstName, MiddleName, LastName, Title, Line1, Line2, Line3, City, Region, PostalCode, Country, Email, Phone, Phone2, Fax, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.CompanyContact_Temp_Shard_1) 
+USING (SELECT CompanyContactId, CompanyId, CompanyContactCode, ContactRoleTypeId, FirstName, MiddleName, LastName, Title, Line1, Line2, Line3, City, Region, PostalCode, Country, Email, Phone, Phone2, Fax, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.CompanyContact_Temp_Shard_3) 
 	AS source (CompanyContactId, CompanyId, CompanyContactCode, ContactRoleTypeId, FirstName, MiddleName, LastName, Title, Line1, Line2, Line3, City, Region, PostalCode, Country, Email, Phone, Phone2, Fax, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.CompanyContactId = source.CompanyContactId)
 WHEN MATCHED THEN
@@ -732,14 +686,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyLocation_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyLocation_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.CompanyLocation ON
 
 MERGE dbo.CompanyLocation AS target
-USING (SELECT CompanyLocationId, CompanyId, LocationCode, Description, AddressTypeId, AddressCategoryId, Line1, Line2, Line3, City, Region, PostalCode, Country, StateAssignedCode, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsDefault, County, IsRegistered, DBAName, OutletName, StartDate, EndDate, LastTransactionDate, RegisteredDate FROM dbo.CompanyLocation_Temp_Shard_1) 
+USING (SELECT CompanyLocationId, CompanyId, LocationCode, Description, AddressTypeId, AddressCategoryId, Line1, Line2, Line3, City, Region, PostalCode, Country, StateAssignedCode, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsDefault, County, IsRegistered, DBAName, OutletName, StartDate, EndDate, LastTransactionDate, RegisteredDate FROM dbo.CompanyLocation_Temp_Shard_3) 
 	AS source (CompanyLocationId, CompanyId, LocationCode, Description, AddressTypeId, AddressCategoryId, Line1, Line2, Line3, City, Region, PostalCode, Country, StateAssignedCode, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, IsDefault, County, IsRegistered, DBAName, OutletName, StartDate, EndDate, LastTransactionDate, RegisteredDate)
 ON (target.CompanyLocationId = source.CompanyLocationId)
 WHEN MATCHED THEN
@@ -782,14 +736,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_ExemptCert_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_ExemptCert_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.ExemptCert ON
 
 MERGE dbo.ExemptCert AS target
-USING (SELECT ExemptCertId, CompanyId, CustomerCode, CustomerName, Address1, Address2, Address3, City, Region, PostalCode, Country, ExemptCertTypeId, DocumentRefNo, BusinessTypeId, BusinessTypeOtherDescription, ExemptReasonId, ExemptReasonOtherDescription, EffDate, RegionsApplicable, ExemptCertStatusId, CreatedDate, LastTransactionDate, ExpiryDate, CreatedUserId, ModifiedDate, ModifiedUserId, CountryIssued, AvaCertId, ExemptCertReviewStatusId FROM dbo.ExemptCert_Temp_Shard_1) 
+USING (SELECT ExemptCertId, CompanyId, CustomerCode, CustomerName, Address1, Address2, Address3, City, Region, PostalCode, Country, ExemptCertTypeId, DocumentRefNo, BusinessTypeId, BusinessTypeOtherDescription, ExemptReasonId, ExemptReasonOtherDescription, EffDate, RegionsApplicable, ExemptCertStatusId, CreatedDate, LastTransactionDate, ExpiryDate, CreatedUserId, ModifiedDate, ModifiedUserId, CountryIssued, AvaCertId, ExemptCertReviewStatusId FROM dbo.ExemptCert_Temp_Shard_3) 
 	AS source (ExemptCertId, CompanyId, CustomerCode, CustomerName, Address1, Address2, Address3, City, Region, PostalCode, Country, ExemptCertTypeId, DocumentRefNo, BusinessTypeId, BusinessTypeOtherDescription, ExemptReasonId, ExemptReasonOtherDescription, EffDate, RegionsApplicable, ExemptCertStatusId, CreatedDate, LastTransactionDate, ExpiryDate, CreatedUserId, ModifiedDate, ModifiedUserId, CountryIssued, AvaCertId, ExemptCertReviewStatusId)
 ON (target.ExemptCertId = source.ExemptCertId)
 WHEN MATCHED THEN
@@ -832,14 +786,14 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Nexus_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Nexus_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.Nexus ON
 
 MERGE dbo.Nexus AS target
-USING (SELECT NexusId, CompanyId, State, JurisTypeId, JurisCode, JurisName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ShortName, SignatureCode, StateAssignedNo, NexusTypeId, Country, Sourcing, AccountingMethodId, HasLocalNexus, LocalNexusTypeId, HasPermanentEstablishment, TaxId, NexusTaxTypeGroupIdSK, VATNumberTypeId, VATOptionsId, MOSSId, IsSellerImporterOfRecord FROM dbo.Nexus_Temp_Shard_1) 
+USING (SELECT NexusId, CompanyId, State, JurisTypeId, JurisCode, JurisName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ShortName, SignatureCode, StateAssignedNo, NexusTypeId, Country, Sourcing, AccountingMethodId, HasLocalNexus, LocalNexusTypeId, HasPermanentEstablishment, TaxId, NexusTaxTypeGroupIdSK, VATNumberTypeId, VATOptionsId, MOSSId, IsSellerImporterOfRecord FROM dbo.Nexus_Temp_Shard_3) 
 	AS source (NexusId, CompanyId, State, JurisTypeId, JurisCode, JurisName, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ShortName, SignatureCode, StateAssignedNo, NexusTypeId, Country, Sourcing, AccountingMethodId, HasLocalNexus, LocalNexusTypeId, HasPermanentEstablishment, TaxId, NexusTaxTypeGroupIdSK, VATNumberTypeId, VATOptionsId, MOSSId, IsSellerImporterOfRecord)
 
 ON (target.NexusId = source.NexusId)
@@ -883,14 +837,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxCode_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxCode_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.TaxCode ON
 
 MERGE dbo.TaxCode AS target
-USING (SELECT TaxCodeId, TaxCode, TaxCodeTypeId, CompanyId, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ParentTaxCode, IsPhysical, GoodsServiceCode, EntityUseCode, IsActive, IsSSTCertified FROM dbo.TaxCode_Temp_Shard_1) 
+USING (SELECT TaxCodeId, TaxCode, TaxCodeTypeId, CompanyId, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ParentTaxCode, IsPhysical, GoodsServiceCode, EntityUseCode, IsActive, IsSSTCertified FROM dbo.TaxCode_Temp_Shard_3) 
 	AS source (TaxCodeId, TaxCode, TaxCodeTypeId, CompanyId, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, ParentTaxCode, IsPhysical, GoodsServiceCode, EntityUseCode, IsActive, IsSSTCertified)
 ON (target.TaxCodeId = source.TaxCodeId)
 WHEN MATCHED THEN
@@ -923,14 +877,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_UPCCodeLookup_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_UPCCodeLookup_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.UPCCodeLookup ON
 
 MERGE dbo.UPCCodeLookup AS target
-USING (SELECT UPCCodeLookupId, UPCCode, LegacyTaxCode, CompanyId, UPCDescription, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate, Usage, IsSystem FROM dbo.UPCCodeLookup_Temp_Shard_1) 
+USING (SELECT UPCCodeLookupId, UPCCode, LegacyTaxCode, CompanyId, UPCDescription, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate, Usage, IsSystem FROM dbo.UPCCodeLookup_Temp_Shard_3) 
 	AS source (UPCCodeLookupId, UPCCode, LegacyTaxCode, CompanyId, UPCDescription, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, EffDate, EndDate, Usage, IsSystem)
 ON (target.UPCCodeLookupId = source.UPCCodeLookupId)
 WHEN MATCHED THEN
@@ -958,14 +912,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_AvaCertServiceConfig_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_AvaCertServiceConfig_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.AvaCertServiceConfig ON
 
 MERGE dbo.AvaCertServiceConfig AS target
-USING (SELECT AvaCertServiceConfigId, CompanyId, AvaCertServiceStatusId, IsUpdateEnabled, ClientCode, OrgCode, AllowPending, LastUpdate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.AvaCertServiceConfig_Temp_Shard_1) 
+USING (SELECT AvaCertServiceConfigId, CompanyId, AvaCertServiceStatusId, IsUpdateEnabled, ClientCode, OrgCode, AllowPending, LastUpdate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.AvaCertServiceConfig_Temp_Shard_3) 
 	AS source (AvaCertServiceConfigId, CompanyId, AvaCertServiceStatusId, IsUpdateEnabled, ClientCode, OrgCode, AllowPending, LastUpdate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.AvaCertServiceConfigId = source.AvaCertServiceConfigId)
 WHEN MATCHED THEN
@@ -993,14 +947,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_AvaCommsServiceConfig_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_AvaCommsServiceConfig_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.AvaCommsServiceConfig ON
 
 MERGE dbo.AvaCommsServiceConfig AS target
-USING (SELECT AvaCommsConfigId, CompanyId, ClientId, ClientProfileId, Parameters, LastUpdate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.AvaCommsServiceConfig_Temp_Shard_1) 
+USING (SELECT AvaCommsConfigId, CompanyId, ClientId, ClientProfileId, Parameters, LastUpdate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.AvaCommsServiceConfig_Temp_Shard_3) 
 	AS source (AvaCommsConfigId, CompanyId, ClientId, ClientProfileId, Parameters, LastUpdate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.AvaCommsConfigId = source.AvaCommsConfigId)
 WHEN MATCHED THEN
@@ -1028,14 +982,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_BRCompanySecurityCertificate_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_BRCompanySecurityCertificate_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.BRCompanySecurityCertificate ON
 
 MERGE dbo.BRCompanySecurityCertificate AS target
-USING (SELECT CompanySecurityCertificateId, CompanyId, Password, Certificate, ExpirationDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.BRCompanySecurityCertificate_Temp_Shard_1) 
+USING (SELECT CompanySecurityCertificateId, CompanyId, Password, Certificate, ExpirationDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.BRCompanySecurityCertificate_Temp_Shard_3) 
 	AS source (CompanySecurityCertificateId, CompanyId, Password, Certificate, ExpirationDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.CompanySecurityCertificateId = source.CompanySecurityCertificateId)
 WHEN MATCHED THEN
@@ -1058,14 +1012,14 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_BRTaxRegimeBuyerTypeConfig_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_BRTaxRegimeBuyerTypeConfig_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.BRTaxRegimeBuyerTypeConfig ON
 
 MERGE dbo.BRTaxRegimeBuyerTypeConfig AS target
-USING (SELECT BRTaxRegimeBuyerTypeConfigId, CompanyId, Country, JurisName, JurisCode, JurisTypeId, TaxRuleTypeId, TaxCodeId, TaxRegime, IsRateCumulative, BuyerType, RateTypeId, Value, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_1) 
+USING (SELECT BRTaxRegimeBuyerTypeConfigId, CompanyId, Country, JurisName, JurisCode, JurisTypeId, TaxRuleTypeId, TaxCodeId, TaxRegime, IsRateCumulative, BuyerType, RateTypeId, Value, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_3) 
 	AS source (BRTaxRegimeBuyerTypeConfigId, CompanyId, Country, JurisName, JurisCode, JurisTypeId, TaxRuleTypeId, TaxCodeId, TaxRegime, IsRateCumulative, BuyerType, RateTypeId, Value, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.BRTaxRegimeBuyerTypeConfigId = source.BRTaxRegimeBuyerTypeConfigId)
 WHEN MATCHED THEN
@@ -1103,14 +1057,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyTaxForm_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_CompanyTaxForm_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.CompanyTaxForm ON
 
 MERGE dbo.CompanyTaxForm AS target
-USING (SELECT CompanyTaxFormId, CompanyId, LibraryTaxFormId, FilingStatusId, CloseDate, FinalDate, FilingFrequencyId, ModifiedUserId, TaxFormPDF, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedDate FROM dbo.CompanyTaxForm_Temp_Shard_1) 
+USING (SELECT CompanyTaxFormId, CompanyId, LibraryTaxFormId, FilingStatusId, CloseDate, FinalDate, FilingFrequencyId, ModifiedUserId, TaxFormPDF, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedDate FROM dbo.CompanyTaxForm_Temp_Shard_3) 
 	AS source (CompanyTaxFormId, CompanyId, LibraryTaxFormId, FilingStatusId, CloseDate, FinalDate, FilingFrequencyId, ModifiedUserId, TaxFormPDF, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedDate)
 ON (target.CompanyTaxFormId = source.CompanyTaxFormId)
 WHEN MATCHED THEN
@@ -1138,14 +1092,14 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Return_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Return_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.[Return] ON
 
 MERGE dbo.[Return] AS target
-USING (SELECT ReturnId, TransmissionId, CompanyId, ReturnTypeId, ReturnStatusId, BeginDate, EndDate, FiledDate, CreatedDate, ModifiedDate, JurisCode, JurisName, JurisTypeId, Region, ReturnName FROM dbo.Return_Temp_Shard_1) 
+USING (SELECT ReturnId, TransmissionId, CompanyId, ReturnTypeId, ReturnStatusId, BeginDate, EndDate, FiledDate, CreatedDate, ModifiedDate, JurisCode, JurisName, JurisTypeId, Region, ReturnName FROM dbo.Return_Temp_Shard_3) 
 	AS source (ReturnId, TransmissionId, CompanyId, ReturnTypeId, ReturnStatusId, BeginDate, EndDate, FiledDate, CreatedDate, ModifiedDate, JurisCode, JurisName, JurisTypeId, Region, ReturnName)
 ON (target.ReturnId = source.ReturnId)
 WHEN MATCHED THEN
@@ -1178,14 +1132,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxRuleProductDetail_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxRuleProductDetail_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.TaxRuleProductDetail ON
 
 MERGE dbo.TaxRuleProductDetail AS target
-USING (SELECT TaxRuleProductDetailId, TaxRuleId, ProductId, ProductTypeId, EffDate, EndDate, ModifiedDate FROM dbo.TaxRuleProductDetail_Temp_Shard_1) 
+USING (SELECT TaxRuleProductDetailId, TaxRuleId, ProductId, ProductTypeId, EffDate, EndDate, ModifiedDate FROM dbo.TaxRuleProductDetail_Temp_Shard_3) 
 	AS source (TaxRuleProductDetailId, TaxRuleId, ProductId, ProductTypeId, EffDate, EndDate, ModifiedDate)
 ON (target.TaxRuleProductDetailId = source.TaxRuleProductDetailId)
 WHEN MATCHED THEN
@@ -1208,14 +1162,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxCodeAttribute_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxCodeAttribute_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.TaxCodeAttribute ON
 
 MERGE dbo.TaxCodeAttribute AS target
-USING (SELECT TaxCodeAttributeId, TaxCodeId, Name, Value, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, UOMId FROM dbo.TaxCodeAttribute_Temp_Shard_1) 
+USING (SELECT TaxCodeAttributeId, TaxCodeId, Name, Value, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, UOMId FROM dbo.TaxCodeAttribute_Temp_Shard_3) 
 	AS source (TaxCodeAttributeId, TaxCodeId, Name, Value, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, UOMId)
 ON (target.TaxCodeAttributeId = source.TaxCodeAttributeId)
 WHEN MATCHED THEN
@@ -1239,14 +1193,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxCodeCategorization_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_TaxCodeCategorization_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.TaxCodeCategorization ON
 
 MERGE dbo.TaxCodeCategorization AS target
-USING (SELECT TaxCodeCategorizationId, TaxCodeId, Country, TaxCodeTypeId, IsPhysical, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.TaxCodeCategorization_Temp_Shard_1) 
+USING (SELECT TaxCodeCategorizationId, TaxCodeId, Country, TaxCodeTypeId, IsPhysical, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.TaxCodeCategorization_Temp_Shard_3) 
 	AS source (TaxCodeCategorizationId, TaxCodeId, Country, TaxCodeTypeId, IsPhysical, EffDate, EndDate, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.TaxCodeCategorizationId = source.TaxCodeCategorizationId)
 WHEN MATCHED THEN
@@ -1273,14 +1227,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_Item_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_Item_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.Item ON
 
 MERGE dbo.Item AS target
-USING (SELECT ItemId, ItemCode, CompanyId, TaxCodeId, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.Item_Temp_Shard_1) 
+USING (SELECT ItemId, ItemCode, CompanyId, TaxCodeId, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate FROM dbo.Item_Temp_Shard_3) 
 	AS source (ItemId, ItemCode, CompanyId, TaxCodeId, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate)
 ON (target.ItemId = source.ItemId)
 WHEN MATCHED THEN
@@ -1303,14 +1257,14 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_ItemAttribute_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_ItemAttribute_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.ItemAttribute ON
 
 MERGE dbo.ItemAttribute AS target
-USING (SELECT ItemAttributeId, ItemId, Name, Value, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, UOMId FROM dbo.ItemAttribute_Temp_Shard_1) 
+USING (SELECT ItemAttributeId, ItemId, Name, Value, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, UOMId FROM dbo.ItemAttribute_Temp_Shard_3) 
 	AS source (ItemAttributeId, ItemId, Name, Value, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, UOMId)
 ON (target.ItemAttributeId = source.ItemAttributeId)
 WHEN MATCHED THEN
@@ -1333,14 +1287,14 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentAddress_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentAddress_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentAddress ON
 
 MERGE dbo.DocumentAddress AS target
-USING (SELECT DocumentAddressId, DocumentId, Line1, City, Country, Region, PostalCode, BoundaryLevelId, JurisCode, County, CitySignature, TaxRegionId, GeoCode, GeocodeTypeId, ValidateStatusId, Latitude, Longitude, DocumentQueueAddressId, AddressLine1, AddressLine2, AddressLine3 FROM dbo.DocumentAddress_Temp_Shard_1) 
+USING (SELECT DocumentAddressId, DocumentId, Line1, City, Country, Region, PostalCode, BoundaryLevelId, JurisCode, County, CitySignature, TaxRegionId, GeoCode, GeocodeTypeId, ValidateStatusId, Latitude, Longitude, DocumentQueueAddressId, AddressLine1, AddressLine2, AddressLine3 FROM dbo.DocumentAddress_Temp_Shard_3) 
 	AS source (DocumentAddressId, DocumentId, Line1, City, Country, Region, PostalCode, BoundaryLevelId, JurisCode, County, CitySignature, TaxRegionId, GeoCode, GeocodeTypeId, ValidateStatusId, Latitude, Longitude, DocumentQueueAddressId, AddressLine1, AddressLine2, AddressLine3)
 ON (target.DocumentAddressId = source.DocumentAddressId)
 WHEN MATCHED THEN
@@ -1375,14 +1329,14 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentProperty_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentProperty_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentProperty ON
 
 MERGE dbo.DocumentProperty AS target
-USING (SELECT DocumentPropertyId, DocumentId, ReferenceCode, VATNumberTypeId FROM dbo.DocumentProperty_Temp_Shard_1) 
+USING (SELECT DocumentPropertyId, DocumentId, ReferenceCode, VATNumberTypeId FROM dbo.DocumentProperty_Temp_Shard_3) 
 	AS source (DocumentPropertyId, DocumentId, ReferenceCode, VATNumberTypeId)
 ON (target.DocumentPropertyId = source.DocumentPropertyId)
 WHEN MATCHED THEN
@@ -1402,14 +1356,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineParameterBag_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineParameterBag_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentLineParameterBag ON
 
 MERGE dbo.DocumentLineParameterBag AS target
-USING (SELECT DocumentLineParameterBagId, DocumentLineId, Name, Value, UOMId, UOMIdSystem, ValueSystem FROM dbo.DocumentLineParameterBag_Temp_Shard_1) 
+USING (SELECT DocumentLineParameterBagId, DocumentLineId, Name, Value, UOMId, UOMIdSystem, ValueSystem FROM dbo.DocumentLineParameterBag_Temp_Shard_3) 
 	AS source (DocumentLineParameterBagId, DocumentLineId, Name, Value, UOMId, UOMIdSystem, ValueSystem)
 ON (target.DocumentLineParameterBagId = source.DocumentLineParameterBagId)
 WHEN MATCHED THEN
@@ -1432,14 +1386,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineProperty_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineProperty_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentLineProperty ON
 
 MERGE dbo.DocumentLineProperty AS target
-USING (SELECT DocumentLinePropertyId, DocumentLineId, VATCode, VATNumberTypeId, HSCodeId, HSCode, HSCodeUsed, CIF FROM dbo.DocumentLineProperty_Temp_Shard_1) 
+USING (SELECT DocumentLinePropertyId, DocumentLineId, VATCode, VATNumberTypeId, HSCodeId, HSCode, HSCodeUsed, CIF FROM dbo.DocumentLineProperty_Temp_Shard_3) 
 	AS source (DocumentLinePropertyId, DocumentLineId, VATCode, VATNumberTypeId, HSCodeId, HSCode, HSCodeUsed, CIF)
 ON (target.DocumentLinePropertyId = source.DocumentLinePropertyId)
 WHEN MATCHED THEN
@@ -1462,14 +1416,14 @@ GO
 
 
 
-CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineDetailProperty_From_Temp_Shard_1
+CREATE OR ALTER PROCEDURE dbo.sp_Merge_DocumentLineDetailProperty_From_Temp_Shard_3
 AS
 BEGIN
 
 SET IDENTITY_INSERT dbo.DocumentLineDetailProperty ON
 
 MERGE dbo.DocumentLineDetailProperty AS target
-USING (SELECT DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel FROM dbo.DocumentLineDetailProperty_Temp_Shard_1) 
+USING (SELECT DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel FROM dbo.DocumentLineDetailProperty_Temp_Shard_3) 
 	AS source (DocumentLineDetailId, TaxTypeMappingId, RateTypeTaxTypeMappingId, IsFee, TaxAuthorityId, ReportLevel)
 ON (target.DocumentLineDetailId = source.DocumentLineDetailId)
 WHEN MATCHED THEN

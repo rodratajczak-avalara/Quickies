@@ -55,9 +55,6 @@ CREATE OR ALTER PROCEDURE sp_Query_DocumentProperty_Modified_Records
 	@CurrentCheckTime	DATETIME
 AS 
 BEGIN
-		DECLARE  @LastCheckTime DATETIME = '6/24/2018 12:12:57 AM' , @CurrentCheckTime DATETIME ='6/24/2018 12:37:59 AM' 
-
-
     SELECT dp.*
     FROM DocumentProperty dp WITH (NOLOCK)
     WHERE dp.DocumentId IN 
@@ -99,6 +96,9 @@ CREATE OR ALTER PROCEDURE sp_Query_DocumentLineProperty_Modified_Records
 	@CurrentCheckTime	DATETIME
 AS 
 BEGIN
+		DECLARE  @LastCheckTime DATETIME = '6/24/2018 12:12:57 AM' , @CurrentCheckTime DATETIME ='6/24/2018 12:37:59 AM' 
+
+
 	SELECT dlp.*
     FROM DocumentLineProperty dlp
     WHERE dlp.DocumentLineId IN 

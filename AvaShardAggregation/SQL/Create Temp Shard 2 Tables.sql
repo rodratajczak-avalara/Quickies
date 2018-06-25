@@ -1,72 +1,4 @@
 
-IF OBJECT_ID ('dbo.Document_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Document_Temp_Shard_1
-GO
-
-CREATE TABLE dbo.Document_Temp_Shard_1
-	(
-	DocumentId                          BIGINT NOT NULL,
-	DocumentTypeId                      TINYINT NOT NULL,
-	CompanyId                           INT NOT NULL,
-	DocumentDate                        DATETIME NOT NULL,
-	DocumentCode                        VARCHAR (50),
-	DocumentStatusId                    TINYINT NOT NULL,
-	PurchaseOrderNo                     VARCHAR (50),
-	CustomerVendorCode                  VARCHAR (50),
-	SalespersonCode                     VARCHAR (25),
-	CustomerUsageType                   VARCHAR (25),
-	ReferenceCode                       VARCHAR (50),
-	IsReconciled                        BIT  NOT NULL,
-	TotalAmount                         MONEY  NOT NULL,
-	TotalTax                            MONEY  NOT NULL,
-	ExemptNo                            VARCHAR (25),
-	ModifiedDate                        DATETIME NOT NULL,
-	ModifiedUserId                      INT NOT NULL,
-	TaxDate                             DATETIME NOT NULL,
-	DocumentLineCount                   INT NOT NULL,
-	HashCode                            INT,
-	TotalTaxable                        MONEY ,
-	TotalExempt                         MONEY ,
-	BatchCode                           VARCHAR (25) ,
-	SoftwareVersion                     VARCHAR (25),
-	LocationCode                        VARCHAR (50),
-	AdjustmentReasonId                  TINYINT ,
-	AdjustmentDescription               VARCHAR (255),
-	IsLocked                            BIT NOT NULL,
-	Version                             INT NOT NULL,
-	TotalTaxCalculated                  MONEY ,
-	TaxOverrideAmount                   MONEY ,
-	TaxOverrideTypeId                   TINYINT ,
-	TaxOverrideReason                   VARCHAR (255),
-	CurrencyCode                        CHAR (3),
-	PaymentDate                         DATETIME,
-	OriginAddressId                     BIGINT,
-	DestinationAddressId                BIGINT,
-	ExchangeRate                        MONEY,
-	ExchangeRateEffDate                 DATETIME,
-	AdjustedStatusId                    TINYINT,
-	Region                              VARCHAR (3),
-	Country                             VARCHAR (50),
-	PosLaneCode                         VARCHAR (50),
-	BusinessIdentificationNo            VARCHAR (25),
-	IsSellerImporterOfRecord            BIT,
-	BRBuyerType                         VARCHAR (5),
-	BRBuyer_IsExemptOrCannotWH_IRRF     BIT,
-	BRBuyer_IsExemptOrCannotWH_PISRF    BIT,
-	BRBuyer_IsExemptOrCannotWH_COFINSRF BIT,
-	BRBuyer_IsExemptOrCannotWH_CSLLRF   BIT,
-	BRBuyer_IsExempt_PIS                BIT,
-	BRBuyer_IsExempt_COFINS             BIT,
-	BRBuyer_IsExempt_CSLL               BIT,
-	Description                         NVARCHAR (2048),
-	Email                               VARCHAR (50),
-	CONSTRAINT PK_Document_Temp_Shard_1 PRIMARY KEY (DocumentId),
-	CONSTRAINT IX_Document_Temp_Shard_1_Unique UNIQUE (CompanyId,DocumentCode,DocumentTypeId,Version)
-	)
-GO
-
-
-
 IF OBJECT_ID ('dbo.Document_Temp_Shard_2') IS NOT NULL
 	DROP TABLE dbo.Document_Temp_Shard_2
 GO
@@ -136,128 +68,6 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.Document_Temp_Shard_3') IS NOT NULL
-	DROP TABLE dbo.Document_Temp_Shard_3
-GO
-
-CREATE TABLE dbo.Document_Temp_Shard_3
-	(
-	DocumentId                          BIGINT NOT NULL,
-	DocumentTypeId                      TINYINT NOT NULL,
-	CompanyId                           INT NOT NULL,
-	DocumentDate                        DATETIME NOT NULL,
-	DocumentCode                        VARCHAR (50),
-	DocumentStatusId                    TINYINT NOT NULL,
-	PurchaseOrderNo                     VARCHAR (50),
-	CustomerVendorCode                  VARCHAR (50),
-	SalespersonCode                     VARCHAR (25),
-	CustomerUsageType                   VARCHAR (25),
-	ReferenceCode                       VARCHAR (50),
-	IsReconciled                        BIT  NOT NULL,
-	TotalAmount                         MONEY  NOT NULL,
-	TotalTax                            MONEY  NOT NULL,
-	ExemptNo                            VARCHAR (25),
-	ModifiedDate                        DATETIME NOT NULL,
-	ModifiedUserId                      INT NOT NULL,
-	TaxDate                             DATETIME NOT NULL,
-	DocumentLineCount                   INT NOT NULL,
-	HashCode                            INT,
-	TotalTaxable                        MONEY ,
-	TotalExempt                         MONEY ,
-	BatchCode                           VARCHAR (25) ,
-	SoftwareVersion                     VARCHAR (25),
-	LocationCode                        VARCHAR (50),
-	AdjustmentReasonId                  TINYINT ,
-	AdjustmentDescription               VARCHAR (255),
-	IsLocked                            BIT NOT NULL,
-	Version                             INT NOT NULL,
-	TotalTaxCalculated                  MONEY ,
-	TaxOverrideAmount                   MONEY ,
-	TaxOverrideTypeId                   TINYINT ,
-	TaxOverrideReason                   VARCHAR (255),
-	CurrencyCode                        CHAR (3),
-	PaymentDate                         DATETIME,
-	OriginAddressId                     BIGINT,
-	DestinationAddressId                BIGINT,
-	ExchangeRate                        MONEY,
-	ExchangeRateEffDate                 DATETIME,
-	AdjustedStatusId                    TINYINT,
-	Region                              VARCHAR (3),
-	Country                             VARCHAR (50),
-	PosLaneCode                         VARCHAR (50),
-	BusinessIdentificationNo            VARCHAR (25),
-	IsSellerImporterOfRecord            BIT,
-	BRBuyerType                         VARCHAR (5),
-	BRBuyer_IsExemptOrCannotWH_IRRF     BIT,
-	BRBuyer_IsExemptOrCannotWH_PISRF    BIT,
-	BRBuyer_IsExemptOrCannotWH_COFINSRF BIT,
-	BRBuyer_IsExemptOrCannotWH_CSLLRF   BIT,
-	BRBuyer_IsExempt_PIS                BIT,
-	BRBuyer_IsExempt_COFINS             BIT,
-	BRBuyer_IsExempt_CSLL               BIT,
-	Description                         NVARCHAR (2048),
-	Email                               VARCHAR (50),
-	CONSTRAINT PK_Document_Temp_Shard_3 PRIMARY KEY (DocumentId),
-	CONSTRAINT IX_Document_Temp_Shard_3_Unique UNIQUE (CompanyId,DocumentCode,DocumentTypeId,Version)
-	)
-GO
-
-
-
-IF OBJECT_ID ('dbo.DocumentLine_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentLine_Temp_Shard_1
-GO
-
-CREATE TABLE dbo.DocumentLine_Temp_Shard_1
-	(
-	DocumentLineId           BIGINT NOT NULL,
-	DocumentId               BIGINT NOT NULL,
-	[LineNo]                 VARCHAR (50),
-	ItemCode                 VARCHAR (50),
-	TaxCode                  VARCHAR (25),
-	OriginAddressId          BIGINT,
-	DestinationAddressId     BIGINT,
-	Quantity                 MONEY NOT NULL,
-	LineAmount               MONEY,
-	ExemptAmount             MONEY,
-	DiscountAmount           MONEY,
-	DiscountTypeId           TINYINT,
-	TaxableAmount            MONEY,
-	ExemptNo                 VARCHAR (25),
-	RevAccount               VARCHAR (50),
-	Ref1                     VARCHAR (250),
-	Ref2                     VARCHAR (250),
-	IsSSTP                   BIT NOT NULL,
-	IsItemTaxable            BIT NOT NULL,
-	CustomerUsageType        VARCHAR (25),
-	Description              NVARCHAR (2096),
-	Sourcing                 VARCHAR (2),
-	GoodsServiceCode         BIGINT NOT NULL,
-	TaxEngine                VARCHAR (10) NOT NULL,
-	BoundaryOverrideId       INT,
-	TweEntityUseCode         VARCHAR (40),
-	Tax                      MONEY,
-	ExemptCertId             INT,
-	TaxCodeId                INT,
-	TaxCalculated            MONEY,
-	TaxOverrideAmount        MONEY,
-	TaxOverrideTypeId        TINYINT,
-	TaxOverrideReason        VARCHAR (255),
-	TaxDate                  DATETIME,
-	ReportingDate            DATETIME,
-	AccountingMethodId       TINYINT,
-	TaxIncluded              BIT,
-	IsExempt                 BIT,
-	BusinessIdentificationNo VARCHAR (25),
-	UnitOfMeasurement        VARCHAR (25),
-	StateSstNexusTypeId      INT,
-	CONSTRAINT PK_DocumentLine_Temp_Shard_1 PRIMARY KEY (DocumentLineId),
-	CONSTRAINT IX_DocumentLine_Temp_Shard_1 UNIQUE (DocumentId,[LineNo])
-	)
-GO
-
-
-
 
 IF OBJECT_ID ('dbo.DocumentLine_Temp_Shard_2') IS NOT NULL
 	DROP TABLE dbo.DocumentLine_Temp_Shard_2
@@ -287,10 +97,6 @@ CREATE TABLE dbo.DocumentLine_Temp_Shard_2
 	CustomerUsageType        VARCHAR (25),
 	Description              NVARCHAR (2096),
 	Sourcing                 VARCHAR (2),
-
-
-
-
 	GoodsServiceCode         BIGINT NOT NULL,
 	TaxEngine                VARCHAR (10) NOT NULL,
 	BoundaryOverrideId       INT,
@@ -318,112 +124,7 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentLine_Temp_Shard_3') IS NOT NULL
-	DROP TABLE dbo.DocumentLine_Temp_Shard_3
-GO
 
-CREATE TABLE dbo.DocumentLine_Temp_Shard_3
-	(
-	DocumentLineId           BIGINT NOT NULL,
-	DocumentId               BIGINT NOT NULL,
-	[LineNo]                 VARCHAR (50),
-	ItemCode                 VARCHAR (50),
-	TaxCode                  VARCHAR (25),
-	OriginAddressId          BIGINT,
-	DestinationAddressId     BIGINT,
-	Quantity                 MONEY NOT NULL,
-	LineAmount               MONEY,
-	ExemptAmount             MONEY,
-	DiscountAmount           MONEY,
-	DiscountTypeId           TINYINT,
-	TaxableAmount            MONEY,
-	ExemptNo                 VARCHAR (25),
-	RevAccount               VARCHAR (50),
-	Ref1                     VARCHAR (250),
-	Ref2                     VARCHAR (250),
-	IsSSTP                   BIT NOT NULL,
-	IsItemTaxable            BIT NOT NULL,
-	CustomerUsageType        VARCHAR (25),
-	Description              NVARCHAR (2096),
-	Sourcing                 VARCHAR (2),
-	GoodsServiceCode         BIGINT NOT NULL,
-	TaxEngine                VARCHAR (10) NOT NULL,
-	BoundaryOverrideId       INT,
-	TweEntityUseCode         VARCHAR (40),
-	Tax                      MONEY,
-	ExemptCertId             INT,
-	TaxCodeId                INT,
-	TaxCalculated            MONEY,
-	TaxOverrideAmount        MONEY,
-	TaxOverrideTypeId        TINYINT,
-	TaxOverrideReason        VARCHAR (255),
-	TaxDate                  DATETIME,
-	ReportingDate            DATETIME,
-	AccountingMethodId       TINYINT,
-	TaxIncluded              BIT,
-	IsExempt                 BIT,
-	BusinessIdentificationNo VARCHAR (25),
-	UnitOfMeasurement        VARCHAR (25),
-	StateSstNexusTypeId      INT,
-	CONSTRAINT PK_DocumentLine_Temp_Shard_3 PRIMARY KEY (DocumentLineId),
-	CONSTRAINT IX_DocumentLine_Temp_Shard_3 UNIQUE (DocumentId,[LineNo])
-	)
-GO
-
-
-
-
-IF OBJECT_ID ('dbo.DocumentLineDetail_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentLineDetail_Temp_Shard_1
-GO
-
-CREATE TABLE dbo.DocumentLineDetail_Temp_Shard_1
-	(
-	DocumentLineDetailId BIGINT NOT NULL,
-	DocumentLineId       BIGINT NOT NULL,
-	JurisTypeId          VARCHAR (3),
-	SERCode              VARCHAR (10),
-	JurisCode            VARCHAR (10),
-	StateFIPS            VARCHAR (2) NOT NULL,
-	TaxableAmount        MONEY NOT NULL,
-	Rate                 DECIMAL (18, 6),
-	Tax                  MONEY NOT NULL,
-	Sourcing             VARCHAR (2),
-	TaxTypeId            VARCHAR (1) NOT NULL,
-	ExemptAmount         MONEY NOT NULL,
-	ExemptReasonId       INT NOT NULL,
-	Region               VARCHAR (3),
-	InState              BIT NOT NULL,
-	NonTaxableAmount     MONEY NOT NULL,
-	RateSourceId         INT NOT NULL,
-	RateRuleId           INT NOT NULL,
-	NonTaxableTypeId     INT NOT NULL,
-	NonTaxableRuleId     INT NOT NULL,
-	CountyFIPS           VARCHAR (3),
-	AddressId            BIGINT,
-	JurisName            VARCHAR (200),
-	StateAssignedNo      VARCHAR (50),
-	Country              VARCHAR (2) NOT NULL,
-	JurisdictionId       INT NOT NULL,
-	TaxName              VARCHAR (75) NOT NULL,
-	TaxAuthorityTypeId   INT NOT NULL,
-	TaxRegionId          INT,
-	TaxCalculated        MONEY,
-	TaxOverride          MONEY,
-	SignatureCode        CHAR (4),
-	RateTypeId           CHAR (1),
-	DocumentId           BIGINT,
-	TaxableUnits         DECIMAL (19, 4),
-	NonTaxableUnits      DECIMAL (19, 4),
-	ExemptUnits          DECIMAL (19, 4),
-	UnitOfBasisId        BIGINT,
-	ReturnsRateID        INT,
-	ReturnsDeductionID   INT,
-	ReturnsTaxTypeID     INT,
-	IsNonPassThru        BIT,
-	CONSTRAINT PK_DocumentLineDetail_Temp_Shard_1 PRIMARY KEY (DocumentLineDetailId)
-	)
-GO
 
 
 
@@ -482,78 +183,7 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentLineDetail_Temp_Shard_3') IS NOT NULL
-	DROP TABLE dbo.DocumentLineDetail_Temp_Shard_3
-GO
 
-CREATE TABLE dbo.DocumentLineDetail_Temp_Shard_3
-	(
-	DocumentLineDetailId BIGINT NOT NULL,
-	DocumentLineId       BIGINT NOT NULL,
-	JurisTypeId          VARCHAR (3),
-	SERCode              VARCHAR (10),
-	JurisCode            VARCHAR (10),
-	StateFIPS            VARCHAR (2) NOT NULL,
-	TaxableAmount        MONEY NOT NULL,
-	Rate                 DECIMAL (18, 6),
-	Tax                  MONEY NOT NULL,
-	Sourcing             VARCHAR (2),
-	TaxTypeId            VARCHAR (1) NOT NULL,
-	ExemptAmount         MONEY NOT NULL,
-	ExemptReasonId       INT NOT NULL,
-	Region               VARCHAR (3),
-	InState              BIT NOT NULL,
-	NonTaxableAmount     MONEY NOT NULL,
-	RateSourceId         INT NOT NULL,
-	RateRuleId           INT NOT NULL,
-	NonTaxableTypeId     INT NOT NULL,
-	NonTaxableRuleId     INT NOT NULL,
-	CountyFIPS           VARCHAR (3),
-	AddressId            BIGINT,
-	JurisName            VARCHAR (200),
-	StateAssignedNo      VARCHAR (50),
-	Country              VARCHAR (2) NOT NULL,
-	JurisdictionId       INT NOT NULL,
-	TaxName              VARCHAR (75) NOT NULL,
-	TaxAuthorityTypeId   INT NOT NULL,
-	TaxRegionId          INT,
-	TaxCalculated        MONEY,
-	TaxOverride          MONEY,
-	SignatureCode        CHAR (4),
-	RateTypeId           CHAR (1),
-	DocumentId           BIGINT,
-	TaxableUnits         DECIMAL (19, 4),
-	NonTaxableUnits      DECIMAL (19, 4),
-	ExemptUnits          DECIMAL (19, 4),
-	UnitOfBasisId        BIGINT,
-	ReturnsRateID        INT,
-	ReturnsDeductionID   INT,
-	ReturnsTaxTypeID     INT,
-	IsNonPassThru        BIT,
-	CONSTRAINT PK_DocumentLineDetail_Temp_Shard_3 PRIMARY KEY (DocumentLineDetailId)
-	)
-GO
-
-
-
-
-
-IF OBJECT_ID ('dbo.DocumentParameterBag_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentParameterBag_Temp_Shard_1
-GO
-
-CREATE TABLE dbo.DocumentParameterBag_Temp_Shard_1
-	(
-	DocumentParameterBagId BIGINT NOT NULL,
-	DocumentId             BIGINT NOT NULL,
-	Name                   VARCHAR (50) NOT NULL,
-	Value                  VARCHAR (50),
-	UOMId                  INT,
-	UOMIdSystem            INT,
-	ValueSystem            VARCHAR (50),
-	CONSTRAINT PK_DocumentParameterBag_Temp_Shard_1 PRIMARY KEY (DocumentParameterBagId)
-	)
-GO
 
 
 
@@ -577,29 +207,12 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentParameterBag_Temp_Shard_3') IS NOT NULL
-	DROP TABLE dbo.DocumentParameterBag_Temp_Shard_3
+
+IF OBJECT_ID ('dbo.Account_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.Account_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentParameterBag_Temp_Shard_3
-	(
-	DocumentParameterBagId BIGINT NOT NULL,
-	DocumentId             BIGINT NOT NULL,
-	Name                   VARCHAR (50) NOT NULL,
-	Value                  VARCHAR (50),
-	UOMId                  INT,
-	UOMIdSystem            INT,
-	ValueSystem            VARCHAR (50),
-	CONSTRAINT PK_DocumentParameterBag_Temp_Shard_3 PRIMARY KEY (DocumentParameterBagId)
-	)
-GO
-
-
-IF OBJECT_ID ('dbo.Account_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Account_Temp_Shard_1
-GO
-
-CREATE TABLE dbo.Account_Temp_Shard_1
+CREATE TABLE dbo.Account_Temp_Shard_2
 	(
 	AccountId       INT NOT NULL,
 	LicenseKey      VARCHAR (50),
@@ -615,16 +228,16 @@ CREATE TABLE dbo.Account_Temp_Shard_1
 	AccountStatusId INT,
 	CRMId           INT,
 	CRMIdSTR        VARCHAR (100),
-	CONSTRAINT PK_Account_Temp_Shard_1 PRIMARY KEY (AccountId)
+	CONSTRAINT PK_Account_Temp_Shard_2 PRIMARY KEY (AccountId)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.TaxServiceConfig_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.TaxServiceConfig_Temp_Shard_1
+IF OBJECT_ID ('dbo.TaxServiceConfig_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.TaxServiceConfig_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.TaxServiceConfig_Temp_Shard_1
+CREATE TABLE dbo.TaxServiceConfig_Temp_Shard_2
 	(
 	AccountId                            INT NOT NULL,
 	RequireOriginAddress                 BIT NOT NULL,
@@ -644,19 +257,19 @@ CREATE TABLE dbo.TaxServiceConfig_Temp_Shard_1
 	SSTPolicyOverrideDate                DATETIME,
 	ItemDescPolicyOverrideDate           DATETIME,
 	UseIsSellerImporterOfRecordFromNexus BIT,
-	CONSTRAINT PK_TaxServiceConfig_Temp_Shard_1 PRIMARY KEY (AccountId),
-	CONSTRAINT IX_TaxServiceConfig_Temp_Shard_1 UNIQUE (AccountId,CreatedUserId)
+	CONSTRAINT PK_TaxServiceConfig_Temp_Shard_2 PRIMARY KEY (AccountId),
+	CONSTRAINT IX_TaxServiceConfig_Temp_Shard_2 UNIQUE (AccountId,CreatedUserId)
 	)
 GO
 
 
 
 
-IF OBJECT_ID ('dbo.AddressServiceConfig_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.AddressServiceConfig_Temp_Shard_1
+IF OBJECT_ID ('dbo.AddressServiceConfig_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.AddressServiceConfig_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.AddressServiceConfig_Temp_Shard_1
+CREATE TABLE dbo.AddressServiceConfig_Temp_Shard_2
 	(
 	AccountId      INT NOT NULL,
 	IsUpperCase    BIT NOT NULL,
@@ -665,31 +278,31 @@ CREATE TABLE dbo.AddressServiceConfig_Temp_Shard_1
 	ModifiedUserId INT NOT NULL,
 	ModifiedDate   DATETIME NOT NULL,
 	IsJaasDisabled BIT,
-	CONSTRAINT PK_AddressServiceConfig_Temp_Shard_1 PRIMARY KEY (AccountId)
+	CONSTRAINT PK_AddressServiceConfig_Temp_Shard_2 PRIMARY KEY (AccountId)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.DocumentCodeChangeList_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentCodeChangeList_Temp_Shard_1
+IF OBJECT_ID ('dbo.DocumentCodeChangeList_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.DocumentCodeChangeList_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentCodeChangeList_Temp_Shard_1
+CREATE TABLE dbo.DocumentCodeChangeList_Temp_Shard_2
 	(
 	AccountId    INT NOT NULL,
 	DocumentCode VARCHAR (50) NOT NULL,
 	Committed    BIT NOT NULL,
 	ModifiedDate DATETIME NOT NULL,
-	CONSTRAINT PK_DocumentCodeChangeList_Temp_Shard_1 PRIMARY KEY (AccountId,DocumentCode,Committed)
+	CONSTRAINT PK_DocumentCodeChangeList_Temp_Shard_2 PRIMARY KEY (AccountId,DocumentCode,Committed)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.BoundaryOverride_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.BoundaryOverride_Temp_Shard_1
+IF OBJECT_ID ('dbo.BoundaryOverride_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.BoundaryOverride_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.BoundaryOverride_Temp_Shard_1
+CREATE TABLE dbo.BoundaryOverride_Temp_Shard_2
 	(
 	BoundaryOverrideId INT NOT NULL,
 	AccountId          INT NOT NULL,
@@ -726,18 +339,18 @@ CREATE TABLE dbo.BoundaryOverride_Temp_Shard_1
 	CityJurisName      VARCHAR (50),
 	TaxRegionId        INT NOT NULL,
 	State              CHAR (2),
-	CONSTRAINT PK_BoundaryOverride_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (BoundaryOverrideId),
-	CONSTRAINT CX_BoundaryOverride_Temp_Shard_1 UNIQUE CLUSTERED (AccountId,State,City,StreetName,StreetPre,StreetPost,AddrLo,OddEven,ZIP5Lo,ZIP4Lo,EffDate,StreetSuffix,TaxRegionId)
+	CONSTRAINT PK_BoundaryOverride_Temp_Shard_2 PRIMARY KEY NONCLUSTERED (BoundaryOverrideId),
+	CONSTRAINT CX_BoundaryOverride_Temp_Shard_2 UNIQUE CLUSTERED (AccountId,State,City,StreetName,StreetPre,StreetPost,AddrLo,OddEven,ZIP5Lo,ZIP4Lo,EffDate,StreetSuffix,TaxRegionId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.JurisdictionOverride_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.JurisdictionOverride_Temp_Shard_1
+IF OBJECT_ID ('dbo.JurisdictionOverride_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.JurisdictionOverride_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.JurisdictionOverride_Temp_Shard_1
+CREATE TABLE dbo.JurisdictionOverride_Temp_Shard_2
 	(
 	JurisdictionOverrideId INT NOT NULL,
 	BoundaryOverrideId     INT,
@@ -753,8 +366,8 @@ CREATE TABLE dbo.JurisdictionOverride_Temp_Shard_1
 	ModifiedDate           DATETIME NOT NULL,
 	EffDate                DATETIME,
 	EndDate                DATETIME,
-	CONSTRAINT PK_JurisdictionOverride_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (JurisdictionOverrideId),
-	CONSTRAINT IX_JurisdictionOverride_Temp_Shard_1 UNIQUE (AccountId,Region,City,PostalCode,Address,EffDate)
+	CONSTRAINT PK_JurisdictionOverride_Temp_Shard_2 PRIMARY KEY NONCLUSTERED (JurisdictionOverrideId),
+	CONSTRAINT IX_JurisdictionOverride_Temp_Shard_2 UNIQUE (AccountId,Region,City,PostalCode,Address,EffDate)
 	)
 GO
 
@@ -762,11 +375,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.Service_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Service_Temp_Shard_1
+IF OBJECT_ID ('dbo.Service_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.Service_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.Service_Temp_Shard_1
+CREATE TABLE dbo.Service_Temp_Shard_2
 	(
 	ServiceId      INT NOT NULL,
 	AccountId      INT NOT NULL,
@@ -779,19 +392,19 @@ CREATE TABLE dbo.Service_Temp_Shard_1
 	ModifiedDate   DATETIME NOT NULL,
 	EffDate        DATETIME NOT NULL,
 	EndDate        DATETIME NOT NULL,
-	CONSTRAINT PK_Service_Temp_Shard_1 PRIMARY KEY (ServiceId),
-	CONSTRAINT IX_Service_Temp_Shard_1 UNIQUE (AccountId,ServiceTypeId,EffDate)
+	CONSTRAINT PK_Service_Temp_Shard_2 PRIMARY KEY (ServiceId),
+	CONSTRAINT IX_Service_Temp_Shard_2 UNIQUE (AccountId,ServiceTypeId,EffDate)
 	)
 GO
 
 
 
 
-IF OBJECT_ID ('dbo.Subscription_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Subscription_Temp_Shard_1
+IF OBJECT_ID ('dbo.Subscription_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.Subscription_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.Subscription_Temp_Shard_1
+CREATE TABLE dbo.Subscription_Temp_Shard_2
 	(
 	SubscriptionId     INT NOT NULL,
 	AccountId          INT NOT NULL,
@@ -808,8 +421,8 @@ CREATE TABLE dbo.Subscription_Temp_Shard_1
 	ModifiedDate       DATETIME NOT NULL,
 	CreatedUserId      INT NOT NULL,
 	ModifiedUserId     INT NOT NULL,
-	CONSTRAINT PK_Subscription_SubscriptionId_Temp_Shard_1 PRIMARY KEY (SubscriptionId),
-	CONSTRAINT IX_UNIQUE_Subscription_AccountId_ReferenceCode_SubscriptionTypeId_RegionCode_EffDate_Temp_Shard_1 UNIQUE (AccountId,ReferenceCode,SubscriptionTypeId,RegionCode,EffDate)
+	CONSTRAINT PK_Subscription_SubscriptionId_Temp_Shard_2 PRIMARY KEY (SubscriptionId),
+	CONSTRAINT IX_UNIQUE_Subscription_AccountId_ReferenceCode_SubscriptionTypeId_RegionCode_EffDate_Temp_Shard_2 UNIQUE (AccountId,ReferenceCode,SubscriptionTypeId,RegionCode,EffDate)
 	)
 GO
 
@@ -817,11 +430,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.User_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.[User_Temp_Shard_1]
+IF OBJECT_ID ('dbo.User_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.[User_Temp_Shard_2]
 GO
 
-CREATE TABLE dbo.[User_Temp_Shard_1]
+CREATE TABLE dbo.[User_Temp_Shard_2]
 	(
 	UserId              INT NOT NULL,
 	AccountId           INT NOT NULL,
@@ -841,17 +454,17 @@ CREATE TABLE dbo.[User_Temp_Shard_1]
 	FailedLoginAttempts INT NOT NULL,
 	CompanyId           INT,
 	SubjectId           NVARCHAR (32),
-	CONSTRAINT PK_User_Temp_Shard_1 PRIMARY KEY (UserId),
-	CONSTRAINT IX_User_Temp_Shard_1 UNIQUE (UserName)
+	CONSTRAINT PK_User_Temp_Shard_2 PRIMARY KEY (UserId),
+	CONSTRAINT IX_User_Temp_Shard_2 UNIQUE (UserName)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.Company_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Company_Temp_Shard_1
+IF OBJECT_ID ('dbo.Company_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.Company_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.Company_Temp_Shard_1
+CREATE TABLE dbo.Company_Temp_Shard_2
 	(
 	CompanyId                  INT NOT NULL,
 	AccountId                  INT NOT NULL,
@@ -884,19 +497,19 @@ CREATE TABLE dbo.Company_Temp_Shard_1
 	VATDeductionRightId        INT,
 	MOSSId                     VARCHAR (25),
 	MOSSCountry                VARCHAR (2),
-	CONSTRAINT PK_Company_Temp_Shard_1 PRIMARY KEY (CompanyId),
-	CONSTRAINT IX_Company_Temp_Shard_1 UNIQUE (AccountId,CompanyCode),
-	CONSTRAINT IX_Company_Temp_Shard_1_AccountId_EntityNo UNIQUE (AccountId,EntityNo)
+	CONSTRAINT PK_Company_Temp_Shard_2 PRIMARY KEY (CompanyId),
+	CONSTRAINT IX_Company_Temp_Shard_2 UNIQUE (AccountId,CompanyCode),
+	CONSTRAINT IX_Company_Temp_Shard_2_AccountId_EntityNo UNIQUE (AccountId,EntityNo)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.TaxRule_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.TaxRule_Temp_Shard_1
+IF OBJECT_ID ('dbo.TaxRule_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.TaxRule_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.TaxRule_Temp_Shard_1
+CREATE TABLE dbo.TaxRule_Temp_Shard_2
 	(
 	TaxRuleId                INT NOT NULL,
 	CompanyId                INT NOT NULL,
@@ -940,17 +553,17 @@ CREATE TABLE dbo.TaxRule_Temp_Shard_1
 	PreferredProgramId       INT,
 	UOMId                    INT,
 	HashKey                  VARBINARY (900),
-	CONSTRAINT PK_TaxRule_Temp_Shard_1 PRIMARY KEY (TaxRuleId),
-	CONSTRAINT IX_TaxRule_Temp_Shard_1_HashKey UNIQUE (HashKey)
+	CONSTRAINT PK_TaxRule_Temp_Shard_2 PRIMARY KEY (TaxRuleId),
+	CONSTRAINT IX_TaxRule_Temp_Shard_2_HashKey UNIQUE (HashKey)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.CompanyContact_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.CompanyContact_Temp_Shard_1
+IF OBJECT_ID ('dbo.CompanyContact_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.CompanyContact_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.CompanyContact_Temp_Shard_1
+CREATE TABLE dbo.CompanyContact_Temp_Shard_2
 	(
 	CompanyContactId   INT NOT NULL,
 	CompanyId          INT,
@@ -975,7 +588,7 @@ CREATE TABLE dbo.CompanyContact_Temp_Shard_1
 	CreatedDate        DATETIME NOT NULL,
 	ModifiedUserId     INT NOT NULL,
 	ModifiedDate       DATETIME NOT NULL,
-	CONSTRAINT PK_CompanyContact_Temp_Shard_1 PRIMARY KEY (CompanyContactId)
+	CONSTRAINT PK_CompanyContact_Temp_Shard_2 PRIMARY KEY (CompanyContactId)
 	)
 GO
 
@@ -983,11 +596,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.CompanyLocation_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.CompanyLocation_Temp_Shard_1
+IF OBJECT_ID ('dbo.CompanyLocation_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.CompanyLocation_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.CompanyLocation_Temp_Shard_1
+CREATE TABLE dbo.CompanyLocation_Temp_Shard_2
 	(
 	CompanyLocationId   INT NOT NULL,
 	CompanyId           INT NOT NULL,
@@ -1016,18 +629,18 @@ CREATE TABLE dbo.CompanyLocation_Temp_Shard_1
 	EndDate             DATETIME,
 	LastTransactionDate DATETIME,
 	RegisteredDate      DATETIME,
-	CONSTRAINT PK_CompanyLocation_Temp_Shard_1 PRIMARY KEY (CompanyLocationId),
-	CONSTRAINT IX_CompanyLocation_Temp_Shard_1 UNIQUE (CompanyId,LocationCode,AddressTypeId,StartDate)
+	CONSTRAINT PK_CompanyLocation_Temp_Shard_2 PRIMARY KEY (CompanyLocationId),
+	CONSTRAINT IX_CompanyLocation_Temp_Shard_2 UNIQUE (CompanyId,LocationCode,AddressTypeId,StartDate)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.ExemptCert_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.ExemptCert_Temp_Shard_1
+IF OBJECT_ID ('dbo.ExemptCert_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.ExemptCert_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.ExemptCert_Temp_Shard_1
+CREATE TABLE dbo.ExemptCert_Temp_Shard_2
 	(
 	ExemptCertId                 INT NOT NULL,
 	CompanyId                    INT NOT NULL,
@@ -1058,17 +671,17 @@ CREATE TABLE dbo.ExemptCert_Temp_Shard_1
 	CountryIssued                VARCHAR (2),
 	AvaCertId                    VARCHAR (10),
 	ExemptCertReviewStatusId     TINYINT,
-	CONSTRAINT PK_ExemptCert_Temp_Shard_1 PRIMARY KEY (ExemptCertId)
+	CONSTRAINT PK_ExemptCert_Temp_Shard_2 PRIMARY KEY (ExemptCertId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.Nexus_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Nexus_Temp_Shard_1
+IF OBJECT_ID ('dbo.Nexus_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.Nexus_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.Nexus_Temp_Shard_1
+CREATE TABLE dbo.Nexus_Temp_Shard_2
 	(
 	NexusId                   INT NOT NULL,
 	CompanyId                 INT NOT NULL,
@@ -1098,18 +711,18 @@ CREATE TABLE dbo.Nexus_Temp_Shard_1
 	VATOptionsId              INT,
 	MOSSId                    VARCHAR (25),
 	IsSellerImporterOfRecord  BIT,
-	CONSTRAINT PK_Nexus_Temp_Shard_1 PRIMARY KEY NONCLUSTERED (NexusId),
-	CONSTRAINT IX_Nexus_Temp_Shard_1 UNIQUE (CompanyId,State,JurisCode,JurisTypeId,JurisName,EffDate,NexusTypeId,NexusTaxTypeGroupIdSK)
+	CONSTRAINT PK_Nexus_Temp_Shard_2 PRIMARY KEY NONCLUSTERED (NexusId),
+	CONSTRAINT IX_Nexus_Temp_Shard_2 UNIQUE (CompanyId,State,JurisCode,JurisTypeId,JurisName,EffDate,NexusTypeId,NexusTaxTypeGroupIdSK)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.TaxCode_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.TaxCode_Temp_Shard_1
+IF OBJECT_ID ('dbo.TaxCode_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.TaxCode_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.TaxCode_Temp_Shard_1
+CREATE TABLE dbo.TaxCode_Temp_Shard_2
 	(
 	TaxCodeId        INT NOT NULL,
 	TaxCode          VARCHAR (25),
@@ -1126,18 +739,18 @@ CREATE TABLE dbo.TaxCode_Temp_Shard_1
 	EntityUseCode    VARCHAR (40),
 	IsActive         BIT NOT NULL,
 	IsSSTCertified   BIT,
-	CONSTRAINT PK_TaxCode_Temp_Shard_1 PRIMARY KEY (TaxCodeId),
-	CONSTRAINT IX_TaxCode_Temp_Shard_1 UNIQUE (TaxCode,CompanyId)
+	CONSTRAINT PK_TaxCode_Temp_Shard_2 PRIMARY KEY (TaxCodeId),
+	CONSTRAINT IX_TaxCode_Temp_Shard_2 UNIQUE (TaxCode,CompanyId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.UPCCodeLookup_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.UPCCodeLookup_Temp_Shard_1
+IF OBJECT_ID ('dbo.UPCCodeLookup_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.UPCCodeLookup_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.UPCCodeLookup_Temp_Shard_1
+CREATE TABLE dbo.UPCCodeLookup_Temp_Shard_2
 	(
 	UPCCodeLookupId INT NOT NULL,
 	UPCCode         VARCHAR (50) NOT NULL,
@@ -1152,7 +765,7 @@ CREATE TABLE dbo.UPCCodeLookup_Temp_Shard_1
 	EndDate         DATETIME NOT NULL,
 	Usage           INT NOT NULL,
 	IsSystem        INT NOT NULL,
-	CONSTRAINT PK_UPCCodeLookup_Temp_Shard_1 PRIMARY KEY (UPCCodeLookupId)
+	CONSTRAINT PK_UPCCodeLookup_Temp_Shard_2 PRIMARY KEY (UPCCodeLookupId)
 	)
 GO
 
@@ -1160,11 +773,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.AvaCertServiceConfig_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.AvaCertServiceConfig_Temp_Shard_1
+IF OBJECT_ID ('dbo.AvaCertServiceConfig_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.AvaCertServiceConfig_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.AvaCertServiceConfig_Temp_Shard_1
+CREATE TABLE dbo.AvaCertServiceConfig_Temp_Shard_2
 	(
 	AvaCertServiceConfigId INT NOT NULL,
 	CompanyId              INT NOT NULL,
@@ -1178,8 +791,8 @@ CREATE TABLE dbo.AvaCertServiceConfig_Temp_Shard_1
 	CreatedDate            DATETIME NOT NULL,
 	ModifiedUserId         INT NOT NULL,
 	ModifiedDate           DATETIME NOT NULL,
-	CONSTRAINT PK_AvaCertServiceConfig_Temp_Shard_1 PRIMARY KEY (AvaCertServiceConfigId),
-	CONSTRAINT IX_AvaCertServiceConfig_Temp_Shard_1 UNIQUE (CompanyId)
+	CONSTRAINT PK_AvaCertServiceConfig_Temp_Shard_2 PRIMARY KEY (AvaCertServiceConfigId),
+	CONSTRAINT IX_AvaCertServiceConfig_Temp_Shard_2 UNIQUE (CompanyId)
 	)
 GO
 
@@ -1187,11 +800,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.AvaCommsServiceConfig_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.AvaCommsServiceConfig_Temp_Shard_1
+IF OBJECT_ID ('dbo.AvaCommsServiceConfig_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.AvaCommsServiceConfig_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.AvaCommsServiceConfig_Temp_Shard_1
+CREATE TABLE dbo.AvaCommsServiceConfig_Temp_Shard_2
 	(
 	AvaCommsConfigId INT NOT NULL,
 	CompanyId        INT NOT NULL,
@@ -1203,8 +816,8 @@ CREATE TABLE dbo.AvaCommsServiceConfig_Temp_Shard_1
 	CreatedDate      DATETIME NOT NULL,
 	ModifiedUserId   INT NOT NULL,
 	ModifiedDate     DATETIME NOT NULL,
-	CONSTRAINT PK_AvaCommsServiceConfig_Temp_Shard_1 PRIMARY KEY (AvaCommsConfigId),
-	CONSTRAINT IX_AvaCommsServiceConfig_Temp_Shard_1 UNIQUE (CompanyId)
+	CONSTRAINT PK_AvaCommsServiceConfig_Temp_Shard_2 PRIMARY KEY (AvaCommsConfigId),
+	CONSTRAINT IX_AvaCommsServiceConfig_Temp_Shard_2 UNIQUE (CompanyId)
 	)
 GO
 
@@ -1212,11 +825,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.BRCompanySecurityCertificate_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.BRCompanySecurityCertificate_Temp_Shard_1
+IF OBJECT_ID ('dbo.BRCompanySecurityCertificate_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.BRCompanySecurityCertificate_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.BRCompanySecurityCertificate_Temp_Shard_1
+CREATE TABLE dbo.BRCompanySecurityCertificate_Temp_Shard_2
 	(
 	CompanySecurityCertificateId INT NOT NULL,
 	CompanyId                    INT NOT NULL,
@@ -1227,16 +840,16 @@ CREATE TABLE dbo.BRCompanySecurityCertificate_Temp_Shard_1
 	CreatedDate                  DATETIME NOT NULL,
 	ModifiedUserId               INT NOT NULL,
 	ModifiedDate                 DATETIME NOT NULL,
-	CONSTRAINT PK_BRCompanySecurityCertificate_Temp_Shard_1 PRIMARY KEY (CompanySecurityCertificateId)
+	CONSTRAINT PK_BRCompanySecurityCertificate_Temp_Shard_2 PRIMARY KEY (CompanySecurityCertificateId)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_1
+IF OBJECT_ID ('dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_1
+CREATE TABLE dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_2
 	(
 	BRTaxRegimeBuyerTypeConfigId INT NOT NULL,
 	CompanyId                    INT NOT NULL,
@@ -1258,18 +871,18 @@ CREATE TABLE dbo.BRTaxRegimeBuyerTypeConfig_Temp_Shard_1
 	CreatedDate                  DATETIME NOT NULL,
 	ModifiedUserId               INT NOT NULL,
 	ModifiedDate                 DATETIME NOT NULL,
-	CONSTRAINT PK_BRTaxRegimeBuyerTypeConfig_Temp_Shard_1 PRIMARY KEY (BRTaxRegimeBuyerTypeConfigId)
+	CONSTRAINT PK_BRTaxRegimeBuyerTypeConfig_Temp_Shard_2 PRIMARY KEY (BRTaxRegimeBuyerTypeConfigId)
 	)
 GO
 
 
 
 
-IF OBJECT_ID ('dbo.CompanyReturn_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.CompanyReturn_Temp_Shard_1
+IF OBJECT_ID ('dbo.CompanyReturn_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.CompanyReturn_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.CompanyReturn_Temp_Shard_1
+CREATE TABLE dbo.CompanyReturn_Temp_Shard_2
 	(
 	CompanyReturnId       BIGINT NOT NULL,
 	CompanyId             INT NOT NULL,
@@ -1316,17 +929,17 @@ CREATE TABLE dbo.CompanyReturn_Temp_Shard_1
 	EfileUsername         VARCHAR (254),
 	PaymentCurrency       VARCHAR (3),
 	FixedPrepaymentAmount DECIMAL (18, 4),
-	CONSTRAINT PK_CompanyReturn_Temp_Shard_1 PRIMARY KEY (CompanyReturnId),
-	CONSTRAINT IX_CompanyReturn_Temp_Shard_1 UNIQUE (CompanyId,ReturnName,EffDate,RegistrationId)
+	CONSTRAINT PK_CompanyReturn_Temp_Shard_2 PRIMARY KEY (CompanyReturnId),
+	CONSTRAINT IX_CompanyReturn_Temp_Shard_2 UNIQUE (CompanyId,ReturnName,EffDate,RegistrationId)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.CompanyTaxForm_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.CompanyTaxForm_Temp_Shard_1
+IF OBJECT_ID ('dbo.CompanyTaxForm_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.CompanyTaxForm_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.CompanyTaxForm_Temp_Shard_1
+CREATE TABLE dbo.CompanyTaxForm_Temp_Shard_2
 	(
 	CompanyTaxFormId  INT NOT NULL,
 	CompanyId         INT NOT NULL,
@@ -1342,18 +955,18 @@ CREATE TABLE dbo.CompanyTaxForm_Temp_Shard_1
 	CreatedUserId     INT NOT NULL,
 	CreatedDate       DATETIME NOT NULL,
 	ModifiedDate      DATETIME NOT NULL,
-	CONSTRAINT PK_CompanyTaxForm_Temp_Shard_1 PRIMARY KEY (CompanyTaxFormId)
+	CONSTRAINT PK_CompanyTaxForm_Temp_Shard_2 PRIMARY KEY (CompanyTaxFormId)
 	)
 GO
 
 
 
 
-IF OBJECT_ID ('dbo.Return_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.[Return_Temp_Shard_1]
+IF OBJECT_ID ('dbo.Return_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.[Return_Temp_Shard_2]
 GO
 
-CREATE TABLE dbo.[Return_Temp_Shard_1]
+CREATE TABLE dbo.[Return_Temp_Shard_2]
 	(
 	ReturnId       INT NOT NULL,
 	TransmissionId INT NOT NULL,
@@ -1370,18 +983,18 @@ CREATE TABLE dbo.[Return_Temp_Shard_1]
 	JurisTypeId    VARCHAR (3),
 	Region         CHAR (2),
 	ReturnName     VARCHAR (50),
-	CONSTRAINT PK_Return_Temp_Shard_1 PRIMARY KEY (ReturnId)
+	CONSTRAINT PK_Return_Temp_Shard_2 PRIMARY KEY (ReturnId)
 	)
 GO
 
 
 
 
-IF OBJECT_ID ('dbo.TaxRuleProductDetail_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.TaxRuleProductDetail_Temp_Shard_1
+IF OBJECT_ID ('dbo.TaxRuleProductDetail_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.TaxRuleProductDetail_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.TaxRuleProductDetail_Temp_Shard_1
+CREATE TABLE dbo.TaxRuleProductDetail_Temp_Shard_2
 	(
 	TaxRuleProductDetailId INT NOT NULL,
 	TaxRuleId              INT NOT NULL,
@@ -1390,7 +1003,7 @@ CREATE TABLE dbo.TaxRuleProductDetail_Temp_Shard_1
 	EffDate                DATETIME,
 	EndDate                DATETIME,
 	ModifiedDate           DATETIME,
-	CONSTRAINT PK_TaxRuleProductDetailId_Temp_Shard_1 PRIMARY KEY (TaxRuleProductDetailId)
+	CONSTRAINT PK_TaxRuleProductDetailId_Temp_Shard_2 PRIMARY KEY (TaxRuleProductDetailId)
  	)
 GO
 
@@ -1399,11 +1012,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.TaxCodeAttribute_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.TaxCodeAttribute_Temp_Shard_1
+IF OBJECT_ID ('dbo.TaxCodeAttribute_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.TaxCodeAttribute_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.TaxCodeAttribute_Temp_Shard_1
+CREATE TABLE dbo.TaxCodeAttribute_Temp_Shard_2
 	(
 	TaxCodeAttributeId INT NOT NULL,
 	TaxCodeId          INT NOT NULL,
@@ -1414,17 +1027,17 @@ CREATE TABLE dbo.TaxCodeAttribute_Temp_Shard_1
 	ModifiedUserId     INT NOT NULL,
 	ModifiedDate       DATETIME NOT NULL,
 	UOMId              INT,
-	CONSTRAINT PK_TaxCodeAttribute_Temp_Shard_1 PRIMARY KEY (TaxCodeAttributeId)
+	CONSTRAINT PK_TaxCodeAttribute_Temp_Shard_2 PRIMARY KEY (TaxCodeAttributeId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.TaxCodeCategorization_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.TaxCodeCategorization_Temp_Shard_1
+IF OBJECT_ID ('dbo.TaxCodeCategorization_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.TaxCodeCategorization_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.TaxCodeCategorization_Temp_Shard_1
+CREATE TABLE dbo.TaxCodeCategorization_Temp_Shard_2
 	(
 	TaxCodeCategorizationId INT NOT NULL,
 	TaxCodeId               INT,
@@ -1437,17 +1050,17 @@ CREATE TABLE dbo.TaxCodeCategorization_Temp_Shard_1
 	CreatedDate             DATETIME NOT NULL,
 	ModifiedUserId          INT NOT NULL,
 	ModifiedDate            DATETIME NOT NULL,
-	CONSTRAINT PK_TaxCodeCategorization_Temp_Shard_1 PRIMARY KEY (TaxCodeCategorizationId)
+	CONSTRAINT PK_TaxCodeCategorization_Temp_Shard_2 PRIMARY KEY (TaxCodeCategorizationId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.Item_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.Item_Temp_Shard_1
+IF OBJECT_ID ('dbo.Item_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.Item_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.Item_Temp_Shard_1
+CREATE TABLE dbo.Item_Temp_Shard_2
 	(
 	ItemId         BIGINT NOT NULL,
 	ItemCode       VARCHAR (50),
@@ -1458,8 +1071,8 @@ CREATE TABLE dbo.Item_Temp_Shard_1
 	CreatedDate    DATETIME NOT NULL,
 	ModifiedUserId INT NOT NULL,
 	ModifiedDate   DATETIME NOT NULL,
-	CONSTRAINT PK_Item_Temp_Shard_1 PRIMARY KEY (ItemId),
-	CONSTRAINT IX_Item_Temp_Shard_1 UNIQUE (CompanyId,ItemCode)
+	CONSTRAINT PK_Item_Temp_Shard_2 PRIMARY KEY (ItemId),
+	CONSTRAINT IX_Item_Temp_Shard_2 UNIQUE (CompanyId,ItemCode)
 	)
 GO
 
@@ -1468,11 +1081,11 @@ GO
 
 
 
-IF OBJECT_ID ('dbo.ItemAttribute_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.ItemAttribute_Temp_Shard_1
+IF OBJECT_ID ('dbo.ItemAttribute_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.ItemAttribute_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.ItemAttribute_Temp_Shard_1
+CREATE TABLE dbo.ItemAttribute_Temp_Shard_2
 	(
 	ItemAttributeId BIGINT NOT NULL,
 	ItemId          BIGINT NOT NULL,
@@ -1483,17 +1096,17 @@ CREATE TABLE dbo.ItemAttribute_Temp_Shard_1
 	ModifiedUserId  INT NOT NULL,
 	ModifiedDate    DATETIME NOT NULL,
 	UOMId           INT,
-	CONSTRAINT PK_ItemAttribute_Temp_Shard_1 PRIMARY KEY (ItemAttributeId)
+	CONSTRAINT PK_ItemAttribute_Temp_Shard_2 PRIMARY KEY (ItemAttributeId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentAddress_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentAddress_Temp_Shard_1
+IF OBJECT_ID ('dbo.DocumentAddress_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.DocumentAddress_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentAddress_Temp_Shard_1
+CREATE TABLE dbo.DocumentAddress_Temp_Shard_2
 	(
 	DocumentAddressId      BIGINT NOT NULL,
 	DocumentId             BIGINT,
@@ -1516,32 +1129,32 @@ CREATE TABLE dbo.DocumentAddress_Temp_Shard_1
 	AddressLine1           VARCHAR (100),
 	AddressLine2           VARCHAR (100),
 	AddressLine3           VARCHAR (100),
-	CONSTRAINT PK_DocumentAddress_Temp_Shard_1 PRIMARY KEY (DocumentAddressId)
+	CONSTRAINT PK_DocumentAddress_Temp_Shard_2 PRIMARY KEY (DocumentAddressId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentProperty_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentProperty_Temp_Shard_1
+IF OBJECT_ID ('dbo.DocumentProperty_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.DocumentProperty_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentProperty_Temp_Shard_1
+CREATE TABLE dbo.DocumentProperty_Temp_Shard_2
 	(
 	DocumentPropertyId BIGINT NOT NULL,
 	DocumentId         BIGINT NOT NULL,
 	ReferenceCode      VARCHAR (1024) NOT NULL,
 	VATNumberTypeId    INT,
-	CONSTRAINT PK_DocumentProperty_Temp_Shard_1 PRIMARY KEY (DocumentPropertyId)
+	CONSTRAINT PK_DocumentProperty_Temp_Shard_2 PRIMARY KEY (DocumentPropertyId)
 	)
 GO
 
 
-IF OBJECT_ID ('dbo.DocumentLineParameterBag_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentLineParameterBag_Temp_Shard_1
+IF OBJECT_ID ('dbo.DocumentLineParameterBag_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.DocumentLineParameterBag_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentLineParameterBag_Temp_Shard_1
+CREATE TABLE dbo.DocumentLineParameterBag_Temp_Shard_2
 	(
 	DocumentLineParameterBagId BIGINT NOT NULL,
 	DocumentLineId             BIGINT NOT NULL,
@@ -1550,17 +1163,17 @@ CREATE TABLE dbo.DocumentLineParameterBag_Temp_Shard_1
 	UOMId                      INT,
 	UOMIdSystem                INT,
 	ValueSystem                VARCHAR (50),
-	CONSTRAINT PK_DocumentLineParameterBag_Temp_Shard_1 PRIMARY KEY (DocumentLineParameterBagId)
+	CONSTRAINT PK_DocumentLineParameterBag_Temp_Shard_2 PRIMARY KEY (DocumentLineParameterBagId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentLineProperty_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentLineProperty_Temp_Shard_1
+IF OBJECT_ID ('dbo.DocumentLineProperty_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.DocumentLineProperty_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentLineProperty_Temp_Shard_1
+CREATE TABLE dbo.DocumentLineProperty_Temp_Shard_2
 	(
 	DocumentLinePropertyId BIGINT NOT NULL,
 	DocumentLineId         BIGINT NOT NULL,
@@ -1570,17 +1183,17 @@ CREATE TABLE dbo.DocumentLineProperty_Temp_Shard_1
 	HSCode                 VARCHAR (25),
 	HSCodeUsed             VARCHAR (25),
 	CIF                    MONEY,
-	CONSTRAINT PK_DocumentLineProperty_Temp_Shard_1 PRIMARY KEY (DocumentLinePropertyId)
+	CONSTRAINT PK_DocumentLineProperty_Temp_Shard_2 PRIMARY KEY (DocumentLinePropertyId)
 	)
 GO
 
 
 
-IF OBJECT_ID ('dbo.DocumentLineDetailProperty_Temp_Shard_1') IS NOT NULL
-	DROP TABLE dbo.DocumentLineDetailProperty_Temp_Shard_1
+IF OBJECT_ID ('dbo.DocumentLineDetailProperty_Temp_Shard_2') IS NOT NULL
+	DROP TABLE dbo.DocumentLineDetailProperty_Temp_Shard_2
 GO
 
-CREATE TABLE dbo.DocumentLineDetailProperty_Temp_Shard_1
+CREATE TABLE dbo.DocumentLineDetailProperty_Temp_Shard_2
 	(
 	DocumentLineDetailId     BIGINT NOT NULL,
 	TaxTypeMappingId         INT NOT NULL,
@@ -1588,6 +1201,6 @@ CREATE TABLE dbo.DocumentLineDetailProperty_Temp_Shard_1
 	IsFee                    BIT,
 	TaxAuthorityId           INT,
 	ReportLevel              INT,
-	CONSTRAINT PK_DocumentLineDetailProperty_Temp_Shard_1 PRIMARY KEY (DocumentLineDetailId)
+	CONSTRAINT PK_DocumentLineDetailProperty_Temp_Shard_2 PRIMARY KEY (DocumentLineDetailId)
 	)
 GO
