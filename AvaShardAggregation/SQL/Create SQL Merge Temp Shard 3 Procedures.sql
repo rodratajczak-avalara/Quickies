@@ -98,8 +98,8 @@ BEGIN
 SET IDENTITY_INSERT dbo.DocumentLineDetail ON
 
 MERGE dbo.DocumentLineDetail AS target
-USING (SELECT DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru FROM dbo.DocumentLineDetail_Temp_Shard_3) 
-	AS source (DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru)
+USING (SELECT DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate_Old, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, Rate, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru FROM dbo.DocumentLineDetail_Temp_Shard_3) 
+	AS source (DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate_Old, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, Rate, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru)
 ON (target.DocumentLineDetailId = source.DocumentLineDetailId)
 WHEN MATCHED THEN
 UPDATE SET DocumentLineId = source.DocumentLineId,
@@ -108,7 +108,7 @@ UPDATE SET DocumentLineId = source.DocumentLineId,
 	JurisCode = source.JurisCode,
 	StateFIPS = source.StateFIPS,
 	TaxableAmount = source.TaxableAmount,
-	Rate = source.Rate,
+	Rate_Old = source.Rate_Old,
 	Tax = source.Tax,
 	Sourcing = source.Sourcing,
 	TaxTypeId = source.TaxTypeId,
@@ -135,6 +135,7 @@ UPDATE SET DocumentLineId = source.DocumentLineId,
 	SignatureCode = source.SignatureCode,
 	RateTypeId = source.RateTypeId,
 	DocumentId = source.DocumentId,
+	Rate = source.Rate,
 	TaxableUnits = source.TaxableUnits,
 	NonTaxableUnits = source.NonTaxableUnits,
 	ExemptUnits = source.ExemptUnits,
@@ -144,8 +145,8 @@ UPDATE SET DocumentLineId = source.DocumentLineId,
 	ReturnsTaxTypeID = source.ReturnsTaxTypeID,
 	IsNonPassThru = source.IsNonPassThru
 WHEN NOT MATCHED THEN
-INSERT (DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru)
-VALUES (source.DocumentLineDetailId, source.DocumentLineId, source.JurisTypeId, source.SERCode, source.JurisCode, source.StateFIPS, source.TaxableAmount, source.Rate, source.Tax, source.Sourcing, source.TaxTypeId, source.ExemptAmount, source.ExemptReasonId, source.Region, source.InState, source.NonTaxableAmount, source.RateSourceId, source.RateRuleId, source.NonTaxableTypeId, source.NonTaxableRuleId, source.CountyFIPS, source.AddressId, source.JurisName, source.StateAssignedNo, source.Country, source.JurisdictionId, source.TaxName, source.TaxAuthorityTypeId, source.TaxRegionId, source.TaxCalculated, source.TaxOverride, source.SignatureCode, source.RateTypeId, source.DocumentId, source.TaxableUnits, source.NonTaxableUnits, source.ExemptUnits, source.UnitOfBasisId, source.ReturnsRateID, source.ReturnsDeductionID, source.ReturnsTaxTypeID, source.IsNonPassThru)
+INSERT (DocumentLineDetailId, DocumentLineId, JurisTypeId, SERCode, JurisCode, StateFIPS, TaxableAmount, Rate_Old, Tax, Sourcing, TaxTypeId, ExemptAmount, ExemptReasonId, Region, InState, NonTaxableAmount, RateSourceId, RateRuleId, NonTaxableTypeId, NonTaxableRuleId, CountyFIPS, AddressId, JurisName, StateAssignedNo, Country, JurisdictionId, TaxName, TaxAuthorityTypeId, TaxRegionId, TaxCalculated, TaxOverride, SignatureCode, RateTypeId, DocumentId, Rate, TaxableUnits, NonTaxableUnits, ExemptUnits, UnitOfBasisId, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, IsNonPassThru)
+VALUES (source.DocumentLineDetailId, source.DocumentLineId, source.JurisTypeId, source.SERCode, source.JurisCode, source.StateFIPS, source.TaxableAmount, source.Rate_Old, source.Tax, source.Sourcing, source.TaxTypeId, source.ExemptAmount, source.ExemptReasonId, source.Region, source.InState, source.NonTaxableAmount, source.RateSourceId, source.RateRuleId, source.NonTaxableTypeId, source.NonTaxableRuleId, source.CountyFIPS, source.AddressId, source.JurisName, source.StateAssignedNo, source.Country, source.JurisdictionId, source.TaxName, source.TaxAuthorityTypeId, source.TaxRegionId, source.TaxCalculated, source.TaxOverride, source.SignatureCode, source.RateTypeId, source.DocumentId, source.Rate, source.TaxableUnits, source.NonTaxableUnits, source.ExemptUnits, source.UnitOfBasisId, source.ReturnsRateID, source.ReturnsDeductionID, source.ReturnsTaxTypeID, source.IsNonPassThru)
 ;
 
 SET IDENTITY_INSERT dbo.DocumentLineDetail OFF
@@ -583,8 +584,8 @@ BEGIN
 SET IDENTITY_INSERT dbo.TaxRule ON
 
 MERGE dbo.TaxRule AS target
-USING (SELECT TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey FROM dbo.TaxRule_Temp_Shard_3) 
-	AS source (TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey)
+USING (SELECT TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options_Old, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, Options, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey FROM dbo.TaxRule_Temp_Shard_3) 
+	AS source (TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options_Old, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, Options, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey)
 ON (target.TaxRuleId = source.TaxRuleId)
 WHEN MATCHED THEN
 UPDATE SET CompanyId = source.CompanyId,
@@ -601,7 +602,7 @@ UPDATE SET CompanyId = source.CompanyId,
 	Value = source.Value,
 	Cap = source.Cap,
 	Threshold = source.Threshold,
-	Options = source.Options,
+	Options_Old = source.Options_Old,
 	EffDate = source.EffDate,
 	EndDate = source.EndDate,
 	Description = source.Description,
@@ -614,6 +615,7 @@ UPDATE SET CompanyId = source.CompanyId,
 	IsSTPro = source.IsSTPro,
 	Country = source.Country,
 	Sourcing = source.Sourcing,
+	Options = source.Options,
 	UnitOfBasisId = source.UnitOfBasisId,
 	AttributeOptions = source.AttributeOptions,
 	ReturnsRateID = source.ReturnsRateID,
@@ -628,8 +630,8 @@ UPDATE SET CompanyId = source.CompanyId,
 	UOMId = source.UOMId,
 	HashKey = source.HashKey
 WHEN NOT MATCHED THEN
-INSERT (TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey)
-VALUES (source.TaxRuleId, source.CompanyId, source.StateFIPS, source.JurisName, source.JurisCode, source.JurisTypeId, source.TaxCodeId, source.CustomerUsageType, source.TaxTypeId, source.RateTypeId, source.TaxRuleTypeId, source.IsAllJuris, source.Value, source.Cap, source.Threshold, source.Options, source.EffDate, source.EndDate, source.Description, source.CreatedUserId, source.CreatedDate, source.ModifiedUserId, source.ModifiedDate, source.State, source.CountyFIPS, source.IsSTPro, source.Country, source.Sourcing, source.UnitOfBasisId, source.AttributeOptions, source.ReturnsRateID, source.ReturnsDeductionID, source.ReturnsTaxTypeID, source.AttributeApplicability, source.TaxTypeMappingId, source.RateTypeTaxTypeMappingId, source.NonPassThruExpression, source.CurrencyCode, source.PreferredProgramId, source.UOMId, source.HashKey)
+INSERT (TaxRuleId, CompanyId, StateFIPS, JurisName, JurisCode, JurisTypeId, TaxCodeId, CustomerUsageType, TaxTypeId, RateTypeId, TaxRuleTypeId, IsAllJuris, Value, Cap, Threshold, Options_Old, EffDate, EndDate, Description, CreatedUserId, CreatedDate, ModifiedUserId, ModifiedDate, State, CountyFIPS, IsSTPro, Country, Sourcing, Options, UnitOfBasisId, AttributeOptions, ReturnsRateID, ReturnsDeductionID, ReturnsTaxTypeID, AttributeApplicability, TaxTypeMappingId, RateTypeTaxTypeMappingId, NonPassThruExpression, CurrencyCode, PreferredProgramId, UOMId, HashKey)
+VALUES (source.TaxRuleId, source.CompanyId, source.StateFIPS, source.JurisName, source.JurisCode, source.JurisTypeId, source.TaxCodeId, source.CustomerUsageType, source.TaxTypeId, source.RateTypeId, source.TaxRuleTypeId, source.IsAllJuris, source.Value, source.Cap, source.Threshold, source.Options_Old, source.EffDate, source.EndDate, source.Description, source.CreatedUserId, source.CreatedDate, source.ModifiedUserId, source.ModifiedDate, source.State, source.CountyFIPS, source.IsSTPro, source.Country, source.Sourcing, source.Options, source.UnitOfBasisId, source.AttributeOptions, source.ReturnsRateID, source.ReturnsDeductionID, source.ReturnsTaxTypeID, source.AttributeApplicability, source.TaxTypeMappingId, source.RateTypeTaxTypeMappingId, source.NonPassThruExpression, source.CurrencyCode, source.PreferredProgramId, source.UOMId, source.HashKey)
 ;
 
 SET IDENTITY_INSERT dbo.TaxRule OFF
@@ -850,6 +852,7 @@ ON (target.TaxCodeId = source.TaxCodeId)
 WHEN MATCHED THEN
 UPDATE SET TaxCode = source.TaxCode,
 	TaxCodeTypeId = source.TaxCodeTypeId,
+
 
 	CompanyId = source.CompanyId,
 	Description = source.Description,
@@ -1508,4 +1511,3 @@ SET IDENTITY_INSERT dbo.CompanyReturn OFF
 
 END
 GO
-
