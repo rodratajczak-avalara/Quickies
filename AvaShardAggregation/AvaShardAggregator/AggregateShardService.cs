@@ -188,7 +188,6 @@ namespace AvaShardAggregator
                 Console.WriteLine(string.Format("{0} Bulk Copy Started", TableName));
                 processTime.Start();
 
-
                 if (dContext.Database.GetDbConnection().State != ConnectionState.Open)
                 {
                     dContext.Database.GetDbConnection().Open();
@@ -200,6 +199,7 @@ namespace AvaShardAggregator
                     {
                         cpy.BulkCopyTimeout = 3600;
                         cpy.DestinationTableName = string.Format("{0}{1}", TableName, _objectSuffix);
+                        cpy.BatchSize = int.Parse(_config.GetSection("BcpBatchSize").Value);
                         cpy.WriteToServer(r);
                     }
                 }

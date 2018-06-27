@@ -1,7 +1,0 @@
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\bin\Debug\AvaShardReplication.exe.config
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\bin\Debug\AvaShardReplication.exe
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\bin\Debug\AvaShardReplication.pdb
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\obj\Debug\AvaShardReplication.csprojAssemblyReference.cache
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\obj\Debug\AvaShardReplication.csproj.CoreCompileInputs.cache
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\obj\Debug\AvaShardReplication.exe
-C:\Avalara\git\Quickies\AvaShardReplication\AvaShardReplication\obj\Debug\AvaShardReplication.pdb
