@@ -127,65 +127,60 @@ GO
 
 
 
-
 IF OBJECT_ID ('dbo.DocumentLineDetail_Temp_Shard_3') IS NOT NULL
 	DROP TABLE dbo.DocumentLineDetail_Temp_Shard_3
 GO
 
-CREATE TABLE dbo.DocumentLineDetail_Temp_Shard_3
-	(
-	DocumentLineDetailId BIGINT NOT NULL,
-	DocumentLineId       BIGINT NOT NULL,
-	JurisTypeId          VARCHAR (3),
-	SERCode              VARCHAR (10),
-	JurisCode            VARCHAR (10),
-	StateFIPS            VARCHAR (2) NOT NULL,
-	TaxableAmount        MONEY NOT NULL,
-	Rate                 DECIMAL (18, 6),
-	Tax                  MONEY NOT NULL,
-	Sourcing             VARCHAR (2),
-	TaxTypeId            VARCHAR (1) NOT NULL,
-	ExemptAmount         MONEY NOT NULL,
-	ExemptReasonId       INT NOT NULL,
-	Region               VARCHAR (3),
-	InState              BIT NOT NULL,
-	NonTaxableAmount     MONEY NOT NULL,
-	RateSourceId         INT NOT NULL,
-	RateRuleId           INT NOT NULL,
-	NonTaxableTypeId     INT NOT NULL,
-	NonTaxableRuleId     INT NOT NULL,
-	CountyFIPS           VARCHAR (3),
-	AddressId            BIGINT,
-	JurisName            VARCHAR (200),
-	StateAssignedNo      VARCHAR (50),
-	Country              VARCHAR (2) NOT NULL,
-	JurisdictionId       INT NOT NULL,
-	TaxName              VARCHAR (75) NOT NULL,
-	TaxAuthorityTypeId   INT NOT NULL,
-	TaxRegionId          INT,
-	TaxCalculated        MONEY,
-	TaxOverride          MONEY,
-	SignatureCode        CHAR (4),
-	RateTypeId           CHAR (1),
-	DocumentId           BIGINT,
-	TaxableUnits         DECIMAL (19, 4),
-	NonTaxableUnits      DECIMAL (19, 4),
-	ExemptUnits          DECIMAL (19, 4),
-	UnitOfBasisId        BIGINT,
-	ReturnsRateID        INT,
-	ReturnsDeductionID   INT,
-	ReturnsTaxTypeID     INT,
-	IsNonPassThru        BIT,
-	CONSTRAINT PK_DocumentLineDetail_Temp_Shard_3 PRIMARY KEY (DocumentLineDetailId)
-	)
+CREATE TABLE [dbo].[DocumentLineDetail_Temp_Shard_3](
+	[DocumentLineDetailId] [bigint] NOT NULL,
+	[DocumentLineId] [bigint] NOT NULL,
+	[JurisTypeId] [varchar](3) NULL,
+	[SERCode] [varchar](10) NULL,
+	[JurisCode] [varchar](10) NULL,
+	[StateFIPS] [varchar](2) NOT NULL,
+	[TaxableAmount] [money] NOT NULL,
+	[Rate_Old] [decimal](8, 6) NOT NULL,
+	[Tax] [money] NOT NULL,
+	[Sourcing] [varchar](2) NULL,
+	[TaxTypeId] [varchar](1) NOT NULL,
+	[ExemptAmount] [money] NOT NULL,
+	[ExemptReasonId] [int] NOT NULL,
+	[Region] [varchar](3) NULL,
+	[InState] [bit] NOT NULL,
+	[NonTaxableAmount] [money] NOT NULL,
+	[RateSourceId] [int] NOT NULL,
+	[RateRuleId] [int] NOT NULL,
+	[NonTaxableTypeId] [int] NOT NULL,
+	[NonTaxableRuleId] [int] NOT NULL,
+	[CountyFIPS] [varchar](3) NULL,
+	[AddressId] [bigint] NULL,
+	[JurisName] [varchar](200) NULL,
+	[StateAssignedNo] [varchar](50) NULL,
+	[Country] [varchar](2) NOT NULL,
+	[JurisdictionId] [int] NOT NULL,
+	[TaxName] [varchar](75) NOT NULL,
+	[TaxAuthorityTypeId] [int] NOT NULL,
+	[TaxRegionId] [int] NULL,
+	[TaxCalculated] [money] NULL,
+	[TaxOverride] [money] NULL,
+	[SignatureCode] [char](4) NULL,
+	[RateTypeId] [char](1) NULL,
+	[DocumentId] [bigint] NULL,
+	[Rate] [decimal](18, 6) NULL,
+	[TaxableUnits] [decimal](19, 4) NULL,
+	[NonTaxableUnits] [decimal](19, 4) NULL,
+	[ExemptUnits] [decimal](19, 4) NULL,
+	[UnitOfBasisId] [bigint] NULL,
+	[ReturnsRateID] [int] NULL,
+	[ReturnsDeductionID] [int] NULL,
+	[ReturnsTaxTypeID] [int] NULL,
+	[IsNonPassThru] [bit] NULL,
+ CONSTRAINT [PK_DocumentLineDetail_Temp_Shard_3] PRIMARY KEY ( [DocumentLineDetailId] ASC )
+ )
 GO
 
 
-
-
-
-
-
+ 
 
 IF OBJECT_ID ('dbo.DocumentParameterBag_Temp_Shard_3') IS NOT NULL
 	DROP TABLE dbo.DocumentParameterBag_Temp_Shard_3
@@ -203,7 +198,6 @@ CREATE TABLE dbo.DocumentParameterBag_Temp_Shard_3
 	CONSTRAINT PK_DocumentParameterBag_Temp_Shard_3 PRIMARY KEY (DocumentParameterBagId)
 	)
 GO
-
 
 
 
@@ -1204,3 +1198,198 @@ CREATE TABLE dbo.DocumentLineDetailProperty_Temp_Shard_3
 	CONSTRAINT PK_DocumentLineDetailProperty_Temp_Shard_3 PRIMARY KEY (DocumentLineDetailId)
 	)
 GO
+
+
+IF OBJECT_ID ('dbo.FormServiceConfig_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.FormServiceConfig_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[FormServiceConfig_Temp_Shard_3](
+	[AccountId] [int] NOT NULL,
+	[CreatedUserId] [int] NOT NULL,
+	[CreatedDate] [datetime] NOT NULL,
+	[ModifiedUserId] [int] NOT NULL,
+	[ModifiedDate] [datetime] NOT NULL,
+	[ReviewActionDefault] [tinyint] NOT NULL,
+	[ZeroDollarActionDefault] [tinyint] NOT NULL,
+	[WorksheetDay] [tinyint] NOT NULL,
+    CONSTRAINT [PK_FormServiceConfigFormServiceConfig_Temp_Shard_3] PRIMARY KEY CLUSTERED ([AccountId] ASC)
+    )
+GO
+
+
+
+
+
+
+IF OBJECT_ID ('dbo.AccountFeatureList_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.AccountFeatureList_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[AccountFeatureList_Temp_Shard_3](
+	[AccountId] [int] NOT NULL,
+	[FeatureListId] [int] NOT NULL,
+	[Enabled] [bit] NOT NULL,
+    CONSTRAINT [PK_AccountFeatureList_Temp_Shard_3] PRIMARY KEY CLUSTERED ([AccountId] ASC,[FeatureListId] ASC)
+	)
+GO 
+
+
+
+
+IF OBJECT_ID ('dbo.CombinedHSTConfig_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.CombinedHSTConfig_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[CombinedHSTConfig_Temp_Shard_3](
+	[CombinedHSTConfigId] [int] NOT NULL,
+	[AccountId] [int] NULL,
+	[ExcludeCompanyCodes] [varchar](MAX) NULL,
+	[EffDate] [datetime] NULL,
+	[EndDate] [datetime] NULL,
+    CONSTRAINT [PK_CombinedHSTConfig_Temp_Shard_3] PRIMARY KEY CLUSTERED ([CombinedHSTConfigId] ASC),
+    CONSTRAINT [IX_CombinedHSTConfig_Temp_Shard_3_AccountId_EffDate] UNIQUE NONCLUSTERED ([AccountId] ASC,[EffDate] ASC)
+    )
+GO
+
+
+
+
+
+
+IF OBJECT_ID ('dbo.MaxLine_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.MaxLine_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[MaxLine_Temp_Shard_3](
+	[AccountId] [int] NULL,
+	[MaxLines] [int] NULL,
+	[MaxLineId] [bigint] NOT NULL,
+    CONSTRAINT [PK_MaxLine_Temp_Shard_3_MaxLineId] PRIMARY KEY CLUSTERED ([MaxLineId] ASC)
+	)
+GO
+
+
+
+
+IF OBJECT_ID ('dbo.CompanySetting_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.CompanySetting_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[CompanySetting_Temp_Shard_3](
+	[CompanySettingId] [int] NOT NULL,
+	[CompanyId] [int] NOT NULL,
+	[Set] [varchar](25) NOT NULL,
+	[Name] [varchar](50) NOT NULL,
+	[Value] [varchar](200) NULL,
+    CONSTRAINT [PK_CompanySetting_Temp_Shard_3] PRIMARY KEY CLUSTERED ([CompanySettingId] ASC)
+	)
+
+
+
+IF OBJECT_ID ('dbo.CompanyDistanceThreshold_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.CompanyDistanceThreshold_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[CompanyDistanceThreshold_Temp_Shard_3](
+	[CompanyDistanceThresholdId] [bigint] NOT NULL,
+	[CompanyId] [int] NOT NULL,
+	[OriginCountry] [varchar](2) NOT NULL,
+	[DestinationCountry] [varchar](2) NOT NULL,
+	[EffDate] [datetime] NOT NULL,
+	[EndDate] [datetime] NOT NULL,
+	[HasDistanceThresholdExceeded] [bit] NOT NULL,
+	[DistanceThresholdType] [varchar](20) NULL,
+    CONSTRAINT [PK_CompanyDistanceThreshold_Temp_Shard_3] PRIMARY KEY CLUSTERED ([CompanyDistanceThresholdId] ASC),
+    CONSTRAINT [IX_CompanyDistanceThreshold_Temp_Shard_3] UNIQUE NONCLUSTERED ([CompanyId] ASC,	[OriginCountry] ASC,[DestinationCountry] ASC,[EffDate] ASC,[EndDate] ASC,	[HasDistanceThresholdExceeded] ASC,[DistanceThresholdType] ASC)
+    )
+GO
+
+
+
+IF OBJECT_ID ('dbo.CompanyRPSSeries_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.CompanyRPSSeries_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[CompanyRPSSeries_Temp_Shard_3](
+	[CompanyRPSSeriesId] [bigint] NOT NULL,
+	[CompanyId] [int] NOT NULL,
+	[TaxRegionId] [bigint] NULL,
+	[CompanyRPSSeriesTypeId] [tinyint] NULL,
+	[SeriesName] [varchar](10) NULL,
+	[FirstRPSNumber] [bigint] NOT NULL,
+	[NextRPSNumber] [bigint] NOT NULL,
+	[CreatedDate] [datetime] NOT NULL,
+    CONSTRAINT [PK_CompanyRPSSeries_Temp_Shard_3] PRIMARY KEY CLUSTERED ([CompanyRPSSeriesId] ASC)
+    )
+GO
+
+
+
+
+IF OBJECT_ID ('dbo.SpecialTaxDistrictOverride_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.SpecialTaxDistrictOverride_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[SpecialTaxDistrictOverride_Temp_Shard_3](
+	[BoundaryOverrideId] [int] NOT NULL,
+	[JurisCode] [varchar](10) NOT NULL,
+	[SignatureCode] [varchar](4) NOT NULL,
+	[JurisName] [varchar](200) NOT NULL,
+	CONSTRAINT [PK_SpecialTaxDistrictOverride_Temp_Shard_3] PRIMARY KEY CLUSTERED ([BoundaryOverrideId] ASC,[JurisCode] ASC,[SignatureCode] ASC)
+	)
+GO
+
+
+
+IF OBJECT_ID ('dbo.SubscriptionSetting_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.SubscriptionSetting_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[SubscriptionSetting_Temp_Shard_3](
+	[SubscriptionSettingId] [int] NOT NULL,
+	[SubscriptionId] [int] NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Value] [varchar](200) NOT NULL,
+	CONSTRAINT [PK_SubscriptionSetting_Temp_Shard_3] PRIMARY KEY CLUSTERED ([SubscriptionSettingId] ASC)
+	)
+GO
+
+
+
+IF OBJECT_ID ('dbo.CompanyLocationSetting_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.CompanyLocationSetting_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[CompanyLocationSetting_Temp_Shard_3](
+	[CompanyLocationSettingId] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+	[CompanyLocationId] [int] NOT NULL,
+	[CompanyLocationSettingConfigId] [int] NOT NULL,
+	[CompanyLocationSettingTypeValue] [nvarchar](50) NULL,
+	CONSTRAINT [PK_CompanyLocationSetting_Temp_Shard_3] PRIMARY KEY CLUSTERED ([CompanyLocationSettingId] ASC),
+	CONSTRAINT [IX_CompanyLocationSetting_Temp_Shard_3] UNIQUE NONCLUSTERED ([CompanyLocationId] ASC,[CompanyLocationSettingConfigId] ASC)
+	)
+GO
+
+
+IF OBJECT_ID ('dbo.ExemptCertDetail_Temp_Shard_3') IS NOT NULL
+	DROP TABLE dbo.ExemptCertDetail_Temp_Shard_3
+GO
+
+CREATE TABLE [dbo].[ExemptCertDetail_Temp_Shard_3](
+	[ExemptCertDetailId] [int] NOT NULL,
+	[ExemptCertId] [int] NOT NULL,
+	[StateFIPS] [varchar](2) NOT NULL,
+	[Region] [varchar](3) NULL,
+	[IdNo] [varchar](100) NULL,
+	[Country] [varchar](2) NULL,
+	[EndDate] [datetime] NULL,
+	[IdType] [nvarchar](50) NULL,
+	[IsTaxCodeListExclusionList] [bit] NULL,
+	CONSTRAINT [PK_ExemptCertDetail] PRIMARY KEY CLUSTERED ([ExemptCertDetailId] ASC),
+	CONSTRAINT [IX_ExemptCertDetail] UNIQUE NONCLUSTERED ([ExemptCertId] ASC,[Region] ASC)
+	)
+GO
+
+
+

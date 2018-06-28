@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace AvaShardAggregator
 {
@@ -6,12 +7,12 @@ namespace AvaShardAggregator
     {
         static void Main(string[] args)
         {
-            bool saveLogFile = false;
-            if (args.Length > 0)
+            bool enableLogging = false;
+            if (args.Length>0)
             {
-                bool.TryParse(args[0], out saveLogFile);
+                enableLogging = bool.Parse(args[0]);
             }
-            AggregateShardService processData =  new AggregateShardService(saveLogFile);
+            AggregateShardService processData =  new AggregateShardService(enableLogging);
             processData.ProcessAvaTaxAccountTables();
         }
     }
