@@ -6,7 +6,7 @@ WHERE ApplicationName = 'AvaShardAggregator_Temp_Shard_3'
 ORDER BY BCPBatchId DESC 
 
 SELECT * FROM ShardAggregation.dbo.BCPBatchLog
-WHERE BCPBatchId = 12353
+WHERE BCPBatchId = 12844
 ORDER BY BCPBatchLogId DESC
 
 SELECT bbl.* --, at.TableName
@@ -27,7 +27,6 @@ ORDER BY BCPBatchErrorId DESC
 SELECT * 
 FROM ShardAggregation.dbo.AggregationTable
 WHERE Enabled=0
-
 
 
 

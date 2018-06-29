@@ -94,6 +94,7 @@ namespace AvaShardAggregator
             {
                 Console.ReadKey();
             }
+           
         }
 
 
@@ -162,8 +163,11 @@ namespace AvaShardAggregator
         /// <param name="RemoveDuplicate"></param>
         private static void PerformBulkCopy(DbDataReader r, string TableName, Boolean RemoveDuplicate)
         {
+            //Initialize
             Stopwatch processTime = new Stopwatch();
+            TruncateTable(TableName);
 
+            // Process
             #region 1 - Bulk copy the data from the source
             using (DestinationContext dContext = new DestinationContext())
             {
@@ -179,7 +183,7 @@ namespace AvaShardAggregator
                 {
                     using (var cpy = new SqlBulkCopy(conn))
                     {
-                        cpy.BulkCopyTimeout = 7200;
+                        cpy.BulkCopyTimeout = 3600;
                         cpy.DestinationTableName = string.Format("{0}{1}", TableName, _objectSuffix);
                         cpy.BatchSize = int.Parse(_config.GetSection("BcpBatchSize").Value);
                         cpy.WriteToServer(r);
@@ -243,29 +247,14 @@ namespace AvaShardAggregator
                 LogBatchProcess(_bcpBatchId, _aggregationTableId, 5, processTime.ElapsedMilliseconds);
                 processTime.Reset();
                 #endregion
-
-                #region 4 - Truncate the Temp Table 
-                using (DbCommand cmdTruncate = dContext.Database.GetDbConnection().CreateCommand())
-                {
-                    cmdTruncate.CommandTimeout = 300;
-                    cmdTruncate.CommandType = CommandType.Text;
-                    cmdTruncate.CommandText = string.Format("TRUNCATE TABLE [{0}{1}]", TableName, _objectSuffix);
-                    if (cmdTruncate.Connection.State != System.Data.ConnectionState.Open)
-                    {
-                        cmdTruncate.Connection.Open();
-                    }
-
-                    cmdTruncate.ExecuteNonQuery();
-
-                    cmdTruncate.Connection.Close();
-                }
-                #endregion
-
-                processTime = null;
             }
+
+            // Breakdown
+            TruncateTable(TableName);
+            processTime = null;
         }
 
-        #region Synch Time helper methods
+        #region Miscellaneous helper methods
         /// <summary>
         /// 
         /// </summary>
@@ -452,6 +441,27 @@ namespace AvaShardAggregator
             }
         }
 
+        private static void TruncateTable(string TableName)
+        {
+            using (DestinationContext dContext = new DestinationContext())
+            {
+
+                using (DbCommand cmdTruncate = dContext.Database.GetDbConnection().CreateCommand())
+                {
+                    cmdTruncate.CommandTimeout = 300;
+                    cmdTruncate.CommandType = CommandType.Text;
+                    cmdTruncate.CommandText = string.Format("TRUNCATE TABLE [{0}{1}]", TableName, _objectSuffix);
+                    if (cmdTruncate.Connection.State != System.Data.ConnectionState.Open)
+                    {
+                        cmdTruncate.Connection.Open();
+                    }
+
+                    cmdTruncate.ExecuteNonQuery();
+
+                    cmdTruncate.Connection.Close();
+                }
+            }
+        }
         /// <summary>
         /// obtain the SQL needed 
         /// </summary>
@@ -471,123 +481,130 @@ namespace AvaShardAggregator
                 {
                     case "AccountFeatureList":
                         cmdSQL = @" SELECT afl.*
-                                        FROM Account a
-                                        INNER JOIN AccountFeatureList afl
+                                        FROM Account a WITH (NOLOCK)
+                                        INNER JOIN AccountFeatureList afl WITH (NOLOCK, FORCESEEK)
                                         ON a.AccountId = afl.AccountId
                                         WHERE a.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "CombinedHSTConfig":
                         cmdSQL = @" SELECT cc.*
-                                        FROM Account a
-                                        INNER JOIN CombinedHSTConfig cc
+                                        FROM Account a WITH (NOLOCK)
+                                        INNER JOIN CombinedHSTConfig cc WITH (NOLOCK, FORCESEEK)
                                         ON a.AccountId = cc.AccountId
                                         WHERE a.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "CompanyLocationSetting":
                         cmdSQL = @" SELECT cls.*
-                                        FROM CompanyLocation cl
-                                        INNER JOIN CompanyLocationSetting cls
+                                        FROM CompanyLocation cl WITH (NOLOCK)
+                                        INNER JOIN CompanyLocationSetting cls WITH (NOLOCK, FORCESEEK)
                                         ON cl.CompanyLocationId = cls.CompanyLocationId
                                         WHERE cl.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "CompanyRPSSeries":
                         cmdSQL = @" SELECT crs.*
-                                        FROM Company c
-                                        INNER JOIN CompanyRPSSeries crs
+                                        FROM Company c WITH (NOLOCK)
+                                        INNER JOIN CompanyRPSSeries crs WITH (NOLOCK, FORCESEEK)
                                         ON c.CompanyId = crs.CompanyId
                                         WHERE c.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "CompanySetting":
                         cmdSQL = @" SELECT cs.*
-                                        FROM Company c
-                                        INNER JOIN CompanySetting cs
+                                        FROM Company c WITH (NOLOCK)
+                                        INNER JOIN CompanySetting cs WITH (NOLOCK, FORCESEEK)
                                         ON c.CompanyId = cs.CompanyId
                                         WHERE c.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "CompanyDistanceThreshold":
                         cmdSQL = @" SELECT cdt.*
-                                        FROM Company c
-                                        INNER JOIN CompanyDistanceThreshold cdt
+                                        FROM Company c WITH (NOLOCK)
+                                        INNER JOIN CompanyDistanceThreshold cdt WITH (NOLOCK, FORCESEEK)
                                         ON c.CompanyId = cdt.CompanyId
                                         WHERE c.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentAddress":
                         cmdSQL = @"	SELECT da.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentAddress da WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentAddress da WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = da.DocumentId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentParameterBag":
                         cmdSQL = @"	SELECT dpb.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentParameterBag dpb WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentParameterBag dpb WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dpb.DocumentId 
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentProperty":
                         cmdSQL = @"	SELECT dp.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentProperty dp WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentProperty dp WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dp.DocumentId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentLine":
                         cmdSQL = @"	SELECT dl.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dl.DocumentId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentLineParameterBag":
                         cmdSQL = @"	SELECT dlpb.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dl.DocumentId
-                                        INNER JOIN DocumentLineParameterBag dlpb  WITH (NOLOCK, forceseek)
+                                        INNER JOIN DocumentLineParameterBag dlpb  WITH (NOLOCK, FORCESEEK)
                                         ON dl.DocumentLineId = dlpb.DocumentLineId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentLineProperty":
                         cmdSQL = @"	SELECT dlp.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dl.DocumentId
-                                        INNER JOIN DocumentLineProperty dlp  WITH (NOLOCK, forceseek)
+                                        INNER JOIN DocumentLineProperty dlp  WITH (NOLOCK, FORCESEEK)
                                         ON dl.DocumentLineId = dlp.DocumentLineId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentLineDetail":
                         cmdSQL = @"	SELECT dld.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dl.DocumentId
-                                        INNER JOIN DocumentLineDetail dld WITH (NOLOCK, forceseek)
+                                        INNER JOIN DocumentLineDetail dld WITH (NOLOCK, FORCESEEK)
                                         ON dl.DocumentLineId = dld.DocumentLineId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "DocumentLineDetailProperty":
                         cmdSQL = @"	SELECT dldp.*
 	                                    FROM Document d WITH (NOLOCK)
-	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, forceseek)
+	                                    INNER JOIN DocumentLine dl WITH (NOLOCK, FORCESEEK)
 	                                    ON d.DocumentId = dl.DocumentId
-                                        INNER JOIN DocumentLineDetail dld WITH (NOLOCK, forceseek)
+                                        INNER JOIN DocumentLineDetail dld WITH (NOLOCK, FORCESEEK)
                                         ON dl.DocumentLineId = dld.DocumentLineId
                                         INNER JOIN DocumentLineDetailProperty dldp  WITH (NOLOCK, forceseek)
                                         ON dld.DocumentLineDetailId = dldp.DocumentLineDetailId
 	                                    WHERE d.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
+                    case "ExemptCertDetail":
+                        cmdSQL = @" SELECT ecd.*
+                                        FROM ExemptCert ec WITH (NOLOCK)
+                                        INNER JOIN ExemptCertDetail ecd WITH (NOLOCK, FORCESEEK)
+                                        ON ec.ExemptCertId = ecd.ExemptCertId
+                                        WHERE ec.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
+                        break;
                     case "MaxLine":
                         cmdSQL = @" SELECT ml.*
-                                        FROM Account a
-                                        INNER JOIN MaxLine ml
+                                        FROM Account a WITH (NOLOCK)
+                                        INNER JOIN MaxLine ml WITH (NOLOCK, FORCESEEK)
                                         ON a.AccountId = ml.AccountId
                                         WHERE a.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
                     case "SubscriptionSetting":
                         cmdSQL = @" SELECT ss.*
-                                        FROM Subscription s
-                                        INNER JOIN SubscriptionSetting ss
+                                        FROM Subscription s WITH (NOLOCK)
+                                        INNER JOIN SubscriptionSetting ss WITH (NOLOCK, FORCESEEK)
                                         ON s.SubscriptionId = ss.SubscriptionSettingId
                                         WHERE s.ModifiedDate BETWEEN @LastCheckTime AND @CurrentCheckTime";
                         break;
