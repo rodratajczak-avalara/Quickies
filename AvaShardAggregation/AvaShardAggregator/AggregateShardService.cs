@@ -72,6 +72,7 @@ namespace AvaShardAggregator
                             {
                                 LogToConsole(string.Format("Unable to process Bcp Merge for table {0}", readerTables["TableName"].ToString()));
                                 batchSuccessful = false;
+                                break;
                             }
                         }
                     }

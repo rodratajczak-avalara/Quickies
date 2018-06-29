@@ -52,6 +52,9 @@ CREATE TABLE dbo.BCPBatch
 	BCPBatchId	BIGINT IDENTITY(1,1) NOT NULL,
 	ApplicationName NVARCHAR (450) NOT NULL,
 	BatchStartTime  DATETIME NOT NULL,
+	BCPBatchTimeSpan BIGINT,
+	Successful BIT,
+	CreatedDate DATETIME,
 	CONSTRAINT PK_BCPBatch PRIMARY KEY (BCPBatchId)
 	)
 GO
