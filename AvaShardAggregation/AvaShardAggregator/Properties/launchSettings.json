@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "AvaShardAggregator": {
-      "commandName": "Project",
-      "commandLineArgs": "true"
-    }
-  }
-}
