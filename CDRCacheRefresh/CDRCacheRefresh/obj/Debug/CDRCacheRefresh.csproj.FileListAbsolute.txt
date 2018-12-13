@@ -1,8 +1,0 @@
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\bin\Debug\CDRCacheRefresh.exe.config
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\bin\Debug\CDRCacheRefresh.exe
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\bin\Debug\CDRCacheRefresh.pdb
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\bin\Debug\Newtonsoft.Json.dll
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\bin\Debug\RestSharp.dll
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\bin\Debug\Newtonsoft.Json.xml
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\obj\Debug\CDRCacheRefresh.exe
-c:\users\rod.ratajczak\documents\visual studio 2015\Projects\CDRCacheRefresh\CDRCacheRefresh\obj\Debug\CDRCacheRefresh.pdb

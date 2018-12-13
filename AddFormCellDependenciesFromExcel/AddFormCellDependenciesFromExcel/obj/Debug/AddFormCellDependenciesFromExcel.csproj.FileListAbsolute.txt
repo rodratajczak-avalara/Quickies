@@ -1,9 +1,0 @@
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\AddFormCellDependenciesFromExcel.exe.config
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\AddFormCellDependenciesFromExcel.exe
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\AddFormCellDependenciesFromExcel.pdb
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\DocumentFormat.OpenXml.dll
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\Newtonsoft.Json.dll
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\DocumentFormat.OpenXml.xml
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\bin\Debug\Newtonsoft.Json.xml
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\obj\Debug\AddFormCellDependenciesFromExcel.exe
-C:\Avalara\git\Quickies\AddFormCellDependenciesFromExcel\AddFormCellDependenciesFromExcel\obj\Debug\AddFormCellDependenciesFromExcel.pdb
