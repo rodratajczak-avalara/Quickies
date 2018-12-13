@@ -2,7 +2,7 @@
   "profiles": {
     "UpdateFormMasterDORAddress": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Temp\\UpdateFormMasterDORAddresses\\Sales_Use_Address_Updated (CORRECTIONS FIXED) (v2).xlsx\" http://tfc.local.com rod.ratajczak.compliance Gopack01"
+      "commandLineArgs": "\"C:\\Temp\\UpdateFormMasterDORAddresses\\Sales_Use_Address_Updated (CORRECTIONS FIXED) (v2).xlsx\" https://taxformcatalog-dev.returns.avalara.net user password"
     }
   }
 }
