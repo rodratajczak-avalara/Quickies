@@ -70,7 +70,7 @@ namespace LoadFormFilingSystemRecords
                 formMasterId = GetFormMasterId(item.TaxFormCode, args[1], args[2], args[3]);
                 if (formMasterId <= 0)
                 {
-                    Console.WriteLine(string.Format("Unable to find a formmaster record for taxformcode [{0}].", item.TaxFormCode));
+                    Console.WriteLine(string.Format("1: Unable to find a formmaster record for taxformcode [{0}].", item.TaxFormCode));
                 }
                 else
                 {
@@ -93,8 +93,8 @@ namespace LoadFormFilingSystemRecords
                                 break;
                         }    
                         List<FormFilingSystem> existingFilingSystems = GetFormFilingSystems(formMasterId, args[1], args[2], args[3]);
-                        var formFilingSystem = existingFilingSystems.Any() ? existingFilingSystems.Where(x => x.FilingSystemId == filingSystemId).FirstOrDefault() : null;
-                        if (formFilingSystem == null)
+                        FormFilingSystem formFilingSystem = existingFilingSystems.Any() ? existingFilingSystems.Where<FormFilingSystem>(x => x.FilingSystemId == filingSystemId).FirstOrDefault() : null;
+                        if (formFilingSystem == null || formFilingSystem == new FormFilingSystem() )
                         { 
                             FormFilingSystem filingSystemToAdd = new FormFilingSystem();
                             filingSystemToAdd.FormFilingSystemId = -1;
@@ -112,21 +112,27 @@ namespace LoadFormFilingSystemRecords
                             }
                             else
                             {
+                                Console.WriteLine(string.Format("2: Insert to FormFilingSystem did not return a valid FormFilingSystemId for TaxFormCode [{0}].", item.TaxFormCode));
                                 recordsErrored++;
                             }
 
                         }
+                        else
+                        {
+                            Console.WriteLine(string.Format("3: An Existing FormFilingSystemRecord exists for TaxFormCode [{0}] and Filing System [{1}].", item.TaxFormCode, item.FilingSystem));
+                        }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(string.Format("LoadFormFilingSystem: An error occurred [{0}] while processing TaxFormCode [{1}] and filing system [{2}].", ex.Message, item.TaxFormCode, item.FilingSystem));
+                        Console.WriteLine(string.Format("4: LoadFormFilingSystem: An error occurred [{0}] while processing TaxFormCode [{1}] and filing system [{2}].", ex.Message, item.TaxFormCode, item.FilingSystem));
                         recordsErrored++;
                     }
 
                 }
             }
 
-            Console.WriteLine(string.Format("LoadFormFilingSystem: {0} records inserted and {1} records errored out of {2} total records.", recordsInserted.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
+            Console.WriteLine(string.Format("5: LoadFormFilingSystem: {0} records inserted and {1} records errored out of {2} total records.", recordsInserted.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
+            Console.ReadKey();
         }
  
         private static string ReadExcelCell(Cell cell, WorkbookPart workbookPart)
@@ -178,7 +184,7 @@ namespace LoadFormFilingSystemRecords
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetFormFilingSystem: An unhandled exception occurred:[{0}]", ex.Message);
+                Console.WriteLine("6: GetFormFilingSystem: An unhandled exception occurred:[{0}]", ex.Message);
 
                 return results;
             }
@@ -227,7 +233,7 @@ namespace LoadFormFilingSystemRecords
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetFormMasterId 1: Unable to find TaxFormCode [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
+                Console.WriteLine("7: GetFormMasterId 1: Unable to find TaxFormCode [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
             }
 
 
@@ -258,7 +264,7 @@ namespace LoadFormFilingSystemRecords
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetFormMasterId 2: Unable to find LegacyReturnName [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
+                Console.WriteLine("8: GetFormMasterId 2: Unable to find LegacyReturnName [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
 
                 return formMasterId;
             }
@@ -302,7 +308,7 @@ namespace LoadFormFilingSystemRecords
             }
             catch (Exception ex)
             {
-                Console.WriteLine("InsertFormFilingSystem: The following attempted insert/update failed: [{0}].  The unhandled exception that occurred: [{1}]", payload, ex.Message);
+                Console.WriteLine("9: InsertFormFilingSystem: The following attempted insert/update failed: [{0}].  The unhandled exception that occurred: [{1}]", payload, ex.Message);
             }
 
             return formFilingSystemId;

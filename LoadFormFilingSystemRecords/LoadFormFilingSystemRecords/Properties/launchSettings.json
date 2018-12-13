@@ -2,7 +2,7 @@
   "profiles": {
     "LoadFormFilingSystemRecords": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Temp\\LoadFormFilingSystems\\filingsystems.xlsx http://tfc.local.com rod.ratajczak.compliance Gopack01"
+      "commandLineArgs": "C:\\Temp\\LoadFormFilingSystems\\filingsystems.xlsx http://tfc.local.com user password"
     }
   }
 }
