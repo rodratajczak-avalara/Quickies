@@ -35,27 +35,28 @@ namespace UpdateTFCHolidays
                     WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
                     WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
-
+                    int rowNumber = 1;
                     foreach (Row row in sheetData.Elements<Row>())
                     {
                         InputData filingSystem = new InputData();
                         int rowcolumn = 1;
 
-                        foreach (Cell c in row.Elements<Cell>())
+                        if (rowNumber > 1)
                         {
-
-                            switch (rowcolumn)
+                            foreach (Cell c in row.Elements<Cell>())
                             {
-                                case 1: filingSystem.CountryCode = ReadExcelCell(c, workbookPart); break;
-                                case 2: filingSystem.State = ReadExcelCell(c, workbookPart); break;
-                                case 3: filingSystem.HolidayDate = Convert.ToDateTime(ReadExcelCell(c, workbookPart)); break;
-                                case 4: filingSystem.HolidayName = ReadExcelCell(c, workbookPart); break;
+                                switch (rowcolumn)
+                                {
+                                    case 1: filingSystem.CountryCode = ReadExcelCell(c, workbookPart); break;
+                                    case 2: filingSystem.State = ReadExcelCell(c, workbookPart); break;
+                                    case 3: filingSystem.HolidayDate = DateTime.FromOADate(Convert.ToInt32(ReadExcelCell(c, workbookPart))); break;
+                                    case 4: filingSystem.HolidayName = ReadExcelCell(c, workbookPart); break;
+                                }
+                                rowcolumn++;
                             }
-
-                            rowcolumn++;
+                            filingSystems.Add(filingSystem);
                         }
-
-                        filingSystems.Add(filingSystem);
+                        rowNumber++;
                     }
                 }
             }
