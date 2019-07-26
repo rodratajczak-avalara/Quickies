@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UpdateFormMasterDORAddress": {
+      "commandName": "Project",
+      "commandLineArgs": "https://taxformcatalog.returns.avalara.net rod.ratajczak.compliance Gopack01_Production 2019 8"
+    }
+  }
+}
