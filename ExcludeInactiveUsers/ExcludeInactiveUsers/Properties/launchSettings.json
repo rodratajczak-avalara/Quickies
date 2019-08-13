@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "ExcludeInactiveUsers": {
-      "commandName": "Project",
-      "commandLineArgs": "https://taxformcatalog-dev.returns.avalara.net rod.ratajczak.compliance Gopack01"
-    }
-  }
-}
