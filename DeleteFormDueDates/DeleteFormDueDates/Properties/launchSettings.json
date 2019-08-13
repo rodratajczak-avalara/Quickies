@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DeleteFormDueDates": {
-      "commandName": "Project",
-      "commandLineArgs": "https://taxformcatalog-qa.returns.avalara.net rod.ratajczak.compliance Gopack01"
-    }
-  }
-}
