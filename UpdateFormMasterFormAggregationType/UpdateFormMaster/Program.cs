@@ -1,41 +1,30 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
-using System.Text.RegularExpressions;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.IO;
+using System.Net;
+using Newtonsoft.Json;
 
-namespace UpdateFormMasterDORAddress
+namespace UpdateFormMaster
 {
     class Program
     {
-        private static List<char> Letters = new List<char>() { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ' };
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        /// <remarks>args[0] = File path and name</remarks>
+        /// <remarks>args[1] = url for Tax Form Catalog</remarks>
+        /// <remarks>args[2] = user id for Tax Form Catalog</remarks>
+        /// <remarks>args[3] = password for Tax Form Catalog</remarks>
         static void Main(string[] args)
         {
-            Console.WriteLine("Beginning Processing");
-            List<InputData> dorAddresses = new List<InputData>();
-
-            FileStream ostrm;
-            StreamWriter writer;
-            TextWriter oldOut = Console.Out;
-            try
-            {
-                ostrm = new FileStream("./logout_" + DateTime.UtcNow.ToFileTimeUtc().ToString() + ".txt", FileMode.OpenOrCreate, FileAccess.Write);
-                writer = new StreamWriter(ostrm);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("1: Cannot open logout_.txt for writing");
-                Console.WriteLine(e.Message);
-                return;
-            }
-            Console.SetOut(writer);
+            List<InputData> FormAggregationTypes = new List<InputData>(); // = null;
 
             //Populate object with source file
             using (FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -46,134 +35,71 @@ namespace UpdateFormMasterDORAddress
                     WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
                     WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+                    Int64 rowNumber = 0;
 
                     foreach (Row row in sheetData.Elements<Row>())
                     {
-                        InputData dorAddress = new InputData();
+                        rowNumber++;
+                        InputData FormAggregationType = new InputData();
                         int rowcolumn = 1;
-                        List<String> firstRow = new List<String>();
-
-                        foreach (Cell c in row.Elements<Cell>())
+                        if (rowNumber > 1)
                         {
-                            // skip blank columns
-                            int cellColumnIndex = (int)GetColumnIndexFromName(GetColumnName(c.CellReference));
-                            while (rowcolumn-1 < cellColumnIndex)
+                            foreach (Cell c in row.Elements<Cell>())
                             {
+                                switch (rowcolumn)
+                                {
+                                    case 1: FormAggregationType.TaxFormCode = ReadExcelCell(c, workbookPart); break;
+                                    case 2: FormAggregationType.FormAggregationTypeId = Convert.ToInt64(ReadExcelCell(c, workbookPart)); break;
+                                }
+
                                 rowcolumn++;
                             }
 
-                            switch (rowcolumn)
-                            {
-                                case 1: dorAddress.TaxFormCode = ReadExcelCell(c, workbookPart); break;
-                                case 2: dorAddress.LegacyReturnName = ReadExcelCell(c, workbookPart); break;
-                                case 3: dorAddress.DORAddressMailto = ReadExcelCell(c, workbookPart); break;
-                                case 4: dorAddress.DORAddress1 = ReadExcelCell(c, workbookPart); break;
-                                case 5: dorAddress.DORAddress2 = ReadExcelCell(c, workbookPart); break;
-                                case 6: dorAddress.DORAddressCity = ReadExcelCell(c, workbookPart); break;
-                                case 7: dorAddress.DORAddressRegion = ReadExcelCell(c, workbookPart); break;
-                                case 8: dorAddress.DORAddressPostalCode = ReadExcelCell(c, workbookPart); break;
-                                case 9: dorAddress.Comments = ReadExcelCell(c, workbookPart); break;
-                            }
-
-                            rowcolumn++;
-                        }
-                        if (dorAddress.TaxFormCode != "TaxFormCode")
-                        {
-                            dorAddresses.Add(dorAddress);
+                            FormAggregationTypes.Add(FormAggregationType);
                         }
                     }
                 }
             }
 
-            int totalRecords = dorAddresses.Count;
+            int totalRecords = FormAggregationTypes.Count;
             int recordsUpdated = 0;
             int recordsErrored = 0;
-            int recordsSkipped = 0;
-
-            // Create List of FormCellDependency records to add 
-            foreach (InputData item in dorAddresses)
+            
+            foreach (InputData item in FormAggregationTypes)
             {
                 FormMaster currentFormMaster = GetFormMaster(item.TaxFormCode, args[1], args[2], args[3]);
                 if (currentFormMaster == null)
                 {
-                    Console.WriteLine(string.Format("2: Unable to find a formmaster record for taxformcode [{0}].", item.TaxFormCode));
+                    Console.WriteLine(string.Format("1: Unable to find a formmaster record for taxformcode [{0}].", item.TaxFormCode));
                 }
                 else
                 {
                     try
                     {
-                        if (currentFormMaster.ModifiedDate < DateTime.Parse("2018-11-01"))
+                        currentFormMaster.FormAggregationTypeId = item.FormAggregationTypeId;
+                        bool updated = UpdateFormMaster(currentFormMaster, args[1], args[2], args[3]);
+                        if (updated)
                         {
-                            if (item.DORAddressMailto == item.DORAddress1)
-                            {
-                                currentFormMaster.DORAddressMailTo = item.DORAddressMailto;
-                                currentFormMaster.DORAddress1 = item.DORAddress2;
-                                currentFormMaster.DORAddress2 = null;
-                            }
-                            else if (item.DORAddress1 == item.DORAddress2)
-                            {
-                                currentFormMaster.DORAddressMailTo = item.DORAddressMailto;
-                                currentFormMaster.DORAddress1 = item.DORAddress1;
-                                currentFormMaster.DORAddress2 = null;
-                            }
-                            else
-                            {
-                                currentFormMaster.DORAddressMailTo = item.DORAddressMailto;
-                                currentFormMaster.DORAddress1 = item.DORAddress1;
-                                currentFormMaster.DORAddress2 = item.DORAddress2;
-                            }
-                            currentFormMaster.DORAddressCity = item.DORAddressCity;
-                            currentFormMaster.DORAddressRegion = item.DORAddressRegion;
-                            if (item.DORAddressPostalCode is null)
-                            {
-                                currentFormMaster.DORAddressPostalCode = item.DORAddressPostalCode;
-                            }
-                            else
-                            {
-                                if (item.DORAddressPostalCode.Length < 5)
-                                {
-                                    currentFormMaster.DORAddressPostalCode = item.DORAddressPostalCode.PadLeft(5, '0');
-                                }
-                                else
-                                {
-                                    currentFormMaster.DORAddressPostalCode = item.DORAddressPostalCode;
-                                }
-                            }
-                            currentFormMaster.ModifiedDate = System.DateTime.UtcNow;
-                            currentFormMaster.ModifiedUserId = 234;
-                            bool success = UpdateFormMasterDORAddress(currentFormMaster, args[1], args[2], args[3]);
-                            if (success)
-                            {
-                                Console.WriteLine(string.Format("3: UpdateFormMasterAddress: TaxFormCode [{0}] was successfully updated.", item.TaxFormCode));
-                                recordsUpdated++;
-                            }
-                            else
-                            {
-                                Console.WriteLine(string.Format("4: UpdateFormMasterAddress: TaxFormCode [{0}] was not updated.", item.TaxFormCode));
-                                recordsErrored++;
-                            }
+                            recordsUpdated++;
                         }
                         else
                         {
-                            Console.WriteLine(string.Format("5: UpdateFormMasterAddress: TaxFormCode [{0}] was not updated because it was modified after 2018-11-01.", item.TaxFormCode));
-                            recordsSkipped++;
+                            recordsErrored++;
+                            Console.WriteLine(string.Format("2: Main: UpdateFormMaster was not successful updating the form master record while processing TaxFormCode [{0}].", item.TaxFormCode));
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(string.Format("6: UpdateFormMasterAddress: An error occurred [{0}] while processing TaxFormCode [{1}].", ex.Message, item.TaxFormCode));
+                        Console.WriteLine(string.Format("4: Main: An error occurred [{0}] while processing TaxFormCode [{1}].", ex.Message, item.TaxFormCode));
                         recordsErrored++;
                     }
 
                 }
             }
 
-            Console.WriteLine(string.Format("7: UpdateFormMasterDORAddresses: {0} records updated out of {1} total records.  There were {2} records that resulted in an error. There were {3} records that were skipped because they had been modified after 2018-11-01.", recordsUpdated.ToString(), totalRecords.ToString(), recordsErrored.ToString(), recordsSkipped.ToString()));
-            Console.SetOut(oldOut);
-            writer.Close();
-            ostrm.Close();
-            Console.WriteLine("Complete");
+            Console.WriteLine(string.Format("5: LoadFormFilingSystem: {0} records updated and {1} records errored out of {2} total records.", recordsUpdated.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
             Console.ReadKey();
+
         }
 
         private static string ReadExcelCell(Cell cell, WorkbookPart workbookPart)
@@ -187,68 +113,7 @@ namespace UpdateFormMasterDORAddress
                         Convert.ToInt32(cell.CellValue.Text)).InnerText;
             }
 
-            if (text == "[NULL]")
-            {
-                text = null;
-            }
-
-            return text?.Trim();
-        }
-
-        /// <summary>
-        /// Given a cell name, parses the specified cell to get the column name.
-        /// </summary>
-        /// <param name="cellReference">Address of the cell (ie. B2)</param>
-        /// <returns>Column Name (ie. B)</returns>
-        public static string GetColumnName(string cellReference)
-        {
-            // Create a regular expression to match the column name portion of the cell name.
-            Regex regex = new Regex("[A-Za-z]+");
-            Match match = regex.Match(cellReference);
-
-            return match.Value;
-        }
-
-        /// <summary>
-        /// Given just the column name (no row index), it will return the zero based column index.
-        /// Note: This method will only handle columns with a length of up to two (ie. A to Z and AA to ZZ). 
-        /// A length of three can be implemented when needed.
-        /// </summary>
-        /// <param name="columnName">Column Name (ie. A or AB)</param>
-        /// <returns>Zero based index if the conversion was successful; otherwise null</returns>
-        public static int? GetColumnIndexFromName(string columnName)
-        {
-            int? columnIndex = null;
-
-            string[] colLetters = Regex.Split(columnName, "([A-Z]+)");
-            colLetters = colLetters.Where(s => !string.IsNullOrEmpty(s)).ToArray();
-
-            if (colLetters.Count() <= 2)
-            {
-                int index = 0;
-                foreach (string col in colLetters)
-                {
-                    List<char> col1 = colLetters.ElementAt(index).ToCharArray().ToList();
-                    int? indexValue = Letters.IndexOf(col1.ElementAt(index));
-
-                    if (indexValue != -1)
-                    {
-                        // The first letter of a two digit column needs some extra calculations
-                        if (index == 0 && colLetters.Count() == 2)
-                        {
-                            columnIndex = columnIndex == null ? (indexValue + 1) * 26 : columnIndex + ((indexValue + 1) * 26);
-                        }
-                        else
-                        {
-                            columnIndex = columnIndex == null ? indexValue : columnIndex + indexValue;
-                        }
-                    }
-
-                    index++;
-                }
-            }
-
-            return columnIndex;
+            return (text ?? string.Empty).Trim();
         }
 
         /// <summary>
@@ -261,7 +126,7 @@ namespace UpdateFormMasterDORAddress
         /// <returns></returns>
         private static FormMaster GetFormMaster(string TaxFormCode, string Url, string Username, string Drowssap)
         {
-            FormMaster formMaster = null;
+            FormMaster formMaster = new FormMaster();
             string query = string.Empty;
 
             try
@@ -287,7 +152,7 @@ namespace UpdateFormMasterDORAddress
             }
             catch (Exception ex)
             {
-                Console.WriteLine("8: GetFormMaster 1: Unable to find TaxFormCode [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
+                Console.WriteLine("7: GetFormMasterId 1: Unable to find TaxFormCode [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
             }
 
 
@@ -314,25 +179,37 @@ namespace UpdateFormMasterDORAddress
             }
             catch (Exception ex)
             {
-                Console.WriteLine("9: GetFormMaster 2: Unable to find LegacyReturnName [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
+                Console.WriteLine("8: GetFormMasterId 2: Unable to find LegacyReturnName [{0}] due to an unhandled exception:[{1}]", TaxFormCode, ex.Message);
+
+                return formMaster;
             }
 
             return formMaster;
         }
 
-        private static Boolean UpdateFormMasterDORAddress(FormMaster formMaster, string url, string Username, string Drowssap)
+        /// <summary>
+        /// Updates a FormMaster record given the FormMaster Object
+        /// </summary>
+        /// <param name="TaxFormCode"></param>
+        /// <param name="Url"></param>
+        /// <param name="Username"></param>
+        /// <param name="Drowssap"></param>
+        /// <returns></returns>
+        private static bool UpdateFormMaster(FormMaster updatedFormMaster, string Url, string Username, string Drowssap)
         {
             string payload = string.Empty;
-            Boolean success = false;
+            string query = string.Empty;
+            FormMaster responseFormMaster = new FormMaster();
+
             try
             {
-                // get post data.
-                payload = JsonConvert.SerializeObject(formMaster);
+                payload = JsonConvert.SerializeObject(updatedFormMaster);
                 byte[] buf = Encoding.UTF8.GetBytes(payload);
 
-                // create the http web request
-                string query = "/api/FormMaster/" + formMaster.FormMasterId.ToString();
-                var request = (HttpWebRequest)WebRequest.Create(url + query);
+                query = string.Format("/api/FormMaster/{0}", updatedFormMaster.FormMasterId.ToString());
+
+                // Create the http web request.
+                var request = (HttpWebRequest)WebRequest.Create(Url + query);
                 request.Headers.Add(HttpRequestHeader.Authorization, "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Username + ":" + Drowssap)));
 
                 request.Method = "PUT";
@@ -340,45 +217,34 @@ namespace UpdateFormMasterDORAddress
                 request.ContentType = "application/json; charset=utf-8";
                 request.GetRequestStream().Write(buf, 0, buf.Length);
 
-                // get response and deserialize it.
+                // execute the request.
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response != null)
                     {
                         var responseStream = response.GetResponseStream();
-                        var streamReader = new System.IO.StreamReader(responseStream, Encoding.UTF8);
+                        var streamReader = new System.IO.StreamReader(responseStream, System.Text.Encoding.UTF8);
                         var responseString = streamReader.ReadToEnd();
 
-                        FormMaster responseFormMaster = responseString.Length > 0 ? JsonConvert.DeserializeObject<FormMaster>(responseString) : null;
-                        if (responseFormMaster != null)
-                        {
-                            success = true;
-                        }
+                        responseFormMaster = responseString.Length > 0 ? Newtonsoft.Json.JsonConvert.DeserializeObject<FormMaster>(responseString) : null;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("10: UpdateFormMasterDORAddress: The following attempted update failed: [{0}].  The unhandled exception that occurred: [{1}]", payload, ex.Message);
+                Console.WriteLine("7: UpdateForMMaster: Unable to update FormMaster for TaxFormCode [{0}] due to an unhandled exception:[{1}]", updatedFormMaster.TaxFormCode, ex.Message);
+                return false;
             }
 
-            return success;
+            return true;
         }
 
     }
 
-
     public class InputData
     {
         public String TaxFormCode { get; set; }
-        public String LegacyReturnName { get; set; }
-        public String DORAddressMailto { get; set; }
-        public String DORAddress1 { get; set; }
-        public String DORAddress2 { get; set; }
-        public String DORAddressCity { get; set; }
-        public String DORAddressRegion { set; get; }
-        public String DORAddressPostalCode { get; set; }
-        public String Comments { get; set; }
+        public Int64 FormAggregationTypeId { get; set; }
     }
 
     public partial class FormMaster
@@ -492,13 +358,13 @@ namespace UpdateFormMasterDORAddress
         public Int32 MonthsBetweenOccasionalFilings { get; set; }
         public String OccasionalFilingCriteria { get; set; }
         public Int64 FormAggregationTypeId { get; set; }
-        public Int64? PrepaymentCalculationMethodId { get; set; }
+	    public Int64? PrepaymentCalculationMethodId { get; set; }
         public Boolean SplitOutOfStateLocations { get; set; }
-        public String CompanyIdentifier { get; set; }
+	    public String CompanyIdentifier { get; set; }
         public String PrepaymentHelpText { get; set; }
-        public Int64? PrepaymentAccrualPeriodId { get; set; }
+	    public Int64? PrepaymentAccrualPeriodId { get; set; }
         public String PrepaymentThresholdCode { get; set; }
-        public String CreditNetting { get; set; }
+	    public String CreditNetting { get; set; }
         public String AdditionalGrossOption { get; set; }
     }
 

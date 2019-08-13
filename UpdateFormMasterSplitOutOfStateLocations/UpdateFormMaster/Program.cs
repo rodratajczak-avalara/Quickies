@@ -35,31 +35,32 @@ namespace UpdateFormMaster
                     WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
                     WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+                    Int64 rowNumber = 0;
 
                     foreach (Row row in sheetData.Elements<Row>())
                     {
+                        rowNumber++;
                         InputData FormAggregationType = new InputData();
                         int rowcolumn = 1;
-
-                        foreach (Cell c in row.Elements<Cell>())
+                        if (rowNumber > 1)
                         {
-
-                            switch (rowcolumn)
+                            foreach (Cell c in row.Elements<Cell>())
                             {
-                                case 1: FormAggregationType.TaxFormCode = ReadExcelCell(c, workbookPart); break;
-                                case 2: FormAggregationType.FormAggregationTypeId = ReadExcelCell(c, workbookPart); break;
+                                switch (rowcolumn)
+                                {
+                                    case 1: FormAggregationType.TaxFormCode = ReadExcelCell(c, workbookPart); break;
+                                }
+
+                                rowcolumn++;
                             }
 
-                            rowcolumn++;
+                            FormAggregationTypes.Add(FormAggregationType);
                         }
-
-                        FormAggregationTypes.Add(FormAggregationType);
                     }
                 }
             }
 
             int totalRecords = FormAggregationTypes.Count;
-            Int64 formMasterId = 0;
             int recordsUpdated = 0;
             int recordsErrored = 0;
             
@@ -74,7 +75,7 @@ namespace UpdateFormMaster
                 {
                     try
                     {
-                        currentFormMaster.FormAggregationTypeId = item.FormAggregationTypeId;
+                        currentFormMaster.SplitOutOfStateLocations = true;
                         bool updated = UpdateFormMaster(currentFormMaster, args[1], args[2], args[3]);
                         if (updated)
                         {
@@ -185,12 +186,63 @@ namespace UpdateFormMaster
             return formMaster;
         }
 
+        /// <summary>
+        /// Updates a FormMaster record given the FormMaster Object
+        /// </summary>
+        /// <param name="TaxFormCode"></param>
+        /// <param name="Url"></param>
+        /// <param name="Username"></param>
+        /// <param name="Drowssap"></param>
+        /// <returns></returns>
+        private static bool UpdateFormMaster(FormMaster updatedFormMaster, string Url, string Username, string Drowssap)
+        {
+            string payload = string.Empty;
+            string query = string.Empty;
+            FormMaster responseFormMaster = new FormMaster();
+
+            try
+            {
+                payload = JsonConvert.SerializeObject(updatedFormMaster);
+                byte[] buf = Encoding.UTF8.GetBytes(payload);
+
+                query = string.Format("/api/FormMaster/{0}", updatedFormMaster.FormMasterId.ToString());
+
+                // Create the http web request.
+                var request = (HttpWebRequest)WebRequest.Create(Url + query);
+                request.Headers.Add(HttpRequestHeader.Authorization, "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Username + ":" + Drowssap)));
+
+                request.Method = "PUT";
+                request.ContentLength = buf.Length;
+                request.ContentType = "application/json; charset=utf-8";
+                request.GetRequestStream().Write(buf, 0, buf.Length);
+
+                // execute the request.
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response != null)
+                    {
+                        var responseStream = response.GetResponseStream();
+                        var streamReader = new System.IO.StreamReader(responseStream, System.Text.Encoding.UTF8);
+                        var responseString = streamReader.ReadToEnd();
+
+                        responseFormMaster = responseString.Length > 0 ? Newtonsoft.Json.JsonConvert.DeserializeObject<FormMaster>(responseString) : null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("7: UpdateForMMaster: Unable to update FormMaster for TaxFormCode [{0}] due to an unhandled exception:[{1}]", updatedFormMaster.TaxFormCode, ex.Message);
+                return false;
+            }
+
+            return true;
+        }
+
     }
 
     public class InputData
     {
         public String TaxFormCode { get; set; }
-        public Int64 FormAggregationTypeId { get; set; }
     }
 
     public partial class FormMaster

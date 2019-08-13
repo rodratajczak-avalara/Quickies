@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UpdateFormMaster": {
+      "commandName": "Project",
+      "commandLineArgs": "c:\\temp\\UpdateFormMaster\\noratepivot_lodgingformslist.xlsx https://taxformcatalog-dev.returns.avalara.net rod.ratajczak.compliance Gopack01"
+    }
+  }
+}

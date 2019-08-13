@@ -29,14 +29,14 @@ namespace ReportDueDates
             string filingMonth = DateTime.Parse(args[3].ToString() + "/" + args[4].ToString().PadLeft(2,'0') + "/" + "01").AddMonths(-1).ToString();
             Console.WriteLine("Obtaining Due Dates");
 
-            // Exclude users that have not logged in within the last 120 days
-            string sql = string.Format(@"SELECT fm.FormMasterId, fm.TaxFormCode, fm.Description, 
-	                            Domains=STUFF((SELECT ',' + d.DomainName FROM Domain d WHERE d.DomainId IN (SELECT fd.DomainId FROM FormDomain fd WHERE fd.FormMasterId = fm.FormMasterId) FOR XML PATH, Type).value(N'.[1]', N'nvarchar(max)'), 1, 1, '')
-                            FROM FormMaster fm
-                            WHERE fm.IsEffective=1
-                            AND (SELECT count(1) FROM FormDomain fd WHERE fd.FormMasterId = fm.FormMasterId AND  fd.DomainId IN (1, 2, 3, 4)) > 0
-                            AND (SELECT count(1) FROM FormVersion fv WHERE fv.FormMasterId = fm.FormMasterId AND fv.Status='PRODUCTION' and fv.EffDate <= '{0}' and fv.EndDate >= '{1}') > 0 
-                            ORDER BY TaxFormCode", filingMonth, filingMonth);
+            // Identify Active Production Form Masters
+            string sql = string.Format(@"SELECT fm.Country, fm.Region, fm.FormMasterId, fm.TaxFormCode, fm.Description, 
+                                                    Domains=STUFF((SELECT ',' + d.DomainName FROM Domain d WHERE d.DomainId IN (SELECT fd.DomainId FROM FormDomain fd WHERE fd.FormMasterId = fm.FormMasterId) FOR XML PATH, Type).value(N'.[1]', N'nvarchar(max)'), 1, 1, '')
+                                        FROM FormMaster fm
+                                        WHERE fm.IsEffective=1
+                                        AND (SELECT count(1) FROM FormDomain fd WHERE fd.FormMasterId = fm.FormMasterId AND  fd.DomainId IN (1, 2, 3, 4)) > 0
+                                        AND (SELECT count(1) FROM FormVersion fv WHERE (fv.FormMasterId = fm.FormMasterId OR fv.FormMasterId = fm.AliasForFormMasterId) AND fv.Status='PRODUCTION' and fv.EffDate <= '{0}' and fv.EndDate >= '{1}') > 0 
+                                        ORDER BY TaxFormCode", filingMonth, filingMonth);
 
             using (TaxFormCatalogContext context = new TaxFormCatalogContext())
             using (var cmd = context.Database.GetDbConnection().CreateCommand())
@@ -62,7 +62,7 @@ namespace ReportDueDates
                     };
                     reportDueDates.Add(reportDueDate);
                     recordsProcessed++;
-                    if (recordsProcessed % 1000 == 0)
+                    if (recordsProcessed % 100 == 0)
                     {
                         Console.WriteLine(string.Format("Obtained due date for {0} forms.", recordsProcessed.ToString()));
                     }
