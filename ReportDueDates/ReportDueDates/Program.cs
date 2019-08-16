@@ -24,13 +24,16 @@ namespace ReportDueDates
         static void Main(string[] args)
         {
             Console.WriteLine("Beginning Processing");
-            List<ReportData> reportDueDates  = new List<ReportData>();
-            int recordsProcessed = 0;
-            string filingMonth = DateTime.Parse(args[3].ToString() + "/" + args[4].ToString().PadLeft(2,'0') + "/" + "01").AddMonths(-1).ToString();
-            Console.WriteLine("Obtaining Due Dates");
+            List<ReportData> reportDueDates = new List<ReportData>();
 
-            // Identify Active Production Form Masters
-            string sql = string.Format(@"SELECT fm.Country, fm.Region, fm.FormMasterId, fm.TaxFormCode, fm.Description, 
+            try
+            {
+                int recordsProcessed = 0;
+                string filingMonth = DateTime.Parse(args[3].ToString() + "/" + args[4].ToString().PadLeft(2, '0') + "/" + "01").AddMonths(-1).ToString();
+                Console.WriteLine("Obtaining Due Dates");
+
+                // Identify Active Production Form Masters
+                string sql = string.Format(@"SELECT fm.Country, fm.Region, fm.FormMasterId, fm.TaxFormCode, fm.Description, 
                                                     Domains=STUFF((SELECT ',' + d.DomainName FROM Domain d WHERE d.DomainId IN (SELECT fd.DomainId FROM FormDomain fd WHERE fd.FormMasterId = fm.FormMasterId) FOR XML PATH, Type).value(N'.[1]', N'nvarchar(max)'), 1, 1, '')
                                         FROM FormMaster fm
                                         WHERE fm.IsEffective=1
@@ -38,41 +41,49 @@ namespace ReportDueDates
                                         AND (SELECT count(1) FROM FormVersion fv WHERE (fv.FormMasterId = fm.FormMasterId OR fv.FormMasterId = fm.AliasForFormMasterId) AND fv.Status='PRODUCTION' and fv.EffDate <= '{0}' and fv.EndDate >= '{1}') > 0 
                                         ORDER BY TaxFormCode", filingMonth, filingMonth);
 
-            using (TaxFormCatalogContext context = new TaxFormCatalogContext())
-            using (var cmd = context.Database.GetDbConnection().CreateCommand())
-            {
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = sql;
-
-                if (cmd.Connection.State != System.Data.ConnectionState.Open)
+                using (TaxFormCatalogContext context = new TaxFormCatalogContext())
+                using (var cmd = context.Database.GetDbConnection().CreateCommand())
                 {
-                    cmd.Connection.Open();
-                }
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = sql;
 
-                var dataReader = cmd.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    ReportData reportDueDate = new ReportData
+                    if (cmd.Connection.State != System.Data.ConnectionState.Open)
                     {
-                        FormMasterId = (Int64)dataReader["FormMasterId"],
-                        TaxFormCode = dataReader["TaxFormCode"].ToString(),
-                        Description = dataReader["Description"].ToString(),
-                        Domains = dataReader["Domains"].ToString(),
-                        DueDate = GetDueDate(args[0].ToString(), args[1].ToString(), args[2].ToString(), (Int64)dataReader["FormMasterId"], Int32.Parse(args[3]), Int32.Parse(args[4]))
-                    };
-                    reportDueDates.Add(reportDueDate);
-                    recordsProcessed++;
-                    if (recordsProcessed % 100 == 0)
+                        cmd.Connection.Open();
+                    }
+
+                    var dataReader = cmd.ExecuteReader();
+                    while (dataReader.Read())
                     {
-                        Console.WriteLine(string.Format("Obtained due date for {0} forms.", recordsProcessed.ToString()));
+                        ReportData reportDueDate = new ReportData
+                        {
+                            FormMasterId = (Int64)dataReader["FormMasterId"],
+                            TaxFormCode = dataReader["TaxFormCode"].ToString(),
+                            Description = dataReader["Description"].ToString(),
+                            Domains = dataReader["Domains"].ToString(),
+                            DueDate = GetDueDate(args[0].ToString(), args[1].ToString(), args[2].ToString(), (Int64)dataReader["FormMasterId"], Int32.Parse(args[3]), Int32.Parse(args[4]))
+                        };
+                        reportDueDates.Add(reportDueDate);
+                        recordsProcessed++;
+                        if (recordsProcessed % 100 == 0)
+                        {
+                            Console.WriteLine(string.Format("Obtained due date for {0} forms.", recordsProcessed.ToString()));
+                        }
                     }
                 }
+                Console.WriteLine(string.Format("Obtained due date for {0} forms.", recordsProcessed.ToString()));
+                Console.WriteLine("Generating Report");
+                ExportList(reportDueDates, "DueDateReport.xlsx");
             }
-            Console.WriteLine(string.Format("Obtained due date for {0} forms.", recordsProcessed.ToString()));
-            Console.WriteLine("Generating Report");
-            ExportList(reportDueDates, "DueDateReport.xlsx");
-            Console.WriteLine(string.Format("DueDates for {0} forms have been written to DueDateReport.xlsx", reportDueDates.Count.ToString()));
-            Console.ReadKey();
+            catch(Exception ex)
+            {
+                Console.WriteLine(string.Format("Main:  unhandled exception occurred [{0}]", ex.Message));
+            }
+            finally
+            {
+                Console.WriteLine(string.Format("DueDates for {0} forms have been written to DueDateReport.xlsx", reportDueDates.Count.ToString()));
+                Console.ReadKey();
+            }
         }
 
 
