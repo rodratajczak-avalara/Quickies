@@ -58,6 +58,8 @@ namespace ReportDueDates
                         ReportData reportDueDate = new ReportData
                         {
                             FormMasterId = (Int64)dataReader["FormMasterId"],
+                            Country = dataReader["Country"].ToString(),
+                            Region = dataReader["Region"].ToString(),
                             TaxFormCode = dataReader["TaxFormCode"].ToString(),
                             Description = dataReader["Description"].ToString(),
                             Domains = dataReader["Domains"].ToString(),
@@ -149,6 +151,16 @@ namespace ReportDueDates
                     },
                     new Cell()
                     {
+                        CellValue = new CellValue("Country"),
+                        DataType = new EnumValue<CellValues>(CellValues.String)
+                    },
+                    new Cell()
+                    {
+                        CellValue = new CellValue("Region"),
+                        DataType = new EnumValue<CellValues>(CellValues.String)
+                    },
+                    new Cell()
+                    {
                         CellValue = new CellValue("TaxFormCode"),
                         DataType = new EnumValue<CellValues>(CellValues.String)
                     },
@@ -183,6 +195,16 @@ namespace ReportDueDates
                         },
                         new Cell()
                         {
+                            CellValue = new CellValue(rd.Country),
+                            DataType = new EnumValue<CellValues>(CellValues.String)
+                        },
+                        new Cell()
+                        {
+                            CellValue = new CellValue(rd.Region),
+                            DataType = new EnumValue<CellValues>(CellValues.String)
+                        },
+                        new Cell()
+                        {
                             CellValue = new CellValue(rd.TaxFormCode),
                             DataType = new EnumValue<CellValues>(CellValues.String)
                         },
@@ -212,6 +234,8 @@ namespace ReportDueDates
     public class ReportData
     {
         public Int64 FormMasterId { get; set; }
+        public String Country { get; set; }
+        public String Region { get; set; }
         public String TaxFormCode { get; set; }
         public String Description { get; set; }
         public String Domains { get; set; }
