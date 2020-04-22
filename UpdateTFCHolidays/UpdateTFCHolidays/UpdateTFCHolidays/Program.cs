@@ -72,12 +72,14 @@ namespace UpdateTFCHolidays
                 List<Holiday> foundHolidays = holidays.Where(x => x.Country == item.CountryCode.Substring(0,2) && x.Region == item.State && x.Date == item.HolidayDate).ToList();
                 if (!foundHolidays.Any())
                 {
-                    Holiday holidayToAdd = new Holiday();
-                    holidayToAdd.Country = item.CountryCode.Substring(0, 2);
-                    holidayToAdd.Region = item.State;
-                    holidayToAdd.BankId = 1;
-                    holidayToAdd.Description = item.HolidayName;
-                    holidayToAdd.Date = item.HolidayDate;
+                    Holiday holidayToAdd = new Holiday
+                    {
+                        Country = item.CountryCode.Substring(0, 2),
+                        Region = item.State,
+                        BankId = 1,
+                        Description = item.HolidayName,
+                        Date = item.HolidayDate
+                    };
 
                     Int64 insertedHolidayId = -1;
                     insertedHolidayId = InsertHoliday(holidayToAdd, args[1], args[2], args[3]);
