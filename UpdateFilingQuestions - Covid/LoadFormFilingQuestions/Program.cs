@@ -63,6 +63,7 @@ namespace LoadFormFilingQuestionRecords
             int totalRecords = formList.Count;
             Int64 formMasterId = 0;
             int recordsInserted = 0;
+            int recordsUpdated = 0;
             int recordsErrored = 0;
 
             // Create List of FormCellDependency records to add 
@@ -107,9 +108,20 @@ namespace LoadFormFilingQuestionRecords
                             }
 
                         }
-                        else
+                        else // set InternalOnly to True to remove from CUP
                         {
-                            Console.WriteLine(string.Format("3: An Existing FormFilingQuestionRecord exists for TaxFormCode [{0}] and Filing Question [{1}].", form.TaxFormCode, "1372"));
+                            formFilingQuestion.InternalOnly = true;
+                            Int64 updateFilingQuestionId = -1;
+                            updateFilingQuestionId = UpdateFormFilingQuestion(formFilingQuestion, args[1], args[2], args[3]);
+                            if (updateFilingQuestionId > 0)
+                            {
+                                recordsUpdated++;
+                            }
+                            else
+                            {
+                                Console.WriteLine(string.Format("3: Update of existing FormFilingQuestion did not return a valid FormFilingQuestionId for TaxFormCode [{0}].", form.TaxFormCode));
+                                recordsErrored++;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -121,7 +133,7 @@ namespace LoadFormFilingQuestionRecords
                 }
             }
 
-            Console.WriteLine(string.Format("5: LoadFormFilingQuestion: {0} records inserted and {1} records errored out of {2} total records.", recordsInserted.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
+            Console.WriteLine(string.Format("5: LoadFormFilingQuestion: {0} records inserted, {1} records updated and {2} records errored out of {3} total records.", recordsInserted.ToString(), recordsUpdated.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
             Console.ReadKey();
         }
  
@@ -294,12 +306,53 @@ namespace LoadFormFilingQuestionRecords
             }
             catch (Exception ex)
             {
-                Console.WriteLine("9: InsertFormFilingQuestion: The following attempted insert/update failed: [{0}].  The unhandled exception that occurred: [{1}]", payload, ex.Message);
+                Console.WriteLine("9: InsertFormFilingQuestion: The following attempted insert failed: [{0}].  The unhandled exception that occurred: [{1}]", payload, ex.Message);
             }
 
             return formFilingQuestionId;
         }
 
+        private static Int64 UpdateFormFilingQuestion(FormFilingQuestion filingQuestion, string url, string Username, string Drowssap)
+        {
+            string payload = string.Empty;
+            Int64 formFilingQuestionId = -1;
+            try
+            {
+                // get post data.
+                payload = JsonConvert.SerializeObject(filingQuestion);
+                byte[] buf = Encoding.UTF8.GetBytes(payload);
+
+                // create the http web request
+                string query = "/api/FormFilingQuestion/" + filingQuestion.FormFilingQuestionId.ToString();
+                var request = (HttpWebRequest)WebRequest.Create(url + query);
+                request.Headers.Add(HttpRequestHeader.Authorization, "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Username + ":" + Drowssap)));
+
+                request.Method = "PUT";
+                request.ContentLength = buf.Length;
+                request.ContentType = "application/json; charset=utf-8";
+                request.GetRequestStream().Write(buf, 0, buf.Length);
+
+                // get response and deserialize it.
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response != null)
+                    {
+                        var responseStream = response.GetResponseStream();
+                        var streamReader = new System.IO.StreamReader(responseStream, Encoding.UTF8);
+                        var responseString = streamReader.ReadToEnd();
+
+                        FormFilingQuestion responseDependency = responseString.Length > 0 ? JsonConvert.DeserializeObject<FormFilingQuestion>(responseString) : null;
+                        formFilingQuestionId = responseDependency.FormFilingQuestionId;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("10: UpdateFormFilingQuestion: The following attempted update failed: [{0}].  The unhandled exception that occurred: [{1}]", payload, ex.Message);
+            }
+
+            return formFilingQuestionId;
+        }
     }
 
 
