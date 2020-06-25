@@ -8,8 +8,8 @@ namespace QrBarCodeTestUtility
 {
     public class GeneratePDF
     {
-        private RestClient _taxFormCatalogClient = new RestClient("https://taxformcatalog-qa.returns.avalara.net");
-        private RestClient _returnsEngineClient = new RestClient("https://returnsengine-qa.returns.avalara.net");
+        private RestClient _taxFormCatalogClient = new RestClient("https://taxformcatalog.returns.ci.avalara.io");
+        private RestClient _returnsEngineClient = new RestClient("https://returns-engine.returns.ci.avalara.io");
      
 
         public async Task<FormExtract> GetFormDefinition(string taxFormCode, int filingYear, int filingMonth)
