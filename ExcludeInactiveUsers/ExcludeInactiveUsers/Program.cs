@@ -49,12 +49,7 @@ namespace ExcludeInactiveUsers
                 var dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
-                {
-                    string updateSQL = @"UPDATE FormMaster 
-                                    SET DORAddress1 = DORAddress2, DORAddress2 = null
-                                    WHERE TaxFormCode = '" + dataReader["TaxFormCode"].ToString() + "'";
-                    
-                    
+                {                    
                     CatalogUser catalogUser = new CatalogUser
                     {
                         CatalogUserId = (Int64)dataReader["CatalogUserId"],
