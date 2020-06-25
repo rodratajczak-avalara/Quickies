@@ -64,6 +64,7 @@ namespace LoadFormFilingQuestionRecords
             Int64 formMasterId = 0;
             int recordsInserted = 0;
             int recordsUpdated = 0;
+            int recordsDeleted = 0;
             int recordsErrored = 0;
 
             // Create List of FormCellDependency records to add 
@@ -78,7 +79,7 @@ namespace LoadFormFilingQuestionRecords
                 {
                     try
                     {
-    
+
                         List<FormFilingQuestion> existingFilingQuestions = GetFormFilingQuestions(formMasterId, args[1], args[2], args[3]);
                         FormFilingQuestion formFilingQuestion = existingFilingQuestions.Any() ? existingFilingQuestions.Where<FormFilingQuestion>(x => x.FilingQuestionId == 1272).FirstOrDefault() : null;
                         if (formFilingQuestion == null || formFilingQuestion == new FormFilingQuestion())
@@ -108,14 +109,29 @@ namespace LoadFormFilingQuestionRecords
                             }
 
                         }
-                        else // set InternalOnly to True to remove from CUP
+                        /*                        else // set InternalOnly to True to remove from CUP
+                                                {
+                                                    formFilingQuestion.InternalOnly = true;
+                                                    Int64 updateFilingQuestionId = -1;
+                                                    updateFilingQuestionId = UpdateFormFilingQuestion(formFilingQuestion, args[1], args[2], args[3]);
+                                                    if (updateFilingQuestionId > 0)
+                                                    {
+                                                        recordsUpdated++;
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine(string.Format("3: Update of existing FormFilingQuestion did not return a valid FormFilingQuestionId for TaxFormCode [{0}].", form.TaxFormCode));
+                                                        recordsErrored++;
+                                                    }
+                                                }
+                        */
+                        else // remove the filing question from the form
                         {
-                            formFilingQuestion.InternalOnly = true;
-                            Int64 updateFilingQuestionId = -1;
-                            updateFilingQuestionId = UpdateFormFilingQuestion(formFilingQuestion, args[1], args[2], args[3]);
-                            if (updateFilingQuestionId > 0)
+                            Int64 deleteFilingQuestionId = -1;
+                            deleteFilingQuestionId = DeleteFormFilingQuestion(formFilingQuestion, args[1], args[2], args[3]);
+                            if (deleteFilingQuestionId >= 0)
                             {
-                                recordsUpdated++;
+                                recordsDeleted++;
                             }
                             else
                             {
@@ -133,10 +149,10 @@ namespace LoadFormFilingQuestionRecords
                 }
             }
 
-            Console.WriteLine(string.Format("5: LoadFormFilingQuestion: {0} records inserted, {1} records updated and {2} records errored out of {3} total records.", recordsInserted.ToString(), recordsUpdated.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
+            Console.WriteLine(string.Format("5: LoadFormFilingQuestion: {0} records inserted, {1} records updated, {2} records deleted and {3} records errored out of {4} total records.", recordsInserted.ToString(), recordsUpdated.ToString(), recordsDeleted.ToString(), recordsErrored.ToString(), totalRecords.ToString()));
             Console.ReadKey();
         }
- 
+
         private static string ReadExcelCell(Cell cell, WorkbookPart workbookPart)
         {
             var cellValue = cell.CellValue;
@@ -353,6 +369,58 @@ namespace LoadFormFilingQuestionRecords
 
             return formFilingQuestionId;
         }
+
+
+
+
+        private static Int64 DeleteFormFilingQuestion(FormFilingQuestion filingQuestion, string url, string Username, string Drowssap)
+        {
+            //string payload = string.Empty;
+            Int64 formFilingQuestionId = -1;
+            try
+            {
+                // get post data.
+                //payload = JsonConvert.SerializeObject(filingQuestion);
+                //byte[] buf = Encoding.UTF8.GetBytes(payload);
+
+                // create the http web request
+                string query = "/api/FormFilingQuestion/" + filingQuestion.FormFilingQuestionId.ToString();
+                var request = (HttpWebRequest)WebRequest.Create(url + query);
+                request.Headers.Add(HttpRequestHeader.Authorization, "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(Username + ":" + Drowssap)));
+
+                request.Method = "DELETE";
+                //request.ContentLength = buf.Length;
+                //request.ContentType = "application/json; charset=utf-8";
+                //request.GetRequestStream().Write(buf, 0, buf.Length);
+
+                // get response and deserialize it.
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response != null)
+                    {
+                        var responseStream = response.GetResponseStream();
+                        var streamReader = new System.IO.StreamReader(responseStream, Encoding.UTF8);
+                        var responseString = streamReader.ReadToEnd();
+
+                        DeleteResponse responseDependency = responseString.Length > 0 ? JsonConvert.DeserializeObject<DeleteResponse>(responseString) : null;
+                        if (responseDependency.deleted)
+                        {
+                            formFilingQuestionId = responseDependency.id;
+                        }
+                        else
+                        {
+                            Console.WriteLine("12: DeleteFormFilingQuestion: The following attempted delete failed: [{0}].  The unhandled exception that occurred: [{1}]", responseDependency.id.ToString(), responseDependency.deleted.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("11: DeleteFormFilingQuestion: The following attempted delete failed: [{0}].  The unhandled exception that occurred: [{1}]", filingQuestion.FormFilingQuestionId.ToString(), ex.Message);
+            }
+
+            return formFilingQuestionId;
+        }
     }
 
 
@@ -362,6 +430,13 @@ namespace LoadFormFilingQuestionRecords
         public String TaxFormCode{ get; set; }
         public String FormInfo { get; set; }
         public String LucasNotes { get; set; }
+    }
+
+    public class DeleteResponse
+    {
+        public string name { get; set; }
+        public Int64 id { get; set; }
+        public Boolean deleted { get; set; }
     }
 
     public class FormFilingQuestion
